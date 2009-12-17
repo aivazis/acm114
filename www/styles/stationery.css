@@ -1,0 +1,85 @@
+/*  -*- CSS -*-  */
+/*
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *
+ *                            michael a.g. aïvázis
+ *                     california institute of technology
+ *                     (c) 1998-2010  all rights reserved
+ *
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
+
+* {
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+img {
+    border-style: none;
+}
+
+div.clear {
+    clear: both;
+}
+
+body {
+    margin: 0em auto;
+    font-size: 12pt;
+    width: 60em;
+    font-family: futura, helvetica, arial, sans-serif;
+    background: black url(../images/stationery.png) no-repeat;
+    background-size: 100%;
+}
+
+#letterhead {
+    margin: 1.5em 0px 1.5em 22.5em;
+    font-family: georgia, serif;
+    color: #dddbc5;
+}
+
+#letterhead h1 {
+    font-size: 400%;
+    font-weight: normal;
+    line-height: 100%;
+    letter-spacing: .04em;
+}
+
+#letterhead h2 {
+    font-size: 150%;
+    font-weight: normal;
+    letter-spacing: 0.06em;
+}
+
+#letterhead h3 {
+    font-size: 100%;
+    font-weight: normal;
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    color: #6d6b55;
+}
+
+#menubar {
+    height: 3em;
+    border-top: solid 1px #5d5b45;
+    border-bottom: solid 1px #5d5b45;
+    background: url(../images/menubar.png) repeat;
+}
+
+/* end of file  */
