@@ -77,9 +77,21 @@ body {
 
 #menubar {
     height: 3em;
-    border-top: solid 1px #5d5b45;
-    border-bottom: solid 1px #5d5b45;
+    border-top: solid 1px #4a4741;
+    border-bottom: solid 1px #4a4741;
     background: url(../images/menubar.png) repeat;
+}
+
+#thumbnails {
+    height: 9em;
+    border-bottom: solid 1px #4a4741;
+    background: url(../images/thumbnails.png) repeat;
+}
+
+#content {
+    height: 18em;
+    border-bottom: solid 1px #4a4741;
+    background: url(../images/content.png) repeat;
 }
 
 /* end of file  */
