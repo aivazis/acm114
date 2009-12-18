@@ -12,9 +12,6 @@
 #menubar {
     height: 2em;
     padding: 1em 0 0 22.5em; 
-
-    border-top: solid 1px #4a4741;
-    border-bottom: solid 1px #4a4741;
     background: url(../images/menubar.png) repeat;
 }
 
