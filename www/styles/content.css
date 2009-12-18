@@ -1,0 +1,64 @@
+/*  -*- CSS -*-  */
+/*
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *
+ *                            michael a.g. aïvázis
+ *                     california institute of technology
+ *                     (c) 1998-2010  all rights reserved
+ *
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
+
+#content {
+    height: 16em;
+    border-bottom: solid 1px #4a4741;
+    background: url(../images/content.png) repeat;
+}
+
+#content ul.navigation {
+    float: left;
+    width: 21.5em;
+    margin: 1em 1em 0 0;
+
+    font-family: futura, verdana, helvetica, arial, sans-serif;
+    text-align: right;
+
+}
+
+#content ul.navigation {
+    list-style: none;
+    text-decoration: none;
+    color: #494944;
+}
+
+#content ul.navigation li {
+    height: 2em;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+}
+
+#content ul.navigation li a {
+    font-size: 60%;
+    letter-spacing: 0.4em;
+    color: #6d6b55;
+    cursor: pointer;
+}
+
+#content ul.navigation li a:hover {
+    font-size: 84%;
+    letter-spacing: .4em;
+}
+
+#content p {
+    width: 42em;
+    margin-left: 27em;
+    padding-top: 1em;
+
+    font-size: 84%;
+    line-height: 180%;
+    font-family: georgia, serif;
+    letter-spacing: 0em;
+    color: #2f2f2a;
+    }
+
+/* end of file  */

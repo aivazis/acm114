@@ -49,7 +49,7 @@ body {
 }
 
 #letterhead {
-    margin: 1.5em 0px 1.5em 22.5em;
+    margin: 1.5em 0px 0.5em 22.5em;
     font-family: georgia, serif;
     color: #dddbc5;
 }
@@ -73,25 +73,11 @@ body {
     font-variant: small-caps;
     letter-spacing: 0.08em;
     color: #6d6b55;
+    color: #474a41;
 }
 
-#menubar {
-    height: 3em;
-    border-top: solid 1px #4a4741;
-    border-bottom: solid 1px #4a4741;
-    background: url(../images/menubar.png) repeat;
-}
-
-#thumbnails {
-    height: 9em;
-    border-bottom: solid 1px #4a4741;
-    background: url(../images/thumbnails.png) repeat;
-}
-
-#content {
-    height: 18em;
-    border-bottom: solid 1px #4a4741;
-    background: url(../images/content.png) repeat;
+div.clear {
+    clear: both;
 }
 
 /* end of file  */

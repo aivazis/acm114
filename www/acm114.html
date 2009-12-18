@@ -19,6 +19,9 @@
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 
   <link href="styles/stationery.css" type="text/css" rel="stylesheet" media="all" />
+  <link href="styles/menubar.css" type="text/css" rel="stylesheet" media="all" />
+  <link href="styles/thumbnails.css" type="text/css" rel="stylesheet" media="all" />
+  <link href="styles/content.css" type="text/css" rel="stylesheet" media="all" />
 
   <title>Caltech - ACM/CS 114</title>
 </head>
@@ -32,15 +35,38 @@
   </div>
 
   <div id="menubar">
-    &nbsp;
+    <ul>
+      <li class="first"><a href="acm114.html">home</a></li>
+      <li><a href="#">syllabus</a></li>
+      <li><a href="#">calendar</a></li>
+      <li class="last"><a href="#">suggested reading</a></li>
+    </ul>
   </div>
 
   <div id="thumbnails">
-    &nbsp;
   </div>
 
   <div id="content">
-    &nbsp;
+    <ul class="navigation">
+      <li>About the course</li>
+      <li><a href="#">Instructor</a></li>
+      <li><a href="#">Syllabus</a></li>
+      <li><a href="#">Calendar</a></li>
+      <li><a href="#">Suggested  reading</a></li>
+    </ul>
+
+    <p>
+      Introduction to parallel program design for numerically intensive scientific
+      applications. Parallel programming methods; distributed-memory model with message passing
+      using the message passing interface; shared-memory model with threads using OpenMP,
+      CUDA; object-based models using a problem-solving environment with parallel
+      objects. Parallel numerical algorithms: numerical methods for linear algebraic systems,
+      such as LU decomposition, QR method, CG solvers; parallel implementations of numerical
+      methods for PDEs, including finite-difference, finite-element; particle-based
+      simulations. Performance measurement, scaling and parallel efficiency, load balancing
+      strategies.
+    </p>
+
   </div>
 
 </body>
