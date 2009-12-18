@@ -10,55 +10,41 @@
  */
 
 #content {
-    height: 16em;
+    width: 60em;
+    min-height: 16em;
+    padding: 1em 0 1em 0;
     border-bottom: solid 1px #4a4741;
     background: url(../images/content.png) repeat;
-}
-
-#content ul.navigation {
-    float: left;
-    width: 21.5em;
-    margin: 1em 1em 0 0;
-
-    font-family: futura, verdana, helvetica, arial, sans-serif;
-    text-align: right;
-
-}
-
-#content ul.navigation {
-    list-style: none;
-    text-decoration: none;
-    color: #494944;
-}
-
-#content ul.navigation li {
-    height: 2em;
-    letter-spacing: 0.5em;
-    text-transform: uppercase;
-}
-
-#content ul.navigation li a {
-    font-size: 60%;
-    letter-spacing: 0.4em;
-    color: #6d6b55;
-    cursor: pointer;
-}
-
-#content ul.navigation li a:hover {
-    font-size: 84%;
-    letter-spacing: .4em;
+    font-family: georgia, serif;
 }
 
 #content p {
     width: 42em;
     margin-left: 27em;
-    padding-top: 1em;
-
+    padding-top: .5em;
     font-size: 84%;
     line-height: 180%;
-    font-family: georgia, serif;
-    letter-spacing: 0em;
     color: #2f2f2a;
     }
+
+div.resume {
+}
+
+div.resume h4 {
+    margin: 1em 0em 0em 22.5em;
+
+    font-style: italic;
+    font-weight: normal;
+    letter-spacing: 0.3em;
+    line-height: 150%;
+    text-transform: lowercase;
+    color: #7b7b46;
+}
+
+div.resume ul {
+    margin: 1em 0em 0em 27em;
+    font-size: 84%;
+    line-height: 140%;
+}
 
 /* end of file  */

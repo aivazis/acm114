@@ -35,7 +35,7 @@ img {
     border-style: none;
 }
 
-div.clear {
+div.clear-all-floats {
     clear: both;
 }
 
@@ -76,8 +76,8 @@ body {
     color: #474a41;
 }
 
-div.clear {
-    clear: both;
+#colophon {
+    height: 2em;
 }
 
 /* end of file  */
