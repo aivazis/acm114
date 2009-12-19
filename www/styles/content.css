@@ -10,41 +10,68 @@
  */
 
 #content {
-    width: 60em;
-    min-height: 16em;
-    padding: 1em 0 1em 0;
+    width: 34.5em;
+    padding: 1.0em 3.0em 2.0em 22.5em;
+
+    min-height: 12em;
+
     border-bottom: solid 1px #4a4741;
     background: url(../images/content.png) repeat;
     font-family: georgia, serif;
 }
 
+#content h1 {
+    margin: 1em 0 0 0;
+    font-size: 100%;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #7b7b46;
+}
+
+#content h4 {
+    margin: 1.25em 0 0 0;
+
+    font-family: futura, verdana, arial, sans-serif;
+    font-size: 80%;
+    font-weight: normal;
+    letter-spacing: 0.3em;
+    line-height: 150%;
+    text-transform: uppercase;
+    color: #7b7b46;
+}
+
 #content p {
-    width: 42em;
-    margin-left: 27em;
     padding-top: .5em;
     font-size: 84%;
     line-height: 180%;
     color: #2f2f2a;
     }
 
-div.resume {
+#content ul {
+    margin: 1em 0 0 0;
+    font-size: 84%;
+    line-height: 140%;
 }
 
-div.resume h4 {
-    margin: 1em 0em 0em 22.5em;
-
+#content a:link {
     font-style: italic;
-    font-weight: normal;
-    letter-spacing: 0.3em;
-    line-height: 150%;
-    text-transform: lowercase;
     color: #7b7b46;
 }
 
-div.resume ul {
-    margin: 1em 0em 0em 27em;
-    font-size: 84%;
-    line-height: 140%;
+#content a:visited {
+    font-style: italic;
+    color: #7b7b46;
+}
+
+#content a:active {
+    font-style: italic;
+    color: #7b7b46;
+}
+
+#content a:hover {
+    font-style: italic;
+    color: #7b7b46;
 }
 
 /* end of file  */

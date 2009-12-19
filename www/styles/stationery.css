@@ -40,7 +40,7 @@ div.clear-all-floats {
 }
 
 body {
-    margin: 0em auto;
+    margin: 1em;
     font-size: 12pt;
     width: 60em;
     font-family: futura, helvetica, arial, sans-serif;
@@ -72,7 +72,6 @@ body {
     font-weight: normal;
     font-variant: small-caps;
     letter-spacing: 0.08em;
-    color: #6d6b55;
     color: #474a41;
 }
 
