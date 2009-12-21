@@ -50,16 +50,92 @@
   </div>
 
   <div id="content">
-    <ol>
-      <li>Organizational meeting</li>
-      <li>Introduction</li>
-      <ol>
-        <li>Why bother?</li>
-        <li>What skills are necessary?</li>
-        <li>What is the life of the practitioner like?</li>
-        <li>What evolves? What stays the same?</li>
-      </ol>
-    </ol>
+    <p>
+      Here is an outline of the material that will get covered in roughly chronological order
+    </p>
+
+    <ul>
+      <li>Scientific computing preliminaries</li>
+      <ul>
+        <li>The role of computation in science</li>
+        <li>Numerical methods:
+          matrices, integrating ODE/PDE, stochastic processes, optimization
+        </li>
+        <li>Motivation for parallel programming: resolution</li>
+        <li>Hardware and software evolution</li>
+        <li>Software engineering survival skills</li>
+        <li>Algorithms: specification, design, analysis</li>
+        <li>Basic data structures</li>
+        <li>Advanced data structures</li>
+      </ul>
+
+      <li>Overview of concurrent algorithms and their operating environments</li>
+      <ul>
+        <li>PREM: an abstract parallel machine</li>
+        <li>Memory access: concurrent vs. exclusive</li>
+        <li>Memory models: shared vs. distributed memory</li>
+        <li>Process synchronization: explicit vs. implicit</li>
+        <li>Performance, parallel efficiency and scalability</li>
+        <li>Static and dynamic algorithms</li>
+      </ul>
+
+      <li>HPC: high-performance scientific computing</li>
+      <ul>
+        <li>Staging and launching a parallel calculation</li>
+        <li>Execution environments</li>
+        <li>Monitoring</li>
+        <li>Data harvesting</li>
+        <li>Post-processing</li>
+        <li>Visualization and knowledge mining</li>
+      </ul>
+
+      <li>Embarrassingly parallel problems</li>
+      <ul>
+        <li>Monte Carlo integration</li>
+        <ul>
+          <li>Introduction</li>
+          <li>Integrating using a fixed number of samples</li>
+          <li>Achieving a desired accuracy</li>
+        </ul>
+        
+        <li>Optimization</li>
+        <ul>
+          <li>Introduction</li>
+          <li>Parallel optimization strategies</li>
+        </ul>
+
+      </ul>
+
+      <li>Structured grids</li>
+      <ul>
+        <li>Two and three dimensional arrays</li>
+        <li>Domain decomposition strategies</li>
+        <li>Building the communication maps</li>
+        <li>Synchronization and information exchange</li>
+      </ul>
+        
+
+      <li>Unstructured grids</li>
+      <ul>
+        <li>Meshes as graphs</li>
+        <li>Decomposition by graph partitioning</li>
+        <li>Building the communication maps</li>
+        <li>Synchronization and information exchange</li>
+        <li>Communicating topological changes</li>
+        <li>Load balancing</li>
+      </ul>
+
+      <li>Non-local problems</li>
+      <ul>
+        <li>Spatial data structures</li>
+      </ul>
+      
+      <li>Dense and sparse matrices</li>
+
+      <li>Advanced application design</li>
+
+    </ul>
+
   </div>
 
   <div id="#colophon" class="clear-all-floats">
