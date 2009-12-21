@@ -21,7 +21,7 @@
 }
 
 #content h1 {
-    margin: 1em 0 0 0;
+    margin: 1.5em 0 0.5em 0;
     font-size: 100%;
     font-weight: normal;
     text-transform: uppercase;
@@ -30,7 +30,7 @@
 }
 
 #content h4 {
-    margin: 1.25em 0 0 0;
+    margin: 1.5em 0 0.5em 0;
 
     font-family: futura, verdana, arial, sans-serif;
     font-size: 80%;
@@ -42,21 +42,21 @@
 }
 
 #content p {
-    padding-top: .5em;
+    margin: .5em 0;
     font-size: 84%;
     line-height: 180%;
     color: #2f2f2a;
     }
 
 #content ul {
-    margin: 1em 0 0 1.2em;
-    font-size: 84%;
+    margin: 0 0 0 1.2em;
+    font-size: 90%;
     line-height: 140%;
 }
 
 #content ol {
-    margin: 1em 0 0 1.2em;
-    font-size: 84%;
+    margin: 0 0 0 1.2em;
+    font-size: 90%;
     line-height: 140%;
 }
 
