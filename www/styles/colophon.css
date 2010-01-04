@@ -1,0 +1,26 @@
+/*  -*- CSS -*-  */
+/*
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *
+ *                            michael a.g. aïvázis
+ *                     california institute of technology
+ *                     (c) 1998-2010  all rights reserved
+ *
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
+
+#colophon {
+    margin: 1.0em 1.0em 0 0;
+    width: 100%;
+
+    font-family: futura, verdana, arial, sans-serif;
+    font-size: 60%;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 100%;
+    letter-spacing: 0.3em;
+
+    color: #494944;
+}
+
+/* end of file  */
