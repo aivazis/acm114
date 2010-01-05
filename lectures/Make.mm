@@ -26,10 +26,13 @@ DOCUMENT = acm114
 PACKAGES =
 
 INCLUDES = \
+    beamerthemeacm114.sty \
     setup.tex \
     references.bib
 
 SECTIONS = \
+    20100104.tex \
+    20100106.tex \
 
 FIGURES = \
 

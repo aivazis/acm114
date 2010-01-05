@@ -1,4 +1,4 @@
-% -*- TeX -*-
+% -*- LaTeX -*-
 % -*- coding: utf-8 -*-
 %
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -11,6 +11,11 @@
 %
 
 \documentclass{beamer}
+
+% theme
+\mode<presentation> {
+  \usetheme{acm114}
+}
 
 % packages, setup, macros, etc.
 \input{setup}
@@ -27,37 +32,13 @@
   \titlepage
 \end{frame}
 
-% outline
-\begin{frame}{Outline}
-  \tableofcontents
-\end{frame}
+\includeonlylecture{20100106}
 
-\section{My first section}
-\subsection{My first subsection}
+% lectures
+\input{20100104}
+\input{20100106}
 
 % references
-\begin{frame}{Content}
-  \begin{itemize}
-  \item Here is some content
-
-  \item
-    Here is some relevant math
-    \[ \sum_{x=0}^{\infty} x^{2} = \infty \]
-
-    \begin{itemize}
-    \item Here is some more content
-      \begin{itemize}
-      \item here is an explanation that references \identifier{Icon}\cite{icon}, the
-        programming language
-      \item and here is an explanation that references \identifier{python}\cite{python-doc}, the
-        programming language
-      \end{itemize}
-    \end{itemize}
-    
-  \end{itemize}
-
-\end{frame}
-
 \begin{frame}{References}
 \bibliographystyle{unsrtnat}
 \bibliography{references}
