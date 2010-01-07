@@ -10,7 +10,7 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
 
-\lecture{Introduction to scientific computing}{20100106}
+\lecture{Sandbox for trying things out}{sandbox}
 
 % ------------------
 \section{Scientific computing}
@@ -18,29 +18,24 @@
 \subsection{Here we go}
 \begin{frame}{The title of the first slide}
 
-  \begin{itemize}
-    \item Here is an important point
-      \begin{algorithm}[H]
-        %
-        \dontprintsemicolon
-        %
-        $i \leftarrow 0$ \;
-        $t \leftarrow 0$ \;
-        \While{$t < N$}{
-          $x \leftarrow \mbox{random()}$ \;
-          $y \leftarrow \mbox{random()}$ \;
-          \If{$\sqrt{x^{2}+y^{2}} \leq 1$}{ \nllabel{line:pi:check}
-            $i \leftarrow i + 1$
-          }
-          $t \leftarrow t + 1$
+    \normalsize
+    \begin{algorithm}[H]
+      %
+      \dontprintsemicolon
+      %
+      $i \leftarrow 0$ \;
+      $t \leftarrow 0$ \;
+      \While{$t < N$}{
+        $x \leftarrow \mbox{random()}$ \;
+        $y \leftarrow \mbox{random()}$ \;
+        \If{$\sqrt{x^{2}+y^{2}} \leq 1$}{ \nllabel{line:pi:check}
+          $i \leftarrow i + 1$
         }
-        $\pi_{N} = 4 i/t \;$ %\frac{i}{t}$ \;
-      \end{algorithm}
+        $t \leftarrow t + 1$
+      }
+      $\pi_{N} = 4 i/t \;$ %\frac{i}{t}$ \;
+    \end{algorithm}
 %
-      \begin{itemize}
-        \item which is explained here
-      \end{itemize}
-  \end{itemize}
 \end{frame}
 
 \subsection{And once again}
