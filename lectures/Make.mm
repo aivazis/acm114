@@ -68,6 +68,6 @@ $(DOCUMENT).pdf: $(DOCUMENT).tex $(PACKAGES) $(INCLUDES) $(SECTIONS) $(FIGURES)
 
 # housekeeping
 PROJ_CLEAN = $(CLEAN_LATEX)
-PROJ_DISTCLEAN = *.ps *.pdf *.snm *.nav $(PROJ_CLEAN)
+PROJ_DISTCLEAN = *.ps *.pdf *.snm *.nav *.vrb $(PROJ_CLEAN)
 
 # end of file
