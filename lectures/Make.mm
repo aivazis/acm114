@@ -37,6 +37,7 @@ SECTIONS = \
     sandbox.tex \
 
 FIGURES = \
+    figures/generic-parallel-architecture.pdf
 
 #--------------------------------------------------------------------------
 #

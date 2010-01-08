@@ -143,6 +143,26 @@
 \end{frame}
 
 % --------------------------------------
+% generic parallel architecture
+\begin{frame}[fragile]
+%
+  \frametitle{Generic parallel architecture}
+%
+  \begin{figure}
+    \centering
+    \includegraphics[width=.75\linewidth]{figures/generic-parallel-architecture.pdf}
+    \label{fig:generic-parallel-architecture}
+  \end{figure}
+
+  \begin{itemize}
+%
+  \item where does the memory go?
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % memory hierarchy
 \begin{frame}[fragile]
 %
@@ -229,6 +249,60 @@
 \end{frame}
 
 % --------------------------------------
+% communication issues
+\begin{frame}[fragile]
+%
+  \frametitle{Communication issues}
+%
+  \begin{itemize}
+%
+  \item latency and bandwidth
+  \item routing and switching -- not much of an issue any more
+  \item contention, flow control and aggregate bandwidth
+  \item collective communication
+    \begin{itemize}
+      \item one to many: broadcast, scatter
+      \item many to one: gather, reduction, scan
+      \item all to all
+      \item synchronization barrier
+    \end{itemize}
+  \item assigning work to processors
+    \begin{itemize}
+    \item partitioning
+    \item granularity
+    \item mapping
+    \item scheduling
+    \item load balancing
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% performance factors
+\begin{frame}[fragile]
+%
+  \frametitle{Factors determining performance}
+%
+  \begin{itemize}
+%
+  \item {\em concurrency}: maximize the work that can be done in parallel
+  \item {\em load balance}: make sure the load is (and stays) divided evenly
+  \item {\em parallel overhead}: work not present in the equivalent serial computation
+    \begin{itemize}
+      \item startup costs
+      \item communication
+      \item synchronization
+      \item redundancy
+      \item speculative work
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % template
 \begin{frame}[fragile]
 %
@@ -236,7 +310,7 @@
 %
   \begin{itemize}
 %
-  \item a point
+  \item 
 %
   \end{itemize}
 %
