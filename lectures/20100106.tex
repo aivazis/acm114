@@ -11,7 +11,6 @@
 %
 
 \lecture{Overview of algorithms}{20100106}
-\section{Algorithms}
 
 % --------------------------------------
 % the INSERTION-SORT algorithm
@@ -28,7 +27,7 @@
           %\nocaptionofalgo
           \setalcaphskip{0ex}
 %
-          \caption{\sc Insertion-Sort($S$)}
+          \caption{\insertionsort($S$)}
           \vspace{.5em}
 %
           \For{$j \leftarrow 2$  \KwTo length[S]}{
@@ -40,6 +39,7 @@
             }
             $S[i+1] \leftarrow key$
           }
+%
           \vspace{.5em}
 %
         \end{algorithm}
@@ -155,13 +155,201 @@ def insertion_sort(A):
 \end{frame}
 
 % --------------------------------------
+% algorithm design strategies
+\begin{frame}[fragile]
+%
+  \frametitle{Designing algorithms}
+%
+  \begin{itemize}
+%
+  \item \insertionsort\ is {\em incremental}:
+    \begin{itemize}
+      \item having sorted $A[i..j]$, put $A[j]$ in its proper place
+      \item how would you break this up into tasks that can be executed in parallel?
+    \end{itemize}
+%
+  \item one alternative is {\em divide-and-conquer}: \mergesort
+    \begin{itemize}
+      \item {\em divide}: split $A$ into two parts of roughly equal length
+      \item {\em conquer}: sort the subsequences recursively
+      \item {\em combine}: merge the two sorted subsequences to produce the sorted output
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% merge sort
+\begin{frame}[fragile]
+%
+  \frametitle{Sorting by divide-and-conquer}
+%
+    \begin{center}
+      \begin{minipage}{.75\linewidth}
+        \begin{algorithm}[H]
+          \label{alg:merge-sort}
+%
+          \dontprintsemicolon
+          %\nocaptionofalgo
+          \setalcaphskip{0ex}
+%
+          \caption{\mergesort($S$, $p$, $r$)}
+          \vspace{.5em}
+%
+          \If{$p < r$}{
+            $q \leftarrow \lfloor (p+r)/2 \rfloor$ \;
+            \mergesort($S$, $p$, $q$) \;
+            \mergesort($S$, $q+1$, $r$) \;
+            \merge($S$, $p$, $q$, $r$) \;
+          }
+%
+          \vspace{.5em}
+%
+        \end{algorithm}
+      \end{minipage}
+    \end{center}
+%
+  \begin{itemize}
+%
+  \item {\em exercise}: write \merge; can be done in $\Theta(r-p+1)$
+%
+  \item analysis of running time:
+    \begin{itemize}
+    \item involves solving a recurrence relation
+    \item worst case:
+      \[
+      T(n) = \left\{
+      \begin{array}{ll}
+        \Theta(1)         & {\rm if\ } n = 1 \\
+        2T(n/2)+\Theta(n) & {\rm if\ } n > 1
+      \end{array} \right\}
+      \rightarrow \Theta(n \log n)
+      \]
+    \end{itemize}
+%
+  \item is this a better candidate for parallel sorting?
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% motivation for parallel computing
+\begin{frame}[fragile]
+%
+  \frametitle{Motivations for going parallel}
+%
+  \begin{itemize}
+%
+  \item why bother?
+    \begin{itemize}
+    \item {\em speed}: there are fundamental limits to the processing power of a single processor
+    \item {\em throughput}: time to solution is critical for many problems
+    \item {\em size}: high resolution requires lots of memory
+    \item {\em availability}: the tool exists, use it
+    \end{itemize}
+%
+  \item but, be careful
+    \begin{itemize}
+    \item the commercial market is unstable
+    \item the computing environment is somewhat primitive
+    \item software packages and libraries are emerging slowly
+    \item parallel programming is not hard, but it requires {\em discipline}
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Taxonomy}
+%
+  \begin{itemize}
+%
+  \item an early classification of computer systems focused on the relation between {\em
+    instruction streams} and {\em data streams}:
+    \begin{itemize}
+      \item SISD: single instruction, single data
+      \item: SIMD: single instruction, multiple data
+      \item: MIMD: multiple instruction, multiple data
+    \end{itemize}
+%
+    \item SISD describes conventional serial computers
+    \begin{itemize}
+      \item the programming model; the hardware has moved on...
+    \end{itemize}
+%
+    \item SIMD and MIMD are the traditional models for parallel machines
+%
+    \item MIMD systems are often programmed in SPMD mode: single {\em program}, multiple data
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Architectural issues}
+%
+  \begin{itemize}
+%
+  \item {\em control:} SIMD vs.~MIMD
+  \item {\em co\"ordination}: synchronous vs.~asynchronous
+  \item {\em memory organization}: private vs.~shared
+  \item {\em address space}: local vs.~global
+  \item {\em memory access}: uniform vs.~ non-uniform
+  \item {\em granularity}: the power of each processor
+  \item {\em scalability}: dependence on the number of processors
+  \item {\em interconnect}: topology, routing, switching
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Tradeoffs}
+%
+  \begin{center}
+    \begin{minipage}{.75\linewidth}
+      \begin{tabular}{l|l|l}
+                        & shared memory & distributed memory \\ \hline
+        scalability     & {\em harder}  & {\em easier} \\
+        programmability & {\em easier}  & {\em harder}
+      \end{tabular}
+    \end{minipage}
+  \end{center}
+
+%
+  \begin{itemize}
+%
+  \item shared memory permits parallelizing serial program gradually, focusing on worst
+    bottlenecks first
+%
+  \item distributed memory requires partitioning and distributing both data and work across
+    processors, which usually rules out incremental parallelization
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % template
 \begin{frame}[fragile]
 %
   \frametitle{Blank}
 %
   \begin{itemize}
-  \item 
+%
+  \item a point
+%
   \end{itemize}
 %
 \end{frame}
