@@ -192,6 +192,43 @@
 \end{frame}
 
 % --------------------------------------
+% designing parallel algorithms
+\begin{frame}[fragile]
+%
+  \frametitle{Designing parallel algorithms}
+%
+  \begin{itemize}
+%
+  \item {\em identification}: identify the part of the problem that can be parallelized
+  \item {\em partition}: decompose the parallelizable part into fine-grained tasks
+  \item {\em communication}: determine the necessary communication patterns among tasks
+  \item {\em coarsening}: combine into coarser tasks and adjust the communication patterns
+  \item {\em task mapping}: assign tasks to processors
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% paradigms for parallel algorithms
+\begin{frame}[fragile]
+%
+  \frametitle{Paradigms for parallel algorithms}
+%
+  \begin{itemize}
+%
+  \item {\em embarrassingly parallel}: mostly independent tasks
+  \item {\em functional decomposition}: based on computation
+  \item {\em domain decomposition}: based on data
+  \item {\em data parallel}: array operations
+  \item {\em divide-and-conquer}: tree-like partitioning
+  \item {\em pipelining}: overlapping stages
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % template
 \begin{frame}[fragile]
 %
