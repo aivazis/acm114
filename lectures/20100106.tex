@@ -11,7 +11,9 @@
 %
 
 \lecture{Overview of algorithms}{20100106}
+\section{Algorithms}
 
+% --------------------------------------
 % the INSERTION-SORT algorithm
 \begin{frame}[fragile]
 %
@@ -20,9 +22,10 @@
     \begin{center}
       \parbox[]{.75\linewidth}{
         \begin{algorithm}[H]
+          \label{alg:insertion-sort}
 %
           \dontprintsemicolon
-          \nocaptionofalgo
+          %\nocaptionofalgo
           \setalcaphskip{0ex}
 %
           \caption{\sc Insertion-Sort($S$)}
@@ -57,13 +60,14 @@
 %
 \end{frame}
 
-
+% --------------------------------------
+% pseudocode
 \begin{frame}[fragile]
 %
   \frametitle{Pseudocode conventions}
 %
   \begin{itemize}
-  \item the character $\triangleright$ indicates a comment through to the end of the line
+  \item the symbol ``$\triangleright$'' indicates a comment through to the end of the line
   \item block structure is indicated by the indentation level
   \item all variables are local; no global variables, unless explicitly marked
   \item $i \leftarrow j \leftarrow k$ assigns the rightmost expression to all the other
@@ -78,7 +82,88 @@
 %
 \end{frame}
         
+% --------------------------------------
+% python implementation of insertion-sort
+\begin{frame}[fragile]
+%
+  \frametitle{Python implementation}
+%
+  \begin{itemize}
+%
+  \item direct translation of pseudocode in python, with no attempt to improve
+%
+  \begin{center}
+    \begin{minipage}[h]{.75\linewidth}
+      \begin{python}[%
+        label={lst:insertion-sort:python},
+        caption={Python implementation of insertion\_sort}
+]
+%
+def insertion_sort(A):
+    for j in range(1, len(A)):
+        key = A[j]
+        i = j-1
+        while i>=0 and A[i]>key:
+            A[i+1] = A[i]
+            i = i-1
+        A[i+1] = key
+      \end{python}
+    \end{minipage}
+  \end{center}
+%
+  \item only minor adjustments to loop indices since python lists are zero based
+  \end{itemize}
+%
+\end{frame}
 
-% ------------------
+% --------------------------------------
+% algorithm analysis
+\begin{frame}[fragile]
+%
+  \frametitle{Analyzing algorithms}
+%
+  \begin{itemize}
+%
+  \item algorithm analysis is the computation of resource requirements
+    \begin{itemize}
+      \item memory, communication bandwidth, {\em computational time}
+    \end{itemize}
+%
+  \item need a model for the implementation environment
+    \begin{itemize}
+      \item RAM: {\em random access machine}
+      \item an abstraction of a single processor sequential execution machine that has access
+        to a single block of memory with uniform access cost
+      \item even though the model is extermely simple, algorithm analysis remains a hard
+        problem, full of subtleties
+    \end{itemize}
+%
+    \item in general, we seek to relate the running time to input size
+      \begin{itemize}
+        \item definition of input size is problem dependent -- could be number of items to sort,
+          or number of grid points in a mesh, etc.
+        \item running time counts the number of primitive steps executed
+        \item different lines have different costs
+        \item but each execution of a given line is assumed to cost the same
+      \end{itemize}
+%
+    \item exercise: decorate \algref{insertion-sort} with the number of times each line is
+      executed
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Blank}
+%
+  \begin{itemize}
+  \item 
+  \end{itemize}
+%
+\end{frame}
 
 % end of file 
