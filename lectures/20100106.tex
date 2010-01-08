@@ -12,6 +12,73 @@
 
 \lecture{Overview of algorithms}{20100106}
 
+% the INSERTION-SORT algorithm
+\begin{frame}[fragile]
+%
+  \frametitle{A sorting algorithm}
+%
+    \begin{center}
+      \parbox[]{.75\linewidth}{
+        \begin{algorithm}[H]
+%
+          \dontprintsemicolon
+          \nocaptionofalgo
+          \setalcaphskip{0ex}
+%
+          \caption{\sc Insertion-Sort($S$)}
+          \vspace{.5em}
+%
+          \For{$j \leftarrow 2$  \KwTo length[S]}{
+            $key \leftarrow S[j]$ \;
+            $i \leftarrow j-1$ \;
+            \While{$i > 0$ \KwAnd $S[i] > key$}{
+              $S[i+1] \leftarrow S[i]$ \;
+              $i \leftarrow i-1$ \;
+            }
+            $S[i+1] \leftarrow key$
+          }
+          \vspace{.5em}
+%
+        \end{algorithm}
+      }
+    \end{center}
+%
+  \begin{itemize}
+%
+  \item valid inputs:
+    \begin{itemize}
+    \item empty sequence, singlet, other sequences of finite length
+    \item what kinds of objects in $S$?
+    \end{itemize}
+%
+  \item walk through it by hand with $S = (5, 2, 4, 6, 1, 3)$
+%
+  \end{itemize}
+%
+\end{frame}
+
+
+\begin{frame}[fragile]
+%
+  \frametitle{Pseudocode conventions}
+%
+  \begin{itemize}
+  \item the character $\triangleright$ indicates a comment through to the end of the line
+  \item block structure is indicated by the indentation level
+  \item all variables are local; no global variables, unless explicitly marked
+  \item $i \leftarrow j \leftarrow k$ assigns the rightmost expression to all the other
+    variables
+  \item indexing: $S[i]$; slicing: $S[i .. j]$
+  \item conditionals, looping constructs, function calls should be familiar
+  \item compound objects have attributes or fields that are referenced using indexing,
+    e.g. $length[S]$
+  \item variables assigned to objects or containers are references
+  \item parameters passed to procedures {\em by assignment}
+  \end{itemize}
+%
+\end{frame}
+        
+
 % ------------------
 
 % end of file 
