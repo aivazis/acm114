@@ -52,18 +52,22 @@
     instruction streams} and {\em data streams}:
     \begin{itemize}
       \item SISD: single instruction, single data
-      \item: SIMD: single instruction, multiple data
-      \item: MIMD: multiple instruction, multiple data
+      \item SIMD: single instruction, multiple data
+      \item MIMD: multiple instruction, multiple data
     \end{itemize}
 %
     \item SISD describes conventional serial computers
     \begin{itemize}
-      \item the programming model; the hardware has moved on...
+      \item the programming model only: the hardware has moved on...
     \end{itemize}
 %
     \item SIMD and MIMD are the traditional models for parallel machines
 %
     \item MIMD systems are often programmed in SPMD mode: single {\em program}, multiple data
+      \begin{itemize}
+      \item when the parallel environment provides a {\em naming scheme} for the instruction
+        streams, such as processor id, or task name
+      \end{itemize}
   \end{itemize}
 %
 \end{frame}
@@ -80,7 +84,7 @@
   \item {\em co\"ordination}: synchronous vs.~asynchronous
   \item {\em memory organization}: private vs.~shared
   \item {\em address space}: local vs.~global
-  \item {\em memory access}: uniform vs.~ non-uniform
+  \item {\em memory access}: uniform vs.~non-uniform
   \item {\em granularity}: the power of each processor
   \item {\em scalability}: dependence on the number of processors
   \item {\em interconnect}: topology, routing, switching
@@ -156,7 +160,8 @@
 
   \begin{itemize}
 %
-  \item where does the memory go?
+  \item a trivial but powerful observation: access to memory implies access to information
+  \item hence, it becomes a determining factor for both hardware and algorithm design
 %
   \end{itemize}
 %
@@ -169,10 +174,9 @@
   \frametitle{Memory hierarchy}
 %
   \begin{itemize}
-  \item High performance architectures have a multi-tier memory hierarchy
+  \item high performance architectures have a multi-tier memory hierarchy
 %
     \begin{itemize}
-%
     \item registers
     \item on-chip caches, usually referred to as level 1
     \item off-chip caches (level 2)
@@ -181,7 +185,13 @@
     \item virtual memory, known as paging memory, that usually involves secondary storage
     \item secondary storage (disks)
     \item tertiary storage (tapes)
+    \end{itemize}
 %
+  \item these have latencies and bandwidths that vary by orders of magnitude
+  \item {\em cache misses} are the most frequently cited reason why real codes only achieve a
+    small fraction of the benchmarked performance of a CPU
+    \begin{itemize}
+    \item really small: 10\% of peak is considered a success!
     \end{itemize}
 %
   \end{itemize}
@@ -238,11 +248,11 @@
   \begin{itemize}
 %
   \item {\em embarrassingly parallel}: mostly independent tasks
-  \item {\em functional decomposition}: based on computation
-  \item {\em domain decomposition}: based on data
-  \item {\em data parallel}: array operations
+  \item {\em functional decomposition}: based on computational task (activity)
+  \item {\em data parallel}: aka {\em loop-level} parallelism: array operations
+  \item {\em domain decomposition}: based on the distribution of data
   \item {\em divide-and-conquer}: tree-like partitioning
-  \item {\em pipelining}: overlapping stages
+  \item {\em pipelining}: multiple overlapping stages
 %
   \end{itemize}
 %
@@ -291,7 +301,7 @@
   \item {\em load balance}: make sure the load is (and stays) divided evenly
   \item {\em parallel overhead}: work not present in the equivalent serial computation
     \begin{itemize}
-      \item startup costs
+      \item process startup and shutdown costs
       \item communication
       \item synchronization
       \item redundancy
@@ -310,25 +320,19 @@
 %
   \begin{itemize}
 %
-  \item PRAM: Parallel random access machine
-  \item LogP: latency, overhead, gap, processors
-  \item BSP: bulk synchronous parallel
-  \item CSP: communicating sequential processes
-  \item ... and many others
+    \item abstractions for architecture, algorithm analysis, and performance modeling
+      \begin{itemize}
+      \item PRAM: Parallel random access machine
+      \item LogP: latency, overhead, gap, processors
+      \item BSP: bulk synchronous parallel
+      \item CSP: communicating sequential processes
+      \item ... and many others
+      \end{itemize}
 %
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% template
-\begin{frame}[fragile]
-%
-  \frametitle{Blank}
-%
-  \begin{itemize}
-%
-  \item 
+    \item all occasionally useful tools for reasoning about implementation strategies for real
+      programs, since they steer you away from common but perhaps non-obvious mistakes
+    \item unfortunately, none is a substitute for understanding the characteristics of your
+      target platform
 %
   \end{itemize}
 %
