@@ -29,15 +29,12 @@
 %
     \item and the layout of the generic parallel architecture:
 %
-  \end{itemize}
-%
   \begin{figure}
     \centering
     \includegraphics[width=.5\linewidth]{figures/generic-parallel-architecture.pdf}
     \label{fig:gpa-redux}
   \end{figure}
 %
-  \begin{itemize}
   \item let's move memory around and examine how this affects the programming model
   \item for a trivial but instructive problem
   \end{itemize}
@@ -84,7 +81,7 @@
 \end{frame}
 
 % --------------------------------------
-% template
+% problem setup
 \begin{frame}[fragile]
 %
   \frametitle{Embarrassingly parallel: $p$ processor reduction}
@@ -102,7 +99,7 @@
     \begin{itemize}
       \item each processor performs $n/p$ evaluations of $f$
       \item each processor computes its own partial sum
-      \item one (or all) of them collects the $p$ partial sums and computes $s$, the global sum
+      \item one(?) of them collects the $p$ partial sums, and computes the global sum $s$
     \end{itemize}
 %
   \item two classes of data
@@ -118,6 +115,66 @@
           \item the local partial sums (?)
         \end{itemize}
     \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% machine model 1: a shared memory machine
+\begin{frame}[fragile]
+%
+  \frametitle{Shared memory machines}
+%
+  \begin{itemize}
+%
+  \item processors are all connected to a large pool of shared memory with a global address
+    space
+  \item typically, each processor has some local cache, but no private memory
+  \item {\em cost}: accessing the cache is {\em much} faster than main memory
+    \begin{itemize}
+      \item tune: the memory footprint of $n/p$ numbers should match cache size
+    \end{itemize}
+%
+  \begin{figure}
+    \centering
+    \includegraphics[width=.5\linewidth]{figures/shared-memory.pdf}
+    \label{fig:hared-memory}
+  \end{figure}
+%
+  \item for shared {\em address space} machine:
+    \begin{itemize}
+      \item replace caches with local/private memory
+      \item cost: repeatedly accessed data should be copied to local storage
+      \item not done much any more, but recently relevant thanks to hybrid CPU/GPGPU systems and
+        the implementation details of nVidia chips
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% programming a shred memory machine
+\begin{frame}[fragile]
+%
+  \frametitle{Programming in a shared address space}
+%
+  \begin{itemize}
+%
+  \item the program creates and manages $p$ instruction streams (threads)
+  \item each with a set of private variables
+    \begin{itemize}
+      \item registers, stack, cache
+    \end{itemize}
+%
+  \item collectively with a set of shared variables
+    \begin{itemize}
+      \item statics, global heap
+    \end{itemize}
+%
+  \item communication is {\em implicit}: threads just access the shared memory locations
+  \item synchronization is {\em explicit}: read/write flags, locks, semaphores
 %
   \end{itemize}
 %
