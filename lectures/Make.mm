@@ -38,7 +38,11 @@ SECTIONS = \
     sandbox.tex \
 
 FIGURES = \
-    figures/generic-parallel-architecture.pdf
+    figures/generic-parallel-architecture.pdf \
+    figures/shared-memory.pdf \
+    figures/distributed-memory.pdf \
+    figures/reduction-shared.pdf \
+    figures/reduction-distributed.pdf \
 
 #--------------------------------------------------------------------------
 #

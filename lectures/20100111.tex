@@ -31,7 +31,7 @@
 %
   \begin{figure}
     \centering
-    \includegraphics[width=.5\linewidth]{figures/generic-parallel-architecture.pdf}
+    \includegraphics[width=.70\linewidth]{figures/generic-parallel-architecture.pdf}
     \label{fig:gpa-redux}
   \end{figure}
 %
@@ -138,8 +138,8 @@
 %
   \begin{figure}
     \centering
-    \includegraphics[width=.5\linewidth]{figures/shared-memory.pdf}
-    \label{fig:hared-memory}
+    \includegraphics[width=.70\linewidth]{figures/shared-memory.pdf}
+    \label{fig:shared-memory}
   \end{figure}
 %
   \item for shared {\em address space} machine:
@@ -155,7 +155,7 @@
 \end{frame}
 
 % --------------------------------------
-% programming a shred memory machine
+% programming a shared memory machine
 \begin{frame}[fragile]
 %
   \frametitle{Programming in a shared address space}
@@ -170,11 +170,224 @@
 %
   \item collectively with a set of shared variables
     \begin{itemize}
-      \item statics, global heap
+      \item statics, heap
     \end{itemize}
 %
   \item communication is {\em implicit}: threads just access the shared memory locations
   \item synchronization is {\em explicit}: read/write flags, locks, semaphores
+%
+  \begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/reduction-shared.pdf}
+    \label{fig:reduction-shared}
+  \end{figure}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% implementation of the reduction in a shared memory machine
+\begin{frame}[fragile]
+%
+  \frametitle{Implementation in a shared address space}
+%
+  \begin{itemize}
+%
+  \item let's implement with two threads
+
+    \vspace{.5em}
+    \begin{minipage}{.40\linewidth}
+      \begin{algorithm}[H]
+%
+        \footnotesize
+        \dontprintsemicolon
+        \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\hspace{1em}thread 1}
+        \vspace{.5em}
+%
+        $s \leftarrow 0$ \;
+        $s_{1} \leftarrow 0$ \;
+        \For{$i \leftarrow 0$ \KwTo $n/2-1$}{
+          $s_{1} \leftarrow s_{1} + f(S[i])$ \;
+        }
+        $s \leftarrow s+s_{1}$ \;
+%
+        \vspace{.5em}
+%
+      \end{algorithm}
+    \end{minipage}
+%
+    \hspace{.1\linewidth}
+%
+    \begin{minipage}{.40\linewidth}
+      \begin{algorithm}[H]
+%
+        \footnotesize
+        \dontprintsemicolon
+        \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\hspace{1em}thread 2}
+        \vspace{.5em}
+%
+        $s \leftarrow 0$ \;
+        $s_{2} \leftarrow 0$ \;
+        \For{$i \leftarrow n/2$ \KwTo $n$}{
+          $s_{2} \leftarrow s_{2} + f(S[i])$ \;
+        }
+        $s \leftarrow s+s_{2}$ \;
+%
+        \vspace{.5em}
+      %
+      \end{algorithm}
+    \end{minipage}
+    \vspace{.5em}
+%
+  \item what is wrong with this code? 
+%
+    \begin{itemize}
+    \item {\em race condition}
+    \item instructions from different threads can be executed in any order
+    \item can you deduce all the possible values of $s$ after both threads finished executing?
+    \item one possible solution is to place line 5 in a lock/load/modify/store/unlock block
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% machine model 2: a distributed memory machine
+\begin{frame}[fragile]
+%
+  \frametitle{Distributed memory machines}
+%
+  \begin{itemize}
+%
+  \item processors are all connected to their own private memory
+  \item processors have no access to each other's memory, except through explicit exchanges
+  \item each node is connected to a communication substrate: ethernet, myrinet, infiniband
+%
+  \begin{figure}
+    \centering
+    \includegraphics[width=.90\linewidth]{figures/distributed-memory.pdf}
+    \label{fig:distributed-memory}
+  \end{figure}
+%
+  \item all communication and synchronization is carried over the ``network''
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% programming a distributed memory machine
+\begin{frame}[fragile]
+%
+  \frametitle{Programming in a distributed address space}
+%
+  \begin{itemize}
+%
+  \item message passing
+    \begin{itemize}
+      \item programs consists of a collection of $n$ {\em named} processes
+        \begin{itemize}
+        \item typically numbered 0 through $n-1$
+        \item thread of control, local address space
+        \item local variables, statics, heap
+        \end{itemize}
+      \item process communicate via {\em explicit} data exchanges
+        \begin{itemize}
+        \item matching pair of send/receive by source and destination processors respectively
+        \item primitives for efficient implementation of many-to-exchanges
+        \end{itemize}
+      \item co\"ordination is implicit in every communication
+      \item logically shared data must be {\em partitioned} among the local processes
+    \end{itemize}
+%
+  \begin{figure}
+    \centering
+    \includegraphics[width=.70\linewidth]{figures/reduction-distributed.pdf}
+    \label{fig:reduction-distributed}
+  \end{figure}
+%
+  \item standard libraries: MPI, the survivor
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% implementation of the reduction in a distributed memory machine
+\begin{frame}[fragile]
+%
+  \frametitle{Implementation in a distributed address space}
+%
+  \begin{itemize}
+%
+  \item na\"ive implementation
+
+    \vspace{.5em}
+    \begin{minipage}{.40\linewidth}
+      \begin{algorithm}[H]
+%
+        \footnotesize
+        \dontprintsemicolon
+        \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\hspace{1em}processor 1}
+        \vspace{.5em}
+%
+        $s_{1} \leftarrow 0$ \;
+        \For{$i \leftarrow 0$ \KwTo $n/2-1$}{
+          $s_{1} \leftarrow s_{1} + f(S[i])$ \;
+        }
+        \KwSend $s_{1}$ \KwTo $p_{2}$ \;
+        $s_{2} \leftarrow \KwRecv\ \KwFrom\ p_{2}$ \;
+        $s \leftarrow s_{1}+s_{2}$ \;
+%
+        \vspace{.5em}
+%
+      \end{algorithm}
+    \end{minipage}
+%
+    \hspace{.1\linewidth}
+%
+    \begin{minipage}{.40\linewidth}
+      \begin{algorithm}[H]
+%
+        \footnotesize
+        \dontprintsemicolon
+        \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\hspace{1em}processor 2}
+        \vspace{.5em}
+%
+        $s_{2} \leftarrow 0$ \;
+        \For{$i \leftarrow n/2$ \KwTo $n$}{
+          $s_{2} \leftarrow s_{2} + f(S[i])$ \;
+        }
+        \KwSend $s_{2}$ \KwTo $p_{1}$ \;
+        $s_{1} \leftarrow \KwRecv\ \KwFrom\ p_{1}$ \;
+        $s \leftarrow s_{2}+s_{1}$ \;
+%
+        \vspace{.5em}
+      %
+      \end{algorithm}
+    \end{minipage}
+    \vspace{.5em}
+%
+  \item what is wrong with this code? 
+%
+    \begin{itemize}
+    \item {\em race condition}; more subtle than before
+    \item pair up sends and receives to create logically atomic exchanges
+    \item or use a many-to-many communication primitive, if available
+    \end{itemize}
 %
   \end{itemize}
 %
