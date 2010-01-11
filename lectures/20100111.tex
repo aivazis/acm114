@@ -385,8 +385,13 @@
 %
     \begin{itemize}
     \item {\em race condition}; more subtle than before
+    \item send may block until a matching receive is executed  
+    \end{itemize}
+  \item options:
+    \begin{itemize}
     \item pair up sends and receives to create logically atomic exchanges
-    \item or use a many-to-many communication primitive, if available
+    \item use non-blocking or asynchronous primitives
+    \item use a many-to-many communication primitive, if available
     \end{itemize}
 %
   \end{itemize}
