@@ -17,7 +17,7 @@ RECURSE_DIRS = \
     bin \
     www \
     lectures \
-    assignmments \
+    assignments \
 
 #--------------------------------------------------------------------------
 #
