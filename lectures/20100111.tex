@@ -580,7 +580,7 @@
 \end{frame}
 
 % --------------------------------------
-% summary
+% parallelization steps
 \begin{frame}[fragile]
 %
   \frametitle{Parallelization steps}
@@ -590,12 +590,64 @@
     \includegraphics[scale=0.75]{figures/parallelization-steps.pdf}
     \label{fig:parallelization-steps}
   \end{figure}
+  \vspace{-3.0em}
 %
   \begin{itemize}
 %
-    \item here is a point
+    \item steps in creating a parallel program
+      \begin{itemize}
+      \item identify the work that can be done in parallel
+      \item partition it in terms of work units, the fine grain tasks
+      \item analyze the communication patterns among work units
+      \item coarsen into processes, the abstract entities that carry out tasks
+      \item map to processors, the physical entities that execute the processes
+      \end{itemize}
+%
+    \item goal: maximize the speedup due to parallelism
 %
   \end{itemize}
 %
 \end{frame}
+
+% --------------------------------------
+% parallelizing reduction
+\begin{frame}[fragile]
+%
+  \frametitle{Parallelizing our reduction example}
+%
+  \begin{itemize}
+%
+    \item for our example $s = \sum f(S)$
+    \item partition into tasks
+      \begin{itemize}
+      \item computing each of the $F(S_{i})$
+      \item $n$-fold parallelism, where ideally $n >> p$ 
+      \item computing the sum $s$
+      \end{itemize}
+%
+    \item communication
+      \begin{itemize}
+        \item distribution of the initial input sequence $S$
+        \item collection of the partial sums
+      \end{itemize}
+%
+    \item coarsening: compute the partial sum of a cluster of evaluations
+      \begin{itemize}
+        \item thread $k$ sums up $s_{k} = \sum_{i = k n/p}^{(k+1)n/p 1} f(S_{i})$
+        \item thread 1 sums up the partial results and communicates the result to the other
+          threads
+      \end{itemize}
+%
+    \item mapping: processor $i$ runs thread $i$
+%
+    \item at {\em runtime}
+      \begin{itemize}
+        \item start up the $p$ threads
+        \item communicate/synchronize with thread 1
+      \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
 % end of file 
