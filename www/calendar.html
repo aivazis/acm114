@@ -49,94 +49,169 @@
 
   <div id="sidebar">
     <h1>Calendar: Winter 2010</h1>
-    <table class="navcal">
+    <p>
+    <table class="calendar">
       <thead>
       </thead>
       <tbody>
         <tr>
-          <td></td>
-          <td></td>
+          <th class="vrule lhead"></td>
           <th>M</th>
           <th>W</th>
           <th>F</th>
         </tr>
+
+        <tr>
+          <th class="hrule" colspan="4"></th>
+        </tr>
+
         <!-- January -->
         <tr>
-          <th rowspan="4">Jan</th>
-          <td></td>
-          <td><a href="content/acm114-20100104.pdf">4</a></td>
-          <td><a href="content/acm114-20100106.pdf">6</a></td>
-          <td><a href="content/acm114-20100108.pdf">8</a></td>
+          <th class="vrule" rowspan="4">Jan</th>
+          <td>4</td>
+          <td><a href="#20100106">6</a></td>
+          <td><a href="#20100108">8</a></td>
         </tr>
         <tr>
-          <td></td>
-          <td><a href="content/acm114-20100111.pdf">11</a></td>
-          <td><a href="content/acm114-20100113.pdf">13</a></td>
-          <td><a href="content/acm114-20100115.pdf">15</a></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>18</td> <!-- holiday: MLK -->
-          <td><a href="content/acm114-20100120.pdf">20</a></td>
-          <td><a href="content/acm114-20100122.pdf">22</a></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td><a href="content/acm114-20100125.pdf">25</a></td>
-          <td><a href="content/acm114-20100127.pdf">27</a></td>
-          <td><a href="content/acm114-20100129.pdf">29</a></td>
-        </tr>
-
-        <!-- February -->
-        <tr class="separator"></tr>
-        <tr>
-          <th rowspan="4">Feb</th>
-          <td></td>
-          <td><a href="content/acm114-20100201.pdf">1</a></td>
-          <td><a href="content/acm114-20100203.pdf">3</a></td>
-          <td><a href="content/acm114-20100205.pdf">5</a></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td><a href="content/acm114-2010028.pdf">8</a></td>
-          <td><a href="content/acm114-20100210.pdf">10</a></td>
-          <td><a href="content/acm114-20100212.pdf">12</a></td>
-        </tr>
-        <tr>
-          <td></td>
+          <td>11</td>
+          <td>13</td>
           <td>15</td>
-          <td><a href="content/acm114-20100217.pdf">17</a></td>
-          <td><a href="content/acm114-20100219.pdf">19</a></td>
         </tr>
         <tr>
-          <td></td>
-          <td><a href="content/acm114-20100222.pdf">22</a></td>
-          <td><a href="content/acm114-20100224.pdf">24</a></td>
-          <td><a href="content/acm114-20100226.pdf">26</a></td>
+          <td class="holiday">18</td> <!-- holiday: MLK -->
+          <td>20</td>
+          <td>22</td>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td>27</td>
+          <td>29</td>
+        </tr>
+
+        <tr>
+          <th class="hrule" colspan="4"></th>
         </tr>
 
         <!-- February -->
-        <tr class="separator"></tr>
         <tr>
-          <th rowspan="2">Mar</th>
-          <td></td>
-          <td><a href="content/acm114-20100301.pdf">1</a></td>
-          <td><a href="content/acm114-20100303.pdf">3</a></td>
-          <td><a href="content/acm114-20100305.pdf">5</a></td>
+          <th class="vrule" rowspan="4">Feb</th>
+          <td>1</td>
+          <td>3</td>
+          <td>5</td>
         </tr>
         <tr>
-          <td></td>
-          <td><a href="content/acm114-20100208.pdf">8</a></td>
-          <td><a href="content/acm114-20100310.pdf">10</a></td>
+          <td>8</td>
+          <td>10</td>
           <td>12</td>
+        </tr>
+        <tr>
+          <td class="holiday">15</td>
+          <td>17</td>
+          <td>19</td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td>24</td>
+          <td>26</td>
+        </tr>
+
+        <tr>
+          <th class="hrule" colspan="4"></th>
+        </tr>
+
+        <!-- March -->
+        <tr>
+          <th class="vrule" rowspan="3">Mar</th>
+          <td>1</td>
+          <td>3</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>10</td>
+          <td class="finals">12</td>
+        </tr>
+        <tr>
+          <td class="finals">15</td>
+          <td class="finals">17</td>
+          <td>19</td>
         </tr>
 
       </tbody>
     </table>
+    </p>
   </div>
 
   <div id="content">
     <h4>Schedule of lectures</h4>
+    <p>
+    This page contains outlines of the lectures given during the Winter 2010 term. You can use
+    the calendar on the left to navigate to a specific lecture where you will also find
+    instructions on how to download the lecture notes in PDF form. If you are interested in the
+    LaTeX source code, you will have to gain access to the bazaar source repository. Let me
+    know and I will send you instructions.
+    </p>
+    <p>
+      Please note that there are no lectures for January 18 and February 15; they are Institute
+      holidays. The last day of class is March 10, and final projects are due on March 17.
+    </p>
+
+    <!-- first week -->
+    <h4><a name="20100104">Monday, January 4</a></h4>
+    <p>
+      Introductions; walked through the syllabus and the course outline. Course
+      scope. Motivation and overview of high performance computing in science.
+    </p>
+
+    <div class="inline-navigation">
+      <ul>
+        <li><a href="20100104">JAN:</a></li>
+        <li><a href="20100104">wk1</a></li>
+        <li><a href="20100111">wk2</a></li>
+        <li>wk3</li>
+        <li>wk4</li>
+        <li>FEB</li>
+        <li>MAR</li>
+      </ul>
+      &nbsp;
+    </div>
+
+    <h4><a name="20100104">Wednesday, January 6</a></h4>
+    <p>
+    </p>
+
+    <div class="inline-navigation">
+      <ul>
+        <li><a href="20100104">JAN:</a></li>
+        <li><a href="20100104">wk1</a></li>
+        <li><a href="20100111">wk2</a></li>
+        <li>wk3</li>
+        <li>wk4</li>
+        <li>FEB</li>
+        <li>MAR</li>
+      </ul>
+      &loz;&nbsp;<a href="content/acm114-20100106.pdf">lecture notes</a>
+    </div>
+
+    <h4><a name="20100104">Friday, January 8</a></h4>
+    <p>
+    </p>
+
+    <div class="inline-navigation">
+      <ul>
+        <li><a href="20100104">JAN:</a></li>
+        <li><a href="20100104">wk1</a></li>
+        <li><a href="20100111">wk2</a></li>
+        <li>wk3</li>
+        <li>wk4</li>
+        <li>FEB</li>
+        <li>MAR</li>
+      </ul>
+      &loz;&nbsp;<a href="content/acm114-20100108.pdf">lecture notes</a>
+    </div>
+
+    <!-- second week -->
+
   </div>
 
   <div id="colophon" class="clear-all-floats">

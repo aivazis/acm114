@@ -47,18 +47,6 @@
     font-size: 84%;
     }
 
-#content ul {
-    margin: 0 0 0 1.3em;
-    font-size: 90%;
-    line-height: 140%;
-}
-
-#content ol {
-    margin: 0 0 0 1.2em;
-    font-size: 90%;
-    line-height: 140%;
-}
-
 #content a:link {
     font-style: italic;
     color: #7b7b46;
@@ -82,6 +70,18 @@
 #content p.course-description {
     margin: 1.2em 0;
     line-height: 180%;
+}
+
+#content div.course-outline ul {
+    margin: 0 0 0 1.3em;
+    font-size: 90%;
+    line-height: 140%;
+}
+
+#content div.course-outline ol {
+    margin: 0 0 0 1.2em;
+    font-size: 90%;
+    line-height: 140%;
 }
 
 /* end of file  */
