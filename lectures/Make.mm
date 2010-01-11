@@ -40,9 +40,11 @@ SECTIONS = \
 FIGURES = \
     figures/generic-parallel-architecture.pdf \
     figures/shared-memory.pdf \
+    figures/simd.pdf \
     figures/distributed-memory.pdf \
     figures/reduction-shared.pdf \
     figures/reduction-distributed.pdf \
+    figures/reduction-simd.pdf \
 
 #--------------------------------------------------------------------------
 #

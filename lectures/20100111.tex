@@ -277,7 +277,7 @@
     \label{fig:distributed-memory}
   \end{figure}
 %
-  \item all communication and synchronization is carried over the ``network''
+  \item all communication and synchronization is carried over the interconnect 
 %
   \end{itemize}
 %
@@ -299,22 +299,23 @@
         \item thread of control, local address space
         \item local variables, statics, heap
         \end{itemize}
-      \item process communicate via {\em explicit} data exchanges
+      \item processes communicate via {\em explicit} data exchanges
         \begin{itemize}
         \item matching pair of send/receive by source and destination processors respectively
-        \item primitives for efficient implementation of many-to-exchanges
+        \item primitives for efficient implementation of many-to-many exchanges
         \end{itemize}
       \item co\"ordination is implicit in every communication
       \item logically shared data must be {\em partitioned} among the local processes
     \end{itemize}
 %
+  \item standard libraries: MPI, the survivor
+%
   \begin{figure}
     \centering
-    \includegraphics[width=.70\linewidth]{figures/reduction-distributed.pdf}
+    \includegraphics[width=.5\linewidth]{figures/reduction-distributed.pdf}
     \label{fig:reduction-distributed}
   \end{figure}
 %
-  \item standard libraries: MPI, the survivor
   \end{itemize}
 %
 \end{frame}
@@ -392,6 +393,186 @@
     \item pair up sends and receives to create logically atomic exchanges
     \item use non-blocking or asynchronous primitives
     \item use a many-to-many communication primitive, if available
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% machine model 3: SIMD
+\begin{frame}[fragile]
+%
+  \frametitle{SIMD machines}
+%
+  \begin{itemize}
+%
+  \item a large number of small, special purpose processors
+%
+  \item a single ``controller'' manages the instruction stream
+    \begin{itemize}
+      \item each processor executes the same instruction on its local data
+      \item may be able  to specify which processors are active/idle
+    \end{itemize}
+%
+  \begin{figure}
+    \centering
+    \includegraphics[width=.70\linewidth]{figures/simd.pdf}
+    \label{fig:simd}
+  \end{figure}
+%
+  \item hardware of this type fell out favor years ago
+    \begin{itemize}
+      \item but the associated programming model is still popular
+      \item implemented by mapping $n$-fold parallelism to $p$ processors
+      \item mostly done by compilers, e.g.~{\em High Performance FORTRAN} (HPF)
+    \end{itemize}
+%
+  \item relevant again thanks to the CPU+GPGPU hybrids, which have similar layout
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% programming a SIMD machine
+\begin{frame}[fragile]
+%
+  \frametitle{Data parallel programming model}
+%
+  \begin{itemize}
+%
+  \item single instruction stream of {\em parallel} operations
+  \item parallel operation applied to entire data structure
+    \begin{itemize}
+      \item you may be able to restrict the {\em range} of operations to some defined subset of
+        the data
+    \end{itemize}
+  \item communication and synchronization are implicit in the definition of the parallel
+    operators
+%
+  \begin{figure}
+    \centering
+    \includegraphics[scale=1.0]{figures/reduction-simd.pdf}
+    \label{fig:reduction-simd}
+  \end{figure}
+%
+  \item rather elegant, easy to understand, easy to reason about
+  \item unfortunately, not all problems fit the paradigm nicely
+  \item implemented by parallel functional languages, MATLAB
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% machine model 4: clusters
+\begin{frame}[fragile]
+%
+  \frametitle{Clusters}
+%
+  \begin{itemize}
+%
+  \item commodity hardware configurations:
+    \begin{itemize}
+      \item CPUs with multiple cores: $2 \rightarrow 4 \rightarrow 6 \rightarrow 8 \rightarrow
+        ?$
+      \item motherboards with multiple CPUs
+      \item sizeable memory on a single board
+    \end{itemize}
+%
+  \item this hybrid is the current mainstream deployment: most of the Top500
+%
+  \item shared memory within a {\em blade}, message passing across blades
+%
+  \item there had to be an acronym: CLUMPs; fortunately no one uses it...
+%
+  \item programming models:
+    \begin{itemize}
+      \item treat machine as flat and always use message passing
+        \begin{itemize}
+        \item simple but ignores the performance characteristics of the memory hierarchy
+        \item message passing library may be smart enough to switch between network and shared
+          memory dynamically, e.g.~openMPI
+        \end{itemize}
+      \item expose both layers explicitly
+        \begin{itemize}
+          \item higher performance, but unpleasant to program
+          \item hard to make portable
+        \end{itemize}
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% programming model 5: bulk synchronous
+\begin{frame}[fragile]
+%
+  \frametitle{Bulk synchronous programming model}
+%
+  \begin{itemize}
+%
+  \item strategy that applies to both shared memory and message passing programming models
+%
+  \item program consists of interleaved {\em phases} synchronized by global barriers
+    \begin{itemize}
+      \item {\em compute} phases: all processors 
+        \begin{itemize}
+          \item operate on local data -- distributed memory
+          \item operate with read access to global data -- shared memory
+        \end{itemize}
+      \item {\em communication} phases: all processors participate in data exchanges,
+        rearrangements or reductions of global data
+    \end{itemize}
+%
+    \item single program multiple data
+      \begin{itemize}
+        \item everybody is doing the same thing
+        \item maps well to the structure of solutions of PDEs
+          \begin{itemize}
+            \item exchange data on processor partition boundaries 
+            \item apply boundary conditions
+            \item agree on a stable $\Delta t$ size (a global reduction)
+            \item advance the solution by $\Delta t$
+            \item repeat until you run out of time...
+          \end{itemize}
+      \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% summary
+\begin{frame}[fragile]
+%
+  \frametitle{Recap}
+%
+  \begin{itemize}
+%
+  \item in the early days, each machine was unique
+    \begin{itemize}
+      \item hardware, support for one programming model, perhaps a dedicated language with its
+        compiler
+%
+      \item when a new machine came out you had to throw all your code away and start again
+        \begin{itemize}
+        \item ok for getting a thesis out, bad for building a career
+        \end{itemize}
+    \end{itemize}
+%
+  \item now we distinguish the programming model from the underlying hardware, so we can write
+    portable, {\em correct} code that runs on large classes of machines
+%
+  \item unfortunately, writing {\em fast} code still requires tuning for some architectural
+    details
+    \begin{itemize}
+      \item the design challenge is to simplify this process
+      \item e.g., by exposing these details as user-configurable options that are determined at
+        run-time
+      \item best handled by {\em application frameworks}
     \end{itemize}
 %
   \end{itemize}
