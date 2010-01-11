@@ -73,6 +73,7 @@ table.calendar td a:hover {
 /* inline navigation */
 
 div.inline-navigation {
+    margin-top: -1.5em;
     font-size: 60%;
     font-stretch: condensed;
 }
