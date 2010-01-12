@@ -12,4 +12,39 @@
 
 \lecture{Cost modeling and performance tradeoffs}{20100113}
 
+% --------------------------------------
+% generic parallel architecture
+\begin{frame}[fragile]
+%
+  \frametitle{Identifying enough concurrency}
+%
+  \begin{itemize}
+%
+  \item parallelism profile for a simple decomposition
+    \begin{itemize}
+    \item the computation of $f(S)$ is the parallel task
+    \item the summation is sequential
+    \end{itemize}
+%
+  \item area is {\em computational work}
+
+    \vspace{0.5em}
+    \begin{minipage}{.45\linewidth}
+      \includegraphics[scale=0.5]{figures/reduction-parallel-work.pdf}
+    \end{minipage}
+    $\longrightarrow$
+    \begin{minipage}{.45\linewidth}
+      \includegraphics[scale=0.5]{figures/reduction-partitioned-work.pdf}
+    \end{minipage}
+    \vspace{0.5em}
+
+  \item Amdahl's law:
+    \[
+    S(p) \leq \frac{1}{s+\frac{1-s}{p}} \leq \frac{1}{s}
+    \]
+%
+  \end{itemize}
+%
+\end{frame}
+
 % end of file 

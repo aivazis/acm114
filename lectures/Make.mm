@@ -46,6 +46,8 @@ FIGURES = \
     figures/reduction-shared.pdf \
     figures/reduction-distributed.pdf \
     figures/reduction-simd.pdf \
+    figures/reduction-parallel-work.pdf \
+    figures/reduction-partitioned-work.pdf \
 
 #--------------------------------------------------------------------------
 #
