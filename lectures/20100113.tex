@@ -1,0 +1,67 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\lecture{Cost modeling and performance tradeoffs}{20100113}
+
+% --------------------------------------
+% generic parallel architecture
+\begin{frame}[fragile]
+%
+  \frametitle{Time, parallelism and computational work}
+%
+  \begin{itemize}
+  \item recall our embarrassingly parallel reduction: 
+    \begin{itemize}
+    \item given a function $f$ and a sequence of numbers $S$ of length $N$, evaluate
+    \[
+    s = \sum_{i=0}^{N-1}f(S_{i})
+    \]
+    \end{itemize}
+%
+  \item parallelism profile for a simple decomposition, assuming that
+    \begin{itemize}
+    \item the computation of $f(S)$ is the parallel task
+    \item the summation is sequential
+    \end{itemize}
+%
+    \begin{minipage}{.45\linewidth}
+      \includegraphics[scale=0.5]{figures/reduction-parallel-work.pdf}
+    \end{minipage}
+    $\longrightarrow$
+    \begin{minipage}{.45\linewidth}
+      \includegraphics[scale=0.5]{figures/reduction-partitioned-work.pdf}
+    \end{minipage}
+%
+  \item area is {\em computational work}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Speedup}
+%
+  \begin{itemize}
+%
+  \item Amdahl's law:
+    \[
+    S(p) \leq \frac{1}{s+\frac{1-s}{p}} \leq \frac{1}{s}
+    \]
+%
+  \end{itemize}
+%
+\end{frame}
+
+% end of file 

@@ -35,6 +35,7 @@ SECTIONS = \
     20100106.tex \
     20100108.tex \
     20100111.tex \
+    20100113.tex \
     sandbox.tex \
 
 FIGURES = \
@@ -45,6 +46,8 @@ FIGURES = \
     figures/reduction-shared.pdf \
     figures/reduction-distributed.pdf \
     figures/reduction-simd.pdf \
+    figures/reduction-parallel-work.pdf \
+    figures/reduction-partitioned-work.pdf \
 
 #--------------------------------------------------------------------------
 #
