@@ -1,0 +1,76 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\pagestyle{headandfoot}
+\runningfootrule
+\firstpageheader{ACM/CS 114}{Assignment 1}{Due: 20 Jan 2010}
+\runningheader{}{}{}
+\firstpagefooter{}{}{}
+\runningfooter{ACM/CS 114}{Assignment 1}{\thepage}
+
+\begin{questions}
+
+\question
+\mergesort\ is an example of a {\em divide-and conquer} algorithm. The algorithm
+sorts an input sequence $S$ of numbers along the following steps:
+%
+\begin{itemize}
+\item {\em divide}: split $S$ into two parts of roughly equal length
+\item {\em conquer}: sort the subsequences recursively
+\item {\em combine}: merge the two sorted subsequences to produce the sorted output
+\end{itemize}
+%
+In pseudocode:
+%
+\begin{center}
+  \begin{minipage}{.5\linewidth}
+    \begin{algorithm}[H]
+      \label{alg:merge-sort}
+%
+      \dontprintsemicolon
+      %\nocaptionofalgo
+      \setalcaphskip{0ex}
+%
+      \caption{\mergesort($S$, $p$, $r$)}
+      \vspace{.5em}
+%
+      \If{$p < r$}{
+        $q \leftarrow \lfloor (p+r)/2 \rfloor$ \;
+        \mergesort($S$, $p$, $q$) \;
+        \mergesort($S$, $q+1$, $r$) \;
+        \merge($S$, $p$, $q$, $r$) \;
+      }
+%
+      \vspace{.5em}
+%
+    \end{algorithm}
+  \end{minipage}
+\end{center}
+%
+\begin{parts}
+
+\part Explain the role of $p$ and $r$ in the algorithm specification. What values should they
+have upon initial invocation of the algorithm?
+
+\part Write \merge. It was claimed in class that \merge\ can be implemented to run in
+$\Theta(r-p+1)$ time. How does your implementation compare?
+
+\part Implement \mergesort\ in python. 
+Write a driver that invokes it with $S = (5, 2, 4, 6, 1, 3)$.
+
+\end{parts}
+
+\question 
+
+\end{questions}
+
+% end of file 

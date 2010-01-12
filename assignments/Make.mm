@@ -30,6 +30,7 @@ INCLUDES = \
     references.bib
 
 SECTIONS = \
+    20100120.tex \
 
 FIGURES = \
 
