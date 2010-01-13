@@ -66,19 +66,46 @@ have upon initial invocation of the algorithm?
 \part Write \merge. It was claimed in class that \merge\ can be implemented to run in
 $\Theta(r-p+1)$ time. How does your implementation compare?
 
-\part Implement \mergesort\ in python. 
-Write a driver that invokes it with $S = (5, 2, 4, 6, 1, 3)$.
+\part Implement \mergesort\ in a language of your choice. 
+\begin{subparts}
+  \subpart Write a driver that invokes it with $S = (5, 2, 4, 6, 1, 3)$.
+  \subpart Build a container with $10^6$ random numbers. Sort it using your implementation.
+\end{subparts}
 
 \end{parts}
 
 % --------------------------------------
-% reduction tree
-\question implement the reduction in the lecture notes using threads
+% reduction 
+\def\Li{\mbox{\rm Li}_{2}}
+\def\len{\mbox{\rm length}}
+\def\dilog{\mbox{\tt dilog}}
+\def\sdlog{\mbox{\tt sdilog}}
 
-% --------------------------------------
-% reduction tree
-\question {\em reduction tree}
+\question Consider the function $\Li$ defined for $|z| \leq 1$ by
+\[
+\Li(z) \bydef
+     - \sum_{n=1}^{\infty} \frac{z^{n}}{n}
+     =
+     - z - \frac{z^{2}}{2} - \frac{z^{3}}{3} - \frac{z^{4}}{4} - \cdots
+\]
 
+\begin{parts}
+
+\part In the language of your choice, implement a procedure \dilog($z$, $n$) that computes the
+sum of the first $n$ terms of the series for the given floating point number $z$.
+
+\part Implement a procedure \sdlog($Z$, $n$) that accepts a sequence $Z$ of floating point
+numbers and computes the sum
+\[
+\sdlog(Z, n) \bydef \sum_{z \in Z} \dilog(z, n)
+\]
+
+\part Build a cost model for \sdlog\ as a function of $n$ and $m \bydef \len(Z)$. Assume that
+additions and subtractions cost $c_{+}$ each, multiplications and divisions cost $c_{\times}$
+each, and that the raising a number to the $n$th power costs $n$ multiplications.
+
+\end{parts}
+        
 \end{questions}
 
 % end of file 
