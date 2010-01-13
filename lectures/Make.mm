@@ -48,6 +48,13 @@ FIGURES = \
     figures/reduction-simd.pdf \
     figures/reduction-parallel-work.pdf \
     figures/reduction-partitioned-work.pdf \
+    figures/reduction-partial-sum.pdf \
+    figures/reduction-tree-sum.pdf \
+    figures/reduction-load-imbalance.pdf \
+    figures/reduction-overhead.pdf \
+    figures/reduction-comsync.pdf \
+    figures/reduction-comsync-redundancy.pdf \
+    figures/reduction-comsync-replication.pdf \
 
 #--------------------------------------------------------------------------
 #
