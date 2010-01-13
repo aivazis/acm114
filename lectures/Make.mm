@@ -39,6 +39,7 @@ SECTIONS = \
     sandbox.tex \
 
 FIGURES = \
+    figures/amdahl.pdf \
     figures/generic-parallel-architecture.pdf \
     figures/shared-memory.pdf \
     figures/simd.pdf \
