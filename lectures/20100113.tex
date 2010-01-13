@@ -92,36 +92,34 @@
 %
   \frametitle{The bad news: Amdahl's law}
 %
-  \begin{itemize}
-%
-  \item consider a solution that consists of two parts
+  \begin{minipage}{.55\linewidth}
     \begin{itemize}
-    \item a serial fraction $s$ with $0 \leq s \leq 1$
-    \item a $p$-fold parallel fraction $1-s$
+%
+    \item consider a solution that consists of two parts
+      \begin{itemize}
+      \item a serial fraction $s$ with $0 \leq s \leq 1$
+      \item a $p$-fold parallel fraction $1-s$
+      \end{itemize}
+%
+    \item for a fixed problem size, Amdahl's law relates $T_{p}$, $\sigma$ and $\eta$ to
+      $T_{1}$ and $s$
+      \begin{eqnarray*}
+        T_{p}  & = & s T_{1} + (1-s) T_{1} / p \\
+        \sigma & = & \frac{p}{sp + (1-s)} \\
+        \eta & = & \frac{1}{sp + (1-s)}
+      \end{eqnarray*}
+%
+    \item with corollaries $\sigma_{\infty} = \frac{1}{s}$ and $\eta_{\infty} = 0$
     \end{itemize}
-%
-  \item for a fixed problem size, Amdahl's law relates $T_{p}$, $\sigma$ and $\eta$ to $T_{1}$
-    and $s$
+  \end{minipage}
+ %
+  \hfill
+  \begin{minipage}{.40\linewidth}
+    \includegraphics[width=1.2\linewidth]{figures/reduction-parallel-work.pdf}
+    \vspace{2em}
 
-    \begin{eqnarray*}
-      T_{p}  & = & s T_{1} + (1-s) T_{1} / p \\
-      \sigma & = & \frac{p}{sp + (1-s)} \\
-      \eta & = & \frac{1}{sp + (1-s)}
-    \end{eqnarray*}
-
-%
-\item with corollaries $\sigma_{\infty} = \frac{1}{s}$ and $\eta_{\infty} = 0$
-
-    \begin{minipage}{.45\linewidth}
-      \includegraphics[height=1in]{figures/reduction-parallel-work.pdf}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{.45\linewidth}
-      \includegraphics[height=.9in]{figures/amdahl.pdf}
-    \end{minipage}
-
-%
-  \end{itemize}
+    \includegraphics[width=1.2\linewidth]{figures/amdahl.pdf}
+  \end{minipage}
 %
 \end{frame}
 
