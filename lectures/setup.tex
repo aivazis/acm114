@@ -45,6 +45,39 @@
 \definecolor{acm114@olive}{HTML}{474a41}
 \definecolor{acm114@lava}{HTML}{413b38}
 
+\lstnewenvironment{bash}[2][]{
+  \lstset{
+    language=bash,
+    %
+    columns=flexible,
+    upquote=true,
+    %
+    aboveskip=\bigskipamount,
+    belowskip=\bigskipamount,
+    %
+    numbers=left,
+    numberstyle=\color{linenumbercolor}\tiny,
+    stepnumber=1,
+    numbersep=5pt,
+    numberblanklines=true,
+    %
+    basicstyle=\tt\scriptsize,
+    keywordstyle=\color{keywordcolor},
+    commentstyle=\color{commentcolor}\slshape,
+    stringstyle=\color{stringcolor}\slshape,
+    showstringspaces=false,
+    %
+    frame=tb,
+    captionpos=t,
+    backgroundcolor=\color{white},
+    xleftmargin=.25in,
+    xrightmargin=.1in,
+    %
+    escapeinside={\#@}{@},
+    %
+    #1
+  }}{#2}
+
 \lstnewenvironment{python}[2][]{
   \lstset{
     language=python,
