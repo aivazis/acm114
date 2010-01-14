@@ -94,6 +94,7 @@
     font-size: 70%;
     font-family: georgia, serif;
     color: #6a6761;
+    color: #474a41;
 }
 
 #news a {
@@ -121,11 +122,13 @@
 
 #news div.author {
     display: inline;
+    font-weight: bold;
 }
 
 #news div.date {
     display: inline;
     margin-left: .5em;
+    color: #8a8781;
 }
 
 /* end of file  */
