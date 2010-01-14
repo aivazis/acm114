@@ -91,10 +91,10 @@
 }
 
 #news {
-    font-size: 70%;
+    width: 34.5em;
+    padding: 1.0em 3.0em 2.0em 22.5em;
+
     font-family: georgia, serif;
-    color: #6a6761;
-    color: #474a41;
 }
 
 #news a {
@@ -108,7 +108,7 @@
 
 #news h4 {
     font-family: futura, verdana, arial, sans-serif;
-    font-size: 100%;
+    font-size: 70%;
     font-weight: normal;
     text-transform: uppercase;
     letter-spacing: 0.3em;
@@ -118,6 +118,8 @@
 
 #news div.news-item {
     margin: 1em 0em;
+    font-size: 70%;
+    color: #575a51;
 }
 
 #news div.author {
