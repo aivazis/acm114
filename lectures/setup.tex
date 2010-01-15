@@ -14,6 +14,9 @@
 % language
 \usepackage[english]{babel}
 
+% typesetting interactive sessions
+\usepackage{fancyvrb}
+
 % dimensions
 \usepackage{fancyhdr}
 
@@ -36,16 +39,18 @@
 \usepackage{textcomp}
 \usepackage{listings}
 \definecolor{keywordcolor}{rgb}{.0,.0,1.0}
-\definecolor{commentcolor}{gray}{.3}
-\definecolor{stringcolor}{gray}{.0}
-\definecolor{linenumbercolor}{gray}{.3}
+\definecolor{commentcolor}{gray}{.0}
+\definecolor{stringcolor}{gray}{.1}
+\definecolor{linenumbercolor}{gray}{0}
 \definecolor{listingbgcolor}{gray}{.97}
 
+\definecolor{acm114@cream}{rgb}{0.96, .95, .89}
 \definecolor{acm114@sand}{HTML}{dddbc5}
+\definecolor{acm114@stone}{HTML}{8d8b75}
 \definecolor{acm114@olive}{HTML}{474a41}
 \definecolor{acm114@lava}{HTML}{413b38}
 
-\lstnewenvironment{bash}[2][]{
+\lstnewenvironment{shell}[2][]{
   \lstset{
     language=bash,
     %
@@ -61,17 +66,17 @@
     numbersep=5pt,
     numberblanklines=true,
     %
-    basicstyle=\tt\scriptsize,
-    keywordstyle=\color{keywordcolor},
-    commentstyle=\color{commentcolor}\slshape,
+    basicstyle=\tt\tiny,
+    keywordstyle=,
+    commentstyle=\color{commentcolor}\slshape\bfseries,
     stringstyle=\color{stringcolor}\slshape,
     showstringspaces=false,
     %
-    frame=tb,
+    frame=none,
     captionpos=t,
-    backgroundcolor=\color{white},
-    xleftmargin=.25in,
-    xrightmargin=.1in,
+    backgroundcolor=\color{acm114@cream},
+    xleftmargin=1em,
+    xrightmargin=1em,
     %
     escapeinside={\#@}{@},
     %
@@ -168,6 +173,7 @@
 \def\lstlineref#1{{line~\ref{line:#1}}}
 
 % macros
+\def\href#1{{\footnotesize\bfseries\url{#1}}}
 \def\defeq{\mathrel{\mathop:}=}
 \def\CC{\mbox{\tt C}}
 \def\GNU{\mbox{\tt GNU}}
@@ -195,9 +201,9 @@
 \def\merge{\mbox{\sc Merge}}
 
 \def\TODO#1{{%
-\subsubsection*{Still to do}%
-\scriptsize\tt%
-\begin{list}{\leftpointright}{} #1 \end{list}}}
+    \subsubsection*{Still to do}%
+    \scriptsize\tt%
+    \begin{list}{\leftpointright}{} #1 \end{list}}}
 
 % set up the PDF options
 \hypersetup{
@@ -216,6 +222,6 @@
     linkcolor=acm114@sand,  % color of internal links
     citecolor=acm114@sand,  % color of links to bibliography
     filecolor=acm114@sand,  % color of file links
-    urlcolor=acm114@sand    % color of external links
+    urlcolor=acm114@stone   % color of external links
 }
 % end of file 

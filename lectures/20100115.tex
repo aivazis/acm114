@@ -31,7 +31,7 @@
     \begin{itemize}
     \item login
     \item shell
-    \item setting up access to what you need
+    \item setting up the packages you need
     \end{itemize}
 %
   \item source control
@@ -41,11 +41,12 @@
     \item available tools
     \end{itemize}
 %
-  \item writing your own
+  \item writing code
     \begin{itemize}
     \item editing: emacs, vi, ?
     \item compiling and linking
     \item running
+    \item testing
     \end{itemize}
 %
   \item configuration management
@@ -59,22 +60,68 @@
 \end{frame}
 
 % --------------------------------------
-% shell
+% bazaar
 \begin{frame}[fragile]
 %
-  \frametitle{Working with the shell}
+  \frametitle{Bazaar}
 %
   \begin{itemize}
 %
-  \item here is an example shell session
-    \begin{bash}
-#
-# ls
-Make.mm                 content                 outline.html            syllabus.html
-acm114.html             images                  references.html
-assignments.html        index.html              scripts
-calendar.html           instructor.html         styles
-    \end{bash}
+  \item installation instructions, documentation and tutorials available from
+    \href{http://bazaar.canonical.com}
+%
+  \item bazaar keeps track of authors in its revision history, so it's a good idea to supply
+    your name and an email address
+%
+    \begin{shell}
+
+#> bzr whoami "Michael Aivazis <aivazis@caltech.edu>"
+    \end{shell}
+%
+    \item you should verify that it worked by asking
+%
+   \begin{shell}
+
+#> bzr whoami
+Michael Aivazis <aivazis@caltech.edu>
+    \end{shell}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% bazaar
+\begin{frame}[fragile]
+%
+  \frametitle{Bazaar}
+%
+  \begin{itemize}
+%
+  \item make a {\em branch} of the course repository by
+%
+    \begin{shell}
+
+#> bzr branch http://acm114.caltech.edu/repository acm114
+Branched 114 revision(s).
+    \end{shell}
+%
+  \item you can look at history with the {\tt\small\bfseries log} command
+%
+    \begin{shell}
+
+#> bzr log -l10 --line
+114: Michael Aivazis 2010-01-14 Started fleshing out 2010.01.15
+113: Michael Aivazis 2010-01-14 Posted an updated hw 2010.01.20 with some typos fixed
+112: Michael Aivazis 2010-01-13 Created a stub for lecture 2010.01.15
+111: Michael Aivazis 2010-01-13 Cosmetics to the reduction parallel work figure
+110: Michael Aivazis 2010-01-13 Sidebar cosmetics
+109: Michael Aivazis 2010-01-13 Cosmetics on the home page
+108: Michael Aivazis 2010-01-13 Cosmetics on the news section of the home page
+107: Michael Aivazis 2010-01-13 Published the updated 2010.01.13
+106: Michael Aivazis 2010-01-13 Fixed a typo in 2010.01.13
+105: Michael Aivazis 2010-01-13 Added news section to the home page
+    \end{shell}
 %
   \end{itemize}
 %
