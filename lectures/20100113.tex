@@ -76,8 +76,8 @@
         \item {\em sweet spots} like that abound; the craftsman knows how to
           \begin{itemize}
             \item implement the solution in a portable manner
-            \item expose enough controls to be able to tune the implementation to a given
-              architecture
+            \item expose enough controls enable the tuning to a given architecture at {\em
+              runtime}
           \end{itemize}
       \end{itemize}
 %
@@ -101,8 +101,8 @@
       \item a $p$-fold parallel fraction $1-s$
       \end{itemize}
 %
-    \item for a fixed problem size, Amdahl's law relates $T_{p}$, $\sigma$ and $\eta$ to
-      $T_{1}$ and $s$
+    \item for a fixed problem size, Amdahl's law relates $(T_{p}, \sigma, \eta)$ to
+      $(T_{1}, s)$
       \begin{eqnarray*}
         T_{p}  & = & s T_{1} + (1-s) T_{1} / p \\
         \sigma & = & \frac{p}{sp + (1-s)} \\
@@ -130,7 +130,7 @@
   \frametitle{Beating Amdahl's law}
 %
   \begin{itemize}
-  \item Amdahl's law holds if either
+  \item Amdahl's law holds if
     \begin{itemize}
       \item the problem size is fixed
       \item the serial fraction $s$ is not a function of $p$
@@ -140,8 +140,8 @@
     \begin{itemize}
     \item larger computers are used to solve larger problems
     \item the effective serial fraction {\em decreases} with problem size
-    \item the right scaling metric would be constant, or properly bounded, as $p \rightarrow
-      \infty$
+    \item the right scaling metric would be constant, or properly bounded away from 0, as $p
+      \rightarrow \infty$
     \end{itemize}
 %
   \item {\em isoefficiency}
