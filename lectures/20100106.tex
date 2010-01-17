@@ -233,7 +233,7 @@ def insertion_sort(S):
       \begin{itemize}
         \item definition of input size is problem dependent -- could be number of items to sort,
           or number of grid points in a mesh, etc.
-        \item running time counts the number of primitive steps executed
+        \item running time is proportional to the number of primitive steps executed
         \item different lines have different costs
         \item but each execution of a given line is assumed to cost the same
       \end{itemize}
@@ -253,7 +253,7 @@ def insertion_sort(S):
 %
   \begin{itemize}
 %
-  \item summing up the number of times each line of \algref{insertion-sort} get executed:
+  \item summing up the number of times each line of \algref{insertion-sort} gets executed:
     \[ T(n) = c_{2} n^{2} + c_{1} n + c_{0} \]
     where the $c_{i}$ are constants related to the cost of the various lines
   \item note that it is a quadratic function of $n$
