@@ -13,6 +13,97 @@
 \lecture{Overview of algorithms}{20100106}
 
 % --------------------------------------
+% informal definitions of algorithm
+\begin{frame}[fragile]
+%
+  \frametitle{Algorithms}
+%
+  \begin{itemize}
+%
+  \item Informally, an algorithm can be viewed as
+    \begin{itemize}
+    \item a well-defined computational procedure that
+      \begin{itemize}
+      \item takes a set of values as input
+      \item produces a set of values as output
+      \end{itemize}
+    \item a solution to a computational problem
+      \begin{itemize}
+      \item whose statement specifies the intended relationship between inputs and outputs
+      \item and the algorithm being the specific computational procedure that achieves this
+        relationship
+      \end{itemize}
+    \end{itemize}
+%
+  \item the prototypical computational problem is {\em sorting}
+    \begin{itemize}
+    \item problem specification
+      \begin{itemize}
+      \item input: a sequence $S$ of $n$ numbers $(s_{0}, s_{1}, \ldots, s_{n})$
+      \item output: a permutation $S'$ of the input sequence $(s'_{0}, s'_{1}, \ldots, s'_{n})$
+      \item constraint: the elements of the output sequence must satisfy 
+        \[ s'_{0} \leq s_{1}' \leq \ldots \leq s_{n}'\]
+      \end{itemize}
+    \item problem instance: $S = (0, \pi, 1, e, 2, 16)$
+    \item invalid input: $(0, i, 1)$
+      \begin{itemize}
+      \item why is this bad? which implicit property of $S$ does it violate?  what is the set
+        of valid inputs?
+      \end{itemize}
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% algorithm correctness
+\begin{frame}[fragile]
+%
+  \frametitle{Correctness}
+%
+  \begin{itemize}
+%
+  \item once again informally, an algorithm is {\em correct} if
+    \begin{itemize}
+    \item it terminates for all valid input
+    \item upon termination on valid input, the output satisfies the constraints expressed in
+      the problem statement
+    \end{itemize}
+%
+  \item equivalently, we say that the algorithm {\em solves} the computational problem
+%
+  \item after correctness has been established, algorithms are classified according to their
+    demands on computational resources
+    \begin{itemize}
+    \item running time complexity
+      \begin{itemize}
+      \item a measure of the number of instructions necessary to solve the problem
+      \end{itemize}
+    \item and, occasionally
+      \begin{itemize}
+      \item amount of auxiliary storage
+      \item network bandwidth or other communication infrastructure requirements
+      \item for parallel algorithms: speedup and efficiency
+      \end{itemize}
+    \end{itemize}
+%
+  \item algorithms are often specified using {\em pseudoce}
+    \begin{itemize}
+      \item a loose language with mostly notational constraints
+      \item a mixture of reasonable looking code with whatever expressive method  makes the
+        point clear
+      \item hence, the use of human languages to convey meaning that might be too difficult to
+        code up, or would obscure the point, is perfectly acceptable
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+
+
+% --------------------------------------
 % the INSERTION-SORT algorithm
 \begin{frame}[fragile]
 %
@@ -111,7 +202,7 @@ def insertion_sort(S):
     \end{minipage}
   \end{center}
 %
-  \item only minor adjustments to loop indices since python lists are zero based
+  \item minor adjustments to loop indices are required since python lists are zero based
   \end{itemize}
 %
 \end{frame}
@@ -149,6 +240,93 @@ def insertion_sort(S):
 %
     \item {\em exercise}: decorate \algref{insertion-sort} with the number of times each line is
       executed
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% complexity of insertion-sort
+\begin{frame}[fragile]
+%
+  \frametitle{Runtime complexity of \insertionsort}
+%
+  \begin{itemize}
+%
+  \item summing up the number of times each line of \algref{insertion-sort} get executed:
+    \[ T(n) = c_{2} n^{2} + c_{1} n + c_{0} \]
+    where the $c_{i}$ are constants related to the cost of the various lines
+  \item note that it is a quadratic function of $n$
+  \item best case: input $S$ is already sorted
+  \item worst case: input $S$ is reverse-sorted
+  \item average case: assume a {\em random} $S$ and compute an expectation value for the number
+    of executions of each line
+    \begin{itemize}
+    \item still a quadratic function of $n$
+    \end{itemize}
+  \item we quantify the run time complexity of \insertionsort\ by saying that it is
+    asymptotically bound by $n^2$
+    \begin{itemize}
+      \item concentrating on the highest power of $n$
+      \item disregarding the multiplicative constants that are strongly dependent on the
+        execution model, rather than the quality of the algorithm
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% asymptotic notation
+\begin{frame}[fragile]
+%
+  \frametitle{Asymptotic bounds}
+%
+  \begin{itemize}
+%
+  \item most often, run time complexity analysis is reduced to constructing asymptotic bounds
+    on execution time as the input size $n \rightarrow \infty$
+    \begin{itemize}
+    \item i.e., finding a simpler function of the input size with similar behavior for large
+      $n$ 
+    \end{itemize}
+%
+  \item we say that $f = \Theta(g)$ if there are constants $c_{1}$, $c_{2}$ such that 
+    \[c_{1} g(n) \leq f(n) \leq c_{2} g(n)\]
+    for sufficiently large $n$
+%
+    \begin{figure}
+      \centering
+      \includegraphics[scale=.5]{figures/asymptotic-theta.pdf}
+    \end{figure}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% upper and lower bounds
+\begin{frame}[fragile]
+%
+  \frametitle{Upper and lower bounds}
+%
+  \begin{itemize}
+%
+  \item bounded from above: we say that $f = O(g)$ if there is a constant $c$ such that 
+    $f(n) \leq c g(n)$ for sufficiently large $n$
+%
+    \begin{figure}
+      \centering
+      \includegraphics[scale=.5]{figures/asymptotic-o.pdf}
+    \end{figure}
+%
+  \item bounded from below: we say that $f = \Omega(g)$ if there is a constant $c$ such that 
+    $c g(n) \leq f(n)$ for sufficiently large $n$
+%
+    \begin{figure}
+      \centering
+      \includegraphics[scale=.5]{figures/asymptotic-omega.pdf}
+    \end{figure}
 %
   \end{itemize}
 %

@@ -36,19 +36,17 @@
 \SetKw{KwRecv}{recv}
 \SetKw{KwFrom}{from}
 
+\usepackage{subfigure}
 \usepackage{textcomp}
 \usepackage{listings}
-\definecolor{keywordcolor}{rgb}{.0,.0,1.0}
 \definecolor{commentcolor}{gray}{.0}
 \definecolor{stringcolor}{gray}{.1}
-\definecolor{linenumbercolor}{gray}{0}
-\definecolor{listingbgcolor}{gray}{.97}
 
 \definecolor{acm114@cream}{rgb}{0.96, .95, .89}
-\definecolor{acm114@sand}{HTML}{dddbc5}
-\definecolor{acm114@stone}{HTML}{8d8b75}
-\definecolor{acm114@olive}{HTML}{474a41}
-\definecolor{acm114@lava}{HTML}{413b38}
+\definecolor{acm114@sand}{rgb}{0.86, .85, .77}
+\definecolor{acm114@stone}{rgb}{0.55, .54, .46}
+\definecolor{acm114@olive}{rgb}{0.28, .29, .25}
+\definecolor{acm114@lava}{rgb}{0.25, .23, .22}
 
 \lstnewenvironment{shell}[2][]{
   \lstset{
@@ -61,7 +59,7 @@
     belowskip=\bigskipamount,
     %
     numbers=left,
-    numberstyle=\color{linenumbercolor}\tiny,
+    numberstyle=\color{acm114@stone}\tiny,
     stepnumber=1,
     numbersep=5pt,
     numberblanklines=true,
@@ -95,20 +93,20 @@
     belowskip=\bigskipamount,
     %
     numbers=left,
-    numberstyle=\color{linenumbercolor}\tiny,
+    numberstyle=\color{acm114@stone}\tiny,
     stepnumber=1,
     numbersep=5pt,
     numberblanklines=true,
     %
     basicstyle=\tt\scriptsize,
-    keywordstyle=\color{keywordcolor},
+    keywordstyle=\color{acm114@olive}\bfseries,
     commentstyle=\color{commentcolor}\slshape,
     stringstyle=\color{stringcolor}\slshape,
     showstringspaces=false,
     %
-    frame=tb,
+    frame=none,
     captionpos=t,
-    backgroundcolor=\color{white},
+    backgroundcolor=\color{acm114@cream},
     xleftmargin=.25in,
     xrightmargin=.1in,
     %
@@ -127,7 +125,7 @@
     belowskip=\bigskipamount,
     %
     numbers=left,
-    numberstyle=\color{linenumbercolor}\tiny,
+    numberstyle=\color{acm114@stone}\tiny,
     stepnumber=1,
     numbersep=5pt,
     numberblanklines=true,
@@ -139,7 +137,7 @@
     %
     frame=tb,
     captionpos=t,
-    backgroundcolor=\color{listingbgcolor},
+    backgroundcolor=\color{acm114@cream},
     xleftmargin=.25in,
     xrightmargin=.1in,
     %
