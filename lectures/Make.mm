@@ -37,6 +37,7 @@ SECTIONS = \
     20100111.tex \
     20100113.tex \
     20100115.tex \
+    20100120.tex \
     sandbox.tex \
 
 FIGURES = \
@@ -57,6 +58,9 @@ FIGURES = \
     figures/reduction-comsync.pdf \
     figures/reduction-comsync-redundancy.pdf \
     figures/reduction-comsync-replication.pdf \
+    figures/threads.pdf \
+    figures/threads-memory.pdf \
+    figures/threads-reduction.pdf \
 
 #--------------------------------------------------------------------------
 #
