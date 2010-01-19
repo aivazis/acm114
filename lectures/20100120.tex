@@ -208,11 +208,12 @@ int pthread_create(
         \function{exec}, etc.
       \end{itemize}
 %
+  \item use \function{pthread\_exit} to kill a thread when it is no longer needed
+%
     \begin{C}
 int pthread_exit(void * status);
     \end{C}
 %
-  \item use \function{pthread\_exit} to kill a thread when it is no longer needed
   \item if \function{main} finishes and any threads remain
     \begin{itemize}
     \item they get killed unless \function{main} has called \function{pthread\_exit}
@@ -233,6 +234,7 @@ int pthread_exit(void * status);
 \begin{frame}[fragile]
 %
   \frametitle{Hello world}
+  \label{slide:hello-world}
 %
   \begin{C}
 #include <pthread.h>
@@ -243,6 +245,7 @@ void* hello(void* threadID) {
     long id = (long) threadID;
     printf("hello from %02ld/%0d\n", id, THREADS);
     pthread_exit(NULL);
+    return NULL;
 }
 
 int main(int argc, char* argv[]) {
@@ -266,19 +269,27 @@ int main(int argc, char* argv[]) {
 \end{frame}
 
 % --------------------------------------
-% template
+% joining and detaching threads
 \begin{frame}[fragile]
 %
-  \frametitle{Blank}
+  \frametitle{Joining and detaching}
 %
   \begin{itemize}
 %
-    \begin{C}
-int pthread_attr_init(pthread_attr_t * attr);
-int pthread_attr_destroy(pthread_attr_t * attr);
-    \end{C}
+  \item in the example in \slideref{hello-world}, the main thread exits without knowing whether
+    any of the threads it spawned have finished
+    \begin{itemize}
+    \item saying ``hello'' is asynchronous
+    \item but gathering the results of parallel calculations normally isn't
+    \end{itemize}
 %
-  \item 
+  \item {\em thread synchronization} can be achieved using \function{pthread\_join}
+    \begin{itemize}
+      \item the \function{pthrtead\_create} caller saves the thread id
+      \item the thread is scheduled, executes, and calls \function{pthread\_exit}
+      \item any other thread can wait for this thread to finish by calling
+        \function{thread\_join} with the saved thread id
+    \end{itemize}
 %
   \end{itemize}
 %
