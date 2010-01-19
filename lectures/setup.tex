@@ -73,8 +73,8 @@
     frame=none,
     captionpos=t,
     backgroundcolor=\color{acm114@cream},
-    xleftmargin=1em,
-    xrightmargin=1em,
+    xleftmargin=0em,
+    xrightmargin=0em,
     %
     escapeinside={\#@}{@},
     %
@@ -107,8 +107,8 @@
     frame=none,
     captionpos=t,
     backgroundcolor=\color{acm114@cream},
-    xleftmargin=.25in,
-    xrightmargin=.1in,
+    xleftmargin=0em,
+    xrightmargin=0em,
     %
     escapeinside={\#@}{@},
     %
@@ -130,16 +130,16 @@
     numbersep=5pt,
     numberblanklines=true,
     %
-    basicstyle=\tt\scriptsize,
+    basicstyle=\tt\bfseries\scriptsize,
     keywordstyle=\color{blue},
     commentstyle=\color{commentcolor}\slshape,
     showstringspaces=false,
     %
-    frame=tb,
+    frame=,
     captionpos=t,
     backgroundcolor=\color{acm114@cream},
-    xleftmargin=.25in,
-    xrightmargin=.1in,
+    xleftmargin=0em,
+    xrightmargin=0em,
     %
     escapeinside={//@}{@},
     %
@@ -171,28 +171,29 @@
 \def\lstlineref#1{{line~\ref{line:#1}}}
 
 % macros
-\def\href#1{{\footnotesize\bfseries\url{#1}}}
+\def\href#1{{\small\bfseries\url{#1}}}
 \def\defeq{\mathrel{\mathop:}=}
-\def\CC{\mbox{\tt C}}
-\def\GNU{\mbox{\tt GNU}}
-\def\GSL{\mbox{\tt GSL}}
-\def\RANLUX{\mbox{\tt RANLUX}}
+\def\CC{\mbox{\tt\small C}}
+\def\GNU{\mbox{\tt\small GNU}}
+\def\GSL{\mbox{\tt\small GSL}}
+\def\RANLUX{\mbox{\tt\small RANLUX}}
+\def\NULL{\mbox{\tt\small NULL}}
 
-\def\cpp{\mbox{\tt C++}}
+\def\cpp{\mbox{\tt\small C++}}
 %\def\cpp{\mbox{\tt C\raise.4ex\hbox{++}}}
-\def\fortran{{\tt FORTRAN}}
-\def\f90{{\tt FORTRAN90}}
+\def\fortran{{\tt\small FORTRAN}}
+\def\f90{{\tt\small FORTRAN90}}
 
 \def\pyre{{\tt pyre}}
 
 \def\order#1{\mbox{$\mathcal{O}(#1)$}}
-\def\class#1{\mbox{\tt #1}}
-\def\component#1{\mbox{\tt #1}}
-\def\function#1{\mbox{\tt #1}}
-\def\method#1{\mbox{\tt #1}}
-\def\identifier#1{\mbox{\tt #1}}
-\def\keyword#1{\mbox{\tt #1}}
-\def\srcfile#1{\mbox{\tt #1}}
+\def\class#1{\mbox{\tt\small #1}}
+\def\component#1{\mbox{\tt\small #1}}
+\def\function#1{\mbox{\tt\small #1}}
+\def\method#1{\mbox{\tt\small #1}}
+\def\identifier#1{\mbox{\tt\small #1}}
+\def\keyword#1{\mbox{\tt\small #1}}
+\def\srcfile#1{\mbox{\tt\small #1}}
 
 \def\insertionsort{\mbox{\sc Insertion-Sort}}
 \def\mergesort{\mbox{\sc Merge-Sort}}
