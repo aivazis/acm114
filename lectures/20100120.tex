@@ -285,11 +285,96 @@ int main(int argc, char* argv[]) {
 %
   \item {\em thread synchronization} can be achieved using \function{pthread\_join}
     \begin{itemize}
-      \item the \function{pthrtead\_create} caller saves the thread id
+      \item the \function{pthread\_create} caller saves the thread id
       \item the thread is scheduled, executes, and calls \function{pthread\_exit}
       \item any other thread can wait for this thread to finish by calling
-        \function{thread\_join} with the saved thread id
+        \function{thread\_join} with the saved thread id and also retrieve the termination
+        status
     \end{itemize}
+%
+  \item for this to work, a thread must be {\em joinable}
+    \begin{itemize}
+    \item controlled by the thread creation attributes
+    \item for portability, you should always mark your joinable threads explicitly
+    \end{itemize}
+%
+%
+    \item a thread that will never be joined may be {\em detached}
+      \begin{itemize}
+      \item by setting the corresponding attribute during thread creation
+      \item or, by calling \function{pthread\_detach} at any point
+      \item detaching a thread saves some system resources
+      \end{itemize}
+        
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% mutexes
+\begin{frame}[fragile]
+%
+  \frametitle{Mutexes}
+%
+  \begin{itemize}
+%
+  \item 
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% condition variables
+\begin{frame}[fragile]
+%
+  \frametitle{Condition variables}
+%
+  \begin{itemize}
+%
+  \item 
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the attribute interface
+\begin{frame}[fragile]
+%
+  \frametitle{Thread, mutex and condition variable attributes}
+%
+  \begin{itemize}
+%
+  \item 
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% miscellaneous
+\begin{frame}[fragile]
+%
+  \frametitle{Other useful routines}
+%
+  \begin{itemize}
+%
+  \item 
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% summary
+\begin{frame}[fragile]
+%
+  \frametitle{Summary}
+%
+  \begin{itemize}
+%
+  \item 
 %
   \end{itemize}
 %
