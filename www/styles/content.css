@@ -112,17 +112,18 @@
     margin: 0.5em 0 0.5em 0;
 }
 
-#content div.references .author {
-    font-size: 80%;
-    font-weight: bold;
-}
-
 #content div.references .title {
     display: block;
     font-style: italic;
 }
 
+#content div.references .author {
+    font-size: 90%;
+    font-weight: bold;
+}
+
 #content div.references .publisher {
+    margin-left: 1em;
     font-size: 80%;
 }
 
