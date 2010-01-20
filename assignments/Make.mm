@@ -31,6 +31,7 @@ INCLUDES = \
 
 SECTIONS = \
     20100120.tex \
+    20100127.tex \
 
 FIGURES = \
 

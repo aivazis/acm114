@@ -1,0 +1,79 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\pagestyle{headandfoot}
+\runningfootrule
+\firstpageheader{ACM/CS 114}{Assignment 2}{Due: 27 Jan 2010}
+\runningheader{}{}{}
+\firstpagefooter{}{}{}
+\runningfooter{ACM/CS 114}{Assignment 2}{\thepage}
+
+
+
+% --------------------------------------
+% reduction using threads
+\def\Li{\mbox{\rm Li}_{2}}
+\def\len{\mbox{\rm length}}
+\def\dilog{\mbox{\tt dilog}}
+
+A better definition for the function $\Li$ is given by
+\begin{equation}
+\Li(z) \bydef
+- \int_{0}^{z} dz' \; \frac{\log(1-z')}{z'} \label{eq:li-def}
+\end{equation}
+This is well defined for arbitrary complex values $z$, with a branch cut along the real axis
+for $z > 1$. It can be shown that
+\begin{equation}
+  \Li(-1)  = - \frac{\pi^{2}}{12} \label{eq:li-1}
+\end{equation}
+We will try to establish that \eqref{li-1} is true by numerically evaluating the integral in
+\eqref{li-def} {\em in parallel} using both threads and \mpi. Hence, our goal is to show that
+\begin{equation}
+  \int_{0}^{-1} dz \; \frac{\log(1-z)}{z} = \frac{\pi^{2}}{12} \label{eq:goal} 
+\end{equation}
+We will employ the following simple numerical integration scheme:
+\begin{itemize}
+ \item partition the interval $(-1,0)$ into a large number $n$ of subintervals of equal length
+ \item evaluate the integrand of \eqref{goal} at the center of each subinterval (why?)
+ \item multiply this value by the width of the subinterval to form its contribution to the
+   integral
+ \item sum up all the contributions
+\end{itemize}
+
+\begin{questions}
+
+\question Write a function \function{integrand} that evaluates the integrand of \eqref{goal}
+for a given $z$. Assume $z$ is real.
+
+\question Write a function \function{integrator} that implements our integration scheme, given
+an interval $(a, b)$ and the desired number of subdivisions $n$.
+
+\question Explain how you would use these two functions to compute an approximation of the
+integral in \eqref{goal} {\em in parallel}. In particular, 
+\begin{parts}
+  \part How would you partition the work into fine grain tasks?
+  \part What are the communication requirements among these tasks?
+  \part What is the correct coarsening strategy?
+  \part How you would map the coarse tasks onto physical processing units?
+\end{parts}
+
+\question 
+
+\begin{parts}
+  \part Implement this strategy using pthreads.
+  \part Implement this strategy using \mpi.
+  \part Fill out the following  table
+\end{parts}
+
+\end{questions}
+
+% end of file 
