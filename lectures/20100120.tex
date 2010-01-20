@@ -10,7 +10,7 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
 
-\lecture{}{20100120}
+\lecture{Programming with pthreads}{20100120}
 
 % --------------------------------------
 % threads and shared memory parallelism 
@@ -290,7 +290,7 @@ int main(int argc, char* argv[]) {
       \item the \function{pthread\_create} caller saves the thread id
       \item the thread is scheduled, executes, and calls \function{pthread\_exit}
       \item any other thread can wait for this thread to finish by calling
-        \function{thread\_join} with the saved thread id and also retrieve the termination
+        \function{pthread\_join} with the saved thread id and also retrieve the termination
         status
     \end{itemize}
 %
@@ -591,6 +591,42 @@ int pthread_once(pthread_once_t* control_structure, void (*startup_routine)(void
     \item the somewhat complicated interactions between threads and signals
 %
     \item other synchronization constructs: barriers and read/write locks
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% summary
+\begin{frame}[fragile]
+%
+  \frametitle{Summary}
+%
+  \begin{itemize}
+%
+  \item well-designed threaded programs must follow the same strategy as any other concurrent
+    program
+    \begin{figure}
+      \centering
+      \includegraphics[scale=0.5]{figures/parallelization-steps.pdf}
+      \label{fig:parallelization-steps}
+    \end{figure}
+    \vspace{-1.75em}
+%
+    \begin{itemize}
+    \item identify the work that can be done concurrently
+    \item partition it in terms of work units, the fine grain tasks
+    \item analyze the communication patterns among work units with an eye for critical sections
+      and protecting shared data structures
+    \item coarsen into threads, define the mutex categories and synchronization points
+    \item let the OS schedule the threads onto physical processors
+    \end{itemize}
+%
+  \item debugging threaded programs is very difficult
+    \begin{itemize}
+    \item preventing bugs through careful design is critical
+    \item so is instrumenting the program to gain confidence in its execution
+    \end{itemize}
 %
   \end{itemize}
 %
