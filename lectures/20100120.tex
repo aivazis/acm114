@@ -162,6 +162,8 @@
   \frametitle{Creating threads}
   \begin{itemize}
 %
+  \item create threads by calling
+%
   \begin{C}
 int pthread_create(
     pthread_t* id, const pthread_attr_t* attr,
@@ -314,11 +316,78 @@ int main(int argc, char* argv[]) {
 % mutexes
 \begin{frame}[fragile]
 %
-  \frametitle{Mutexes}
+  \frametitle{Creating mutexes}
 %
   \begin{itemize}
 %
-  \item 
+  \item a {\em mutex} is a locking mechanism that helps guarantee exclusive access to a section
+    of code, most often to control access to shared variables
+%
+  \item mutexes are created using
+%
+    \begin{C}
+int pthread_mutex_init(
+    pthread_mutex_t* mutex, const pthread_mutexattr_t* attr);
+    \end{C}
+%
+    \begin{itemize}
+    \item they start out unlocked
+    \item the \identifier{attr} enables more advanced (but perhaps non-portable) use
+    \end{itemize}
+%
+  \item mutexes are destroyed using
+%
+    \begin{C}
+int pthread_mutex_destroy(pthread_mutex_t* mutex);
+    \end{C}
+%
+    \begin{itemize}
+    \item destroy mutexes you are no longer using to prevent resource leakage
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% mutex manipulation
+\begin{frame}[fragile]
+%
+  \frametitle{Locking and unlocking mutexes}
+%
+  \begin{itemize}
+%
+  \item threads manipulate mutexes through
+%
+    \begin{C}
+int pthread_mutex_lock(pthread_mutex_t* mutex);
+int pthread_mutex_trylock(pthread_mutex_t* mutex);
+int pthread_mutex_unlock(pthread_mutex_t* mutex);
+    \end{C}
+%
+  \item \identifier{pthread\_mutex\_lock} attempts to gain exclusive access
+    \begin{itemize}
+    \item if the mutex is unlocked, it locks it and returns
+    \item otherwise, it blocks until the mutex is unlocked; when the mutex is unlocked, it
+      locks it and returns
+    \end{itemize}
+%
+  \item \identifier{pthread\_mutex\_unlock} attempts to release a mutex
+    \begin{itemize}
+    \item if it was previously locked by this thread, the mutex is unlocked
+    \item if it was not previously locked, the call returns with an error code
+    \item if it was locked, but not by the calling thread, the call returns an error code
+    \end{itemize}
+%
+  \item \identifier{pthread\_mutex\_trylock} attempts to lock the mutex
+    \begin{itemize}
+    \item if it is unlocked, the call locks it and returns
+    \item if it is locked, the call returns immediately with a {\em busy} error code
+    \end{itemize}
+%
+  \item locking and unlocking mutexes is explicitly orchestrated by the programmer
+  \item when multiple threads are blocked waiting for a mutex, there is no way to predict which
+    one will succeed when the mutex becomes available
 %
   \end{itemize}
 %
@@ -332,7 +401,65 @@ int main(int argc, char* argv[]) {
 %
   \begin{itemize}
 %
-  \item 
+  \item condition variables build upon mutexes to enable threads to signal each other when some
+    condition is met
+%
+  \item they are created using
+%
+    \begin{C}
+int pthread_cond_init(
+    pthread_cond_t* condition, const pthread_condattr_t* attr);
+    \end{C}
+%
+  \item and destroyed using
+%
+    \begin{C}
+int pthread_cond_destroy(pthread_cond_t* condition);
+    \end{C}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% using condition variables
+\begin{frame}[fragile]
+%
+  \frametitle{Using condition variables}
+%
+  \begin{itemize}
+%
+  \item the following three routies implement the condition variable semantics
+%
+    \begin{C}
+int pthread_cond_wait(pthread_cond_t* cond, pthread_mutex_t* mutex);
+int pthread_cond_signal(pthread_cond_t* cond);
+int pthread_cond_broadcast(pthread_cond_t* cond);
+    \end{C}
+%
+  \item \identifier{pthread\_cond\_lock} attempts to gain exclusive access
+    \begin{itemize}
+    \item if the mutex is unlocked, it locks it and returns
+    \item otherwise, it blocks until the mutex is unlocked; when the mutex is unlocked, it
+      locks it and returns
+    \end{itemize}
+%
+  \item \identifier{pthread\_unlock} attempts to release a previously locked mutex
+    \begin{itemize}
+    \item if it was previously locked by this thread, the mutex is unlocked
+    \item if it was not previously locked, the call returns with an error code
+    \item if it was locked, but not by the calling thread, the call returns an error code
+    \end{itemize}
+%
+  \item \identifier{pthread\_cond\_trylock} attempts to lock the mutex
+    \begin{itemize}
+    \item if it is unlocked, the call locks it and returns
+    \item if it is locked, the call returns immediately with a {\em busy} error code
+    \end{itemize}
+%
+  \item locking and unlocking mutexes is explicitly orchestrated by the programmer
+  \item when multiple threads are blocked waiting for a mutex, there is no way to predict which
+    one will succeed when the mutex becomes available
 %
   \end{itemize}
 %
@@ -342,7 +469,7 @@ int main(int argc, char* argv[]) {
 % the attribute interface
 \begin{frame}[fragile]
 %
-  \frametitle{Thread, mutex and condition variable attributes}
+  \frametitle{Attributes of threads, mutexes and condition variables}
 %
   \begin{itemize}
 %
