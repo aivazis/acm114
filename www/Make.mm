@@ -37,5 +37,7 @@ distclean::
 export::
 	/usr/bin/rsync --delete -ruavz . acm114@pyre.caltech.edu:web/www
 
+try-export:
+	/usr/bin/rsync -n --delete -ruavz . acm114@pyre.caltech.edu:web/www
 
 # End of file 
