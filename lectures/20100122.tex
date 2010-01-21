@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 
     for (id=0; id<THREADS; id++) {
         printf("creating thread %02ld\n", id);
-        status = pthread_create(&threads[id], NULL, squares, (void*) id);
+        status = pthread_create(&threads[id], NULL, hello, (void*) id);
         if (status) {
             printf("error %d in pthread_create\n", status);
         }
@@ -171,44 +171,6 @@ int pthread_mutex_unlock(pthread_mutex_t* mutex);
     one will succeed when the mutex becomes available
 %
   \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% sum of squares
-\begin{frame}[fragile]
-%
-  \frametitle{A reduction using threads}
-  \label{slide:squares}
-%
-  \begin{C}
-#include <pthread.h>
-#include <stdio.h>
-#define THREADS 10
-
-long sum = 0;
-pthread_mutex_t mutex;
-
-void* squares(void* threadID) {
-    long id = (long) threadID;
-    pthread_mutex_lock(&mutex);
-    sum += id*id;
-    pthread_mutex_unlock(&mutex);
-    pthread_exit(NULL);
-    return NULL;
-}
-
-int main(int argc, char* argv[]) {
-    long id;
-    pthread_t threads[THREADS];
-    pthread_mutex_init(&mutex, NULL);
-    for (id=0; id<THREADS; id++) {
-        pthread_create(&threads[id], NULL, hello, (void*) id);
-    }
-    pthread_exit(NULL);
-    return 0;
-}
-  \end{C}
 %
 \end{frame}
 
