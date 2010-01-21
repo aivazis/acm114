@@ -21,7 +21,8 @@ identities = {
 # the integral
 def dilog(z, n):
     # catch some obvious cases
-    if n == 0:
+    n = int(n)
+    if n < 1:
         raise ValueError("number of subdivisions must be positive")
     if z > 1:
         raise ValueError("math domain error")

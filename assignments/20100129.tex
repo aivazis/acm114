@@ -12,10 +12,10 @@
 
 \pagestyle{headandfoot}
 \runningfootrule
-\firstpageheader{ACM/CS 114}{Assignment 2}{Due: 27 Jan 2010}
+\firstpageheader{ACM/CS 114}{Assignment 2}{Due: 29 Jan 2010}
 \runningheader{}{}{}
 \firstpagefooter{}{}{}
-\runningfooter{ACM/CS 114}{Assignment 2}{\thepage}
+\runningfooter{ACM/CS 114}{Assignment 2 - due 29 Jan 2010}{\thepage}
 
 
 
@@ -25,7 +25,7 @@
 \def\len{\mbox{\rm length}}
 \def\dilog{\mbox{\tt dilog}}
 
-A better definition for the dilog $\Li$ is given by
+A better definition for the dilogarithm $\Li$ is given by
 %
 \begin{equation}
 \Li(z) \bydef
@@ -43,39 +43,110 @@ for $z > 1$. It can be shown that
 We will try to establish that \eqref{li1} and \eqref{li-1} are true by numerically evaluating
 the integral in \eqref{li-def} both sequentially and {\em in parallel} using threads and \mpi.
 %
-We will employ the following simple numerical integration scheme:
-%
-\begin{itemize}
- \item partition the interval $(-1,0)$ into a large number $n$ of subintervals of equal length
- \item evaluate the integrand of \eqref{goal} at the center of each subinterval (why?)
- \item multiply this value by the width of the subinterval to form its contribution to the
-   integral
- \item sum up all the contributions
-\end{itemize}
 
 \begin{questions}
 
-\question Write a function \function{integrand} that evaluates the integrand of \eqref{goal}
-for a given $z$. Assume $z$ is real.
-
-\question Write a function \function{integrator} that implements our integration scheme, given
-an interval $(a, b)$ and the desired number of subdivisions $n$.
-
-\question Explain how you would use these two functions to compute an approximation of the
-integral in \eqref{goal} {\em in parallel}. In particular, 
+\question Let's implement a function \function{dilog} that accepts a real number $z$ and a
+potentially large integer $N$, and returns an approximation to \eqref{li-def}. For example, a
+\cc\ or \cpp\ prototype would look like
+%
+\begin{C}
+    double dilog(double z, long N);
+\end{C}
+%
 \begin{parts}
-  \part How would you partition the work into fine grain tasks?
+%
+  \part First, take care of the obvious cases $n < 1$, $z = 0$ and, for the sake of simplicity,
+  $z > 1$ where the dilogarithm picks up an imaginary part.
+%
+  \part Implement the numerical approximation to the integral in \eqref{li-def} by splitting
+  the interval $(0,z)$ in $N$ subintervals of equal length $dz$. Each subinterval contributes
+  an amount equal to its width multiplied by the value of the integrand at the center of the
+  subinterval. Return the sum of these contributions as the approximation to the dilogarithm.
+%
+  \part Why do we only evaluate the function at the center of each subinterval?
+%
+  \part Write a driver for \function{dilog} and convince yourself that it gives
+  reasonable approximations to the values in \eqref{li1} and \eqref{li-1}. Fill out the
+  following table:
+  \begin{table}[h]
+    \small
+    \centering
+    \[
+    \begin{array}{l|d{8}|d{8}|d{8}|d{8}}
+      % header
+      \multicolumn{1}{c|}{N} &
+      \multicolumn{1}{c}{\Li(-1)} &
+      \multicolumn{1}{c|}{\Delta} &
+      \multicolumn{1}{c}{\Li(1)} &
+      \multicolumn{1}{c}{\Delta}
+      \\
+      % body
+      \hline 
+%
+      10^{1} &
+       & &
+       &
+      \\
+%
+      10^{3} &
+       & &
+       &
+      \\
+%
+      10^{6} &
+       & &
+       &
+      \\
+%
+      10^{9} &
+       & &
+       &
+      \\
+%
+      10^{12} &
+       & &
+       &
+      \\ \hline
+%
+    \end{array}
+    \]
+  \end{table}
+%
+
+where $\Delta$ is the relative error in each case.
+%
+\end{parts}
+%
+
+\question Explain how you would compute an approximation of the integral in \eqref{li-def} {\em
+  in parallel}. In particular:
+\begin{parts}
+  \part What are the finest grain parallel tasks?
   \part What are the communication requirements among these tasks?
   \part What is the correct coarsening strategy?
   \part How you would map the coarse tasks onto physical processing units?
 \end{parts}
 
-\question 
-
+\question Implement a version of \function{dilog} that uses pthreads for enhanced performance.
 \begin{parts}
-  \part Implement this strategy using pthreads.
-  \part Implement this strategy using \mpi.
-  \part Fill out the following  table
+  \part What is the correct partitioning, coarsening and mapping strategies when using threads?
+  \part Implement the routine that becomes the body of each thread.
+  \part Implement \function{dilog} to perform the error checking, spawn $n$ threads to perform
+  the calculation, collect the results of each thread and return the approximation to the
+  integral.
+  \part Convince yourself that \function{dilog} returns correct values regardless of the number
+  of threads it spawned.
+\end{parts}
+
+\question Implement a parallel version \function{dilog} using \mpi.
+\begin{parts}
+  \part What is the correct partitioning, coarsening and mapping strategies when using
+  distributed memory parallelism?
+  \part Implement \function{dilog}, making sure that each processor has the correct return
+  value from the function.
+  \part Convince yourself that \function{dilog} returns correct values regardless of the number
+  of processors used.
 \end{parts}
 
 \end{questions}
