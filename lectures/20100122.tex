@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 
     for (id=0; id<THREADS; id++) {
         printf("creating thread %02ld\n", id);
-        status = pthread_create(&threads[id], NULL, hello, (void*) id);
+        status = pthread_create(&threads[id], NULL, squares, (void*) id);
         if (status) {
             printf("error %d in pthread_create\n", status);
         }
