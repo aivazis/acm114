@@ -25,22 +25,26 @@
 \def\len{\mbox{\rm length}}
 \def\dilog{\mbox{\tt dilog}}
 
-A better definition for the function $\Li$ is given by
+A better definition for the dilog $\Li$ is given by
+%
 \begin{equation}
 \Li(z) \bydef
 - \int_{0}^{z} dz' \; \frac{\log(1-z')}{z'} \label{eq:li-def}
 \end{equation}
+%
 This is well defined for arbitrary complex values $z$, with a branch cut along the real axis
 for $z > 1$. It can be shown that
-\begin{equation}
-  \Li(-1)  = - \frac{\pi^{2}}{12} \label{eq:li-1}
-\end{equation}
-We will try to establish that \eqref{li-1} is true by numerically evaluating the integral in
-\eqref{li-def} {\em in parallel} using both threads and \mpi. Hence, our goal is to show that
-\begin{equation}
-  \int_{0}^{-1} dz \; \frac{\log(1-z)}{z} = \frac{\pi^{2}}{12} \label{eq:goal} 
-\end{equation}
+%
+\begin{eqnarray}
+  \Li(1)  & = & \frac{\pi^{2}}{6} \label{eq:li1} \\
+  \Li(-1) & = & - \frac{\pi^{2}}{12} \label{eq:li-1}
+\end{eqnarray}
+%
+We will try to establish that \eqref{li1} and \eqref{li-1} are true by numerically evaluating
+the integral in \eqref{li-def} both sequentially and {\em in parallel} using threads and \mpi.
+%
 We will employ the following simple numerical integration scheme:
+%
 \begin{itemize}
  \item partition the interval $(-1,0)$ into a large number $n$ of subintervals of equal length
  \item evaluate the integrand of \eqref{goal} at the center of each subinterval (why?)
