@@ -131,6 +131,10 @@
     font-size: 80%;
 }
 
+#old-news {
+    display: none;
+}
+
 #news {
     width: 34.5em;
     padding: 1.0em 3.0em 2.0em 22.5em;
