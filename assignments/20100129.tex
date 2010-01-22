@@ -15,7 +15,7 @@
 \firstpageheader{ACM/CS 114}{Assignment 2}{Due: 29 Jan 2010}
 \runningheader{}{}{}
 \firstpagefooter{}{}{}
-\runningfooter{ACM/CS 114}{Assignment 2 - due 29 Jan 2010}{\thepage}
+\runningfooter{ACM/CS 114}{Assignment 2}{\thepage}
 
 
 
@@ -64,13 +64,12 @@ potentially large integer $N$, and returns an approximation to \eqref{li-def}. F
   \part Implement the numerical approximation to the integral in \eqref{li-def} by splitting
   the interval $(0,z)$ in $N$ subintervals of equal length $dz$. Each subinterval contributes
   an amount equal to its width multiplied by the value of the integrand at the center of the
-  subinterval. Return the sum of these contributions as the approximation to the dilogarithm.
+  subinterval. Return the sum of these contributions as the approximation to the dilogarithm. 
 %
   \part Why do we only evaluate the function at the center of each subinterval?
 %
-  \part Write a driver for \function{dilog} and convince yourself that it gives
-  reasonable approximations to the values in \eqref{li1} and \eqref{li-1}. Fill out the
-  following table:
+  \part Write a driver for \function{dilog} and convince yourself that it gives reasonable
+  approximations to the values in \eqref{li1} and \eqref{li-1}. Fill out the following table: 
   \begin{table}[h]
     \small
     \centering
