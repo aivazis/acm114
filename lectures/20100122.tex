@@ -17,7 +17,7 @@
 \begin{frame}[fragile]
 %
   \frametitle{Hello world}
-  \label{slide:hello-world}
+  \label{slide:hello-world-threads}
 %
   \begin{C}
 #include <pthread.h>
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 %
   \begin{itemize}
 %
-  \item in the example in \slideref{hello-world}, the main thread exits without knowing whether
+  \item in the example in \slideref{hello-world-threads}, the main thread exits without knowing whether
     any of the threads it spawned have finished
     \begin{itemize}
     \item saying ``hello'' is asynchronous
