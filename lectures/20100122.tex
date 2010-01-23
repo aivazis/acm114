@@ -192,7 +192,7 @@ pthread_mutex_t mutex;
 void* squares(void* threadID) {
     long id = (long) threadID;
     pthread_mutex_lock(&mutex);
-    sum += id;
+    sum += id*id;
     pthread_mutex_unlock(&mutex);
     pthread_exit(NULL);
     return NULL;
