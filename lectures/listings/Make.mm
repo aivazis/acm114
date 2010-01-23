@@ -21,13 +21,19 @@ all: tidy
 #--------------------------------------------------------------------------
 #
 dilog: dilog.cc
-	$(CXX) $< -o dilog
+	$(CXX) $< -o $@
 
 hello_threads: hello_threads.cc
-	$(CXX) -pthread $< -o hello_threads
+	$(CXX) -pthread $< -o $@
 
 hello_mpi: hello_mpi.c
-	$(CC) $< -o hello_mpi -lmpi
+	$(CC) $< -o $@ -lmpi
+
+squares_threads: squares_threads.c
+	$(CXX) -pthread $< -o $@
+
+squares_mpi: squares_mpi.c
+	$(CC) $< -o $@ -lmpi
 
 
 PROJ_CLEAN += dilog *_threads *_mpi
