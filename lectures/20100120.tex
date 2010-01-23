@@ -262,7 +262,7 @@ int main(int argc, char* argv[]) {
             printf("error %d in pthread_create\n", status);
         }
     }
-
+    /* there is a problem here... */
     pthread_exit(NULL);
     return 0;
 }
