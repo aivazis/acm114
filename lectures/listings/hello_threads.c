@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
     int status;
     pthread_t threads[THREADS];
     
+    /* spawn some threads */
     for (id=0; id<THREADS; id++) {
         printf("creating thread %02ld\n", id);
         status = pthread_create(&threads[id], NULL, hello, (void*) id);
@@ -35,6 +36,12 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    /* harvest the threads */
+    for (id=0; id<THREADS; id++) {
+        pthread_join(threads[id], NULL);
+    }
+
+    /* all done */
     pthread_exit(NULL);
     return 0;
 }
