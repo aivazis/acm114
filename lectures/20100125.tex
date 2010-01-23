@@ -24,7 +24,7 @@
 %
     \begin{figure}
       \centering
-      \includegraphics[scale=0.5]{figures/distributed-memory.pdf}
+      \includegraphics[scale=1.0]{figures/distributed-memory.pdf}
     \end{figure}
     \vspace{-1.0em}
 %
@@ -40,7 +40,6 @@
     \item logically shared data must be partitioned among the processors
     \item communication and synchronization must be orchestrated explicitly 
     \item processes communicate via explicit data exchanges
-    \item co\"ordination is implicit in every communication
     \end{itemize}
 %
   \end{itemize}
@@ -51,7 +50,73 @@
 % template
 \begin{frame}[fragile]
 %
-  \frametitle{Blank}
+  \frametitle{\mpi\ -- the survivor}
+%
+  \begin{itemize}
+%
+  \item the {\em de facto} standard for writing parallel programs using message passing
+    \begin{itemize}
+    \item a library of routines callable from almost any programming language
+    \item that enables communication among multiple processes
+    \item standardized and portable API with good implementations available for almost any kind
+      of parallel computer
+    \end{itemize}
+%
+  \item \mpi\ is large and complex
+    \begin{itemize}
+    \item more than 125 functions, lot's of options and communication protocols
+    \item but for most practical purposes, a small subset will suffice
+    \item short introduction today, more when we consider specific physics
+    \end{itemize}
+%
+  \item two major versions available -- check your installation for compliance
+    \begin{itemize}
+    \item \mpi\ 1: parallel machine management, process groups, collective operations,
+      point-to-point operations, virtual topologies, profiling
+    \item \mpi\ 2: dynamic process management, one-sided operations, parallel I/O, (simplistic)
+      bindings for \cpp
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% parallel machine management
+\begin{frame}[fragile]
+%
+  \frametitle{Getting started}
+%
+  \begin{itemize}
+%
+  \item building:
+    \begin{itemize}
+    \item supplied wrappers
+    \item on your own
+    \end{itemize}
+%
+  \item staging:
+    \begin{itemize}
+    \item native: mpirun
+    \item queue management:
+    \end{itemize}
+%
+  \item launching:
+    \begin{itemize}
+    \item initialize: \function{MPI\_Init}, \identifier{MPI\_COMM\_WORLD}
+    \item query the runtime environment
+    \item finalize: \function{MPI\_Finalize}
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% communicators
+\begin{frame}[fragile]
+%
+  \frametitle{Communicators}
 %
   \begin{itemize}
 %
