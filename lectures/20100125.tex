@@ -71,9 +71,9 @@
 %
   \item two major versions available -- check your installation for compliance
     \begin{itemize}
-    \item \mpi\ 1: parallel machine management, process groups, collective operations,
+    \item \mpi-1: parallel machine management, process groups, collective operations,
       point-to-point operations, virtual topologies, profiling
-    \item \mpi\ 2: dynamic process management, one-sided operations, parallel I/O, (simplistic)
+    \item \mpi-2: dynamic process management, one-sided operations, parallel I/O, (simplistic)
       bindings for \cpp
     \end{itemize}
 %
@@ -86,31 +86,86 @@
 \end{frame}
 
 % --------------------------------------
-% parallel machine management
+% compiling, linking, staging and launching
 \begin{frame}[fragile]
 %
   \frametitle{Getting started}
 %
   \begin{itemize}
 %
-  \item building:
+  \item compiling and linking:
     \begin{itemize}
-    \item supplied wrappers
-    \item on your own
+    \item most \mpi\ implementation supply wrappers around the available compilers
+      \begin{itemize}
+      \item e.g.~\identifier{mpicc}, \identifier{mpic++}, \identifier{mpif77},
+        \identifier{mpif90}
+      \end{itemize}
+    \item it's not magic, so you can do it on your own to
+      \begin{itemize}
+      \item override the system defaults (without upsetting the sysadmins...)
+      \item build multiple versions so you can benchmark
+      \end{itemize}
     \end{itemize}
 %
-  \item staging:
+  \item staging and launching:
     \begin{itemize}
-    \item native: mpirun
-    \item queue management:
+    \item most implementations provide \identifier{mpirun} to
+      \begin{itemize}
+      \item control the total number of desired processes
+      \item specify the hostnames of the machines to use
+      \item specify the mapping of processes to machines/CPUs/cores
+      \item establish the current working directory, if possible, for all processes
+      \item launch the program
+      \end{itemize}
+%
+    \item but most installations do not permit its use; they have queuing systems instead
+      \begin{itemize}
+      \item \identifier{PBS}, \identifier{LSF}, \identifier{torque}, \identifier{maui}, ...
+      \item specified and documented in the ``welcome'' package of most supercomputer centers
+      \item scheduling of jobs, guarantee exclusive access to your allocated machines,
+        establish upper time limit, charge the right account for your uses
+      \end{itemize}
     \end{itemize}
 %
-  \item launching:
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% initializing the runtime environment
+\begin{frame}[fragile]
+%
+  \frametitle{Getting started}
+%
+  \begin{itemize}
+%
+%
+  \item initializing the co\"operating processes:
+    \begin{C}
+int MPI_Init(int* argc, char ***argv);
+    \end{C}
     \begin{itemize}
-    \item initialize: \function{MPI\_Init}, \identifier{MPI\_COMM\_WORLD}
-    \item query the runtime environment
-    \item finalize: \function{MPI\_Finalize}
+    \item note the strange signature; see \slideref{hello-world-mpi} for an example of its use
+    \item some implementations -- notably \identifier{MPICH}, the reference implementation --
+      used command line arguments to pass information from \identifier{mpirun} to the runtime
+      environment
+    \item so they need {\em write} access to the command line arguments to strip the extras
+    \item thankfully, not done any more
     \end{itemize}
+%
+  \item must be the first \mpi\ in your program; nothing is initialized correctly until it
+    returns
+    \begin{itemize}
+    \item if this call does not return \identifier{MPI\_SUCCESS}, you should abort
+    \end{itemize}
+% 
+  \item don't forget to shut everything down:
+    \begin{C}
+int MPI_Finalize(void);
+    \end{C}
+%
+  \item must be the last \mpi\ call in your program; nothing is in usable state after it
+    returns
 %
   \end{itemize}
 %
@@ -173,7 +228,7 @@ int main(int argc, char* argv[]) {
 %
   \frametitle{Example reduction using \mpi}
 %
-  \label{slide:hello-world-mpi}
+  \label{slide:squares-mpi}
 %
   \begin{C}[basicstyle=\tt\bfseries\tiny]
 #include <mpi.h>
