@@ -26,7 +26,7 @@ DOCUMENT = acm114
 PACKAGES =
 
 INCLUDES = \
-    beamerthemeacm114.sty \
+    acm114.sty \
     setup.tex \
     references.bib
 
