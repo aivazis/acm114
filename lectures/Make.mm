@@ -49,8 +49,12 @@ FIGURES = \
     figures/asymptotic-theta.pdf \
     figures/distributed-memory.pdf \
     figures/generic-parallel-architecture.pdf \
+    figures/mpi-bcast-pattern.pdf \
+    figures/mpi-data-patterns.pdf \
     figures/mpi-gather.pdf \
+    figures/mpi-gather-pattern.pdf \
     figures/mpi-scatter.pdf \
+    figures/mpi-scatter-pattern.pdf \
     figures/parallelization-steps.pdf \
     figures/reduction-comsync-redundancy.pdf \
     figures/reduction-comsync-replication.pdf \

@@ -718,7 +718,8 @@ int MPI_Gather(
 %
   \begin{itemize}
 %
-  \item \function{MPI\_Alltoall} sends data from all processes to all processes
+  \item \function{MPI\_Alltoall} sends data from all processes to all processes in a global
+    scatter/gather
     \begin{C}
 int MPI_Alltoall(
         void* send_buffer, int send_count, MPI_Datatype send_datatype,
@@ -726,8 +727,6 @@ int MPI_Alltoall(
         MPI_Comm communicator
         );
    \end{C}
-%
-   a global scatter/gather
 %
  \item use \function{MPI\_Bcast} to send the contents of a buffer from \identifier{root} to all
    processes in a communicator
@@ -746,51 +745,25 @@ int MPI_Bcast(
 % collective operations summary
 \begin{frame}[fragile]
 %
-  \frametitle{Movement patterns for the collective operations}
-
-  \begin{tabular}{c|c}
-    \includegraphics[scale=0.5]{figures/mpi-scatter-pattern.pdf} &
-    \includegraphics[scale=0.5]{figures/mpi-scatter-pattern.pdf} \\ \hline
-    \includegraphics[scale=0.5]{figures/mpi-scatter-pattern.pdf} &
-    \includegraphics[scale=0.5]{figures/mpi-scatter-pattern.pdf} \\
+  \frametitle{Data movement patterns for the collective operations}
+%
+  \begin{tabular}{cc}
+    \parbox[c][1in]{2in}{
+      \includegraphics[scale=0.5]{figures/mpi-scatter-pattern.pdf}
+    }
+    &
+    \parbox[c][1in]{2in}{
+      \includegraphics[scale=0.5]{figures/mpi-bcast-pattern.pdf}
+    }
+    \\ 
+    \parbox[c][1in]{2in}{
+      \includegraphics[scale=0.5]{figures/mpi-gather-pattern.pdf}
+    }
+    &
+    \parbox[c][1in]{2in}{
+      \includegraphics[scale=0.5]{figures/mpi-alltoall-pattern.pdf}
+    }
   \end{tabular}
-%
-\end{frame}
-
-% --------------------------------------
-% collective operations summary
-\begin{frame}[fragile]
-%
-  \frametitle{Movement patterns for the collective operations}
-
-%
-  \begin{minipage}{.40\linewidth}
-    \centering
-    \includegraphics[scale=0.5]{figures/mpi-scatter-pattern.pdf}
-  \end{minipage}
-%
-  \hspace{5em}
-%
-  \begin{minipage}{.40\linewidth}
-    \centering
-    \includegraphics[scale=0.5]{figures/mpi-gather-pattern.pdf}
-  \end{minipage}
-%
-  \vspace{5em}
-%
-  \begin{minipage}{.40\linewidth}
-    \centering
-    \includegraphics[scale=0.5]{figures/mpi-scatter-pattern.pdf}
-  \end{minipage}
-%
-  \hspace{5em}
-%
-  \begin{minipage}{.40\linewidth}
-    \centering
-    \includegraphics[scale=0.5]{figures/mpi-gather-pattern.pdf}
-  \end{minipage}
-%
-
 %
 \end{frame}
 
