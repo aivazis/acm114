@@ -44,25 +44,31 @@ SECTIONS = \
 
 FIGURES = \
     figures/amdahl.pdf \
-    figures/generic-parallel-architecture.pdf \
-    figures/shared-memory.pdf \
-    figures/simd.pdf \
+    figures/asymptotic-o.pdf \
+    figures/asymptotic-omega.pdf \
+    figures/asymptotic-theta.pdf \
     figures/distributed-memory.pdf \
-    figures/reduction-shared.pdf \
-    figures/reduction-distributed.pdf \
-    figures/reduction-simd.pdf \
-    figures/reduction-parallel-work.pdf \
-    figures/reduction-partitioned-work.pdf \
-    figures/reduction-partial-sum.pdf \
-    figures/reduction-tree-sum.pdf \
-    figures/reduction-load-imbalance.pdf \
-    figures/reduction-overhead.pdf \
-    figures/reduction-comsync.pdf \
+    figures/generic-parallel-architecture.pdf \
+    figures/mpi-gather.pdf \
+    figures/mpi-scatter.pdf \
+    figures/parallelization-steps.pdf \
     figures/reduction-comsync-redundancy.pdf \
     figures/reduction-comsync-replication.pdf \
-    figures/threads.pdf \
+    figures/reduction-comsync.pdf \
+    figures/reduction-distributed.pdf \
+    figures/reduction-load-imbalance.pdf \
+    figures/reduction-overhead.pdf \
+    figures/reduction-parallel-work.pdf \
+    figures/reduction-partial-sum.pdf \
+    figures/reduction-partitioned-work.pdf \
+    figures/reduction-shared.pdf \
+    figures/reduction-simd.pdf \
+    figures/reduction-tree-sum.pdf \
+    figures/shared-memory.pdf \
+    figures/simd.pdf \
     figures/threads-memory.pdf \
     figures/threads-reduction.pdf \
+    figures/threads.pdf \
 
 #--------------------------------------------------------------------------
 #

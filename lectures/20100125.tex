@@ -175,12 +175,38 @@ int MPI_Finalize(void);
 % communicators
 \begin{frame}[fragile]
 %
-  \frametitle{Communicators}
+  \frametitle{Groups and communicators}
 %
   \begin{itemize}
 %
-  \item 
+  \item every \mpi\ process belongs to at least one {\em group}
 %
+  \item groups have associated {\em communicators} that provide the context for data exchanges and
+      synchronization among processes
+%
+  \item processes in a given communicator get {\em ranked}
+    \begin{itemize}
+    \item a communicator of $p$ processes assigns ranks 0 through $p-1$
+    \item a process can discover the communicator size and its own rank by using
+      \begin{C}
+int MPI_Comm_size(MPI_Comm communicator, int* size);
+int MPI_Comm_rank(MPI_Comm communicator, int* rank);
+      \end{C}
+    \end{itemize}
+% 
+  \item the \mpi\ runtime environment creates the {\em global} communicator
+    \begin{itemize}
+    \item known as \identifier{MPI\_COMM\_WORLD}
+    \item all processes are members
+    \end{itemize}
+% 
+  \item it is good practice to learn to manage your own
+    \begin{itemize}
+    \item to narrow down global operations to processor subsets
+    \item to promote {\em reuse}
+    \item more details later
+    \end{itemize}
+% 
   \end{itemize}
 %
 \end{frame}
@@ -208,7 +234,7 @@ int main(int argc, char* argv[]) {
         return status;
     }
 
-    /* all good */
+    /* all good -- get process info and display it */
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     printf("hello from %03d/%03d!\n", rank, size);
@@ -219,6 +245,84 @@ int main(int argc, char* argv[]) {
     return 0;
 }
   \end{C}
+%
+\end{frame}
+
+% --------------------------------------
+% messages
+\begin{frame}[fragile]
+%
+  \frametitle{Messages}
+%
+  \begin{itemize}
+%
+  \item in general, data exchanges through MPI calls involve
+    \begin{itemize}
+    \item a communicator
+      \begin{itemize}
+      \item specifies which processes participate in the exchange
+      \item resolves process ranks into processes
+      \end{itemize}        
+    \item {\em collective} operations involve the entire communicator
+    \item {\em point-to-point} operations require the rank of the message source or destination
+    \item the details of the message payload
+      \begin{itemize}
+      \item the address of the source buffer
+      \item the data type of the buffer contents
+      \item the number of items in the buffer
+      \end{itemize}
+    \end{itemize}
+%
+    \item \mpi\ provides some data abstractions to
+      \begin{itemize}
+      \item hide machine dependencies in the data representations to enhance portability and
+        support heterogeneous clusters
+      \item support user defined data types
+      \item support non-contiguous data layouts
+      \end{itemize}        
+      
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% global operations
+\begin{frame}[fragile]
+%
+  \frametitle{Collective operations: global reductions}
+%
+  \begin{itemize}
+%
+  \item {\em collective} operations involve all processes in a given communicator
+%
+  \item the \mpi\ version of our global reduction example uses
+    \begin{C}
+int MPI_Allreduce(
+        void* send_buffer, void* recv_buffer,
+        int count, MPI_Datatype datatype, MPI_Op operation,
+        MPI_Comm communicator
+        );
+   \end{C}
+%
+  \item example legal values for \identifier{MPI\_Datatype}
+    \begin{itemize}
+    \item \cc: \identifier{MPI\_INT}, \identifier{MPI\_LONG}, \identifier{MPI\_DOUBLE} 
+    \item \fortran: \identifier{MPI\_INTEGER}, \identifier{MPI\_DOUBLE\_PRECISION},
+      \identifier{MPI\_COMPLEX}
+    \end{itemize}
+%
+  \item legal values for \identifier{MPI\_Op}
+    \begin{itemize}
+    \item \identifier{MPI\_MAX}, \identifier{MPI\_MIN}, \identifier{MPI\_MAXLOC},
+      \identifier{MPI\_MINLOC}
+    \item \identifier{MPI\_SUM}, \identifier{MPI\_PROD}
+    \item \identifier{MPI\_LAND}, \identifier{MPI\_LOR}, \identifier{MPI\_LXOR}
+    \item \identifier{MPI\_BAND}, \identifier{MPI\_BOR}, \identifier{MPI\_BXOR}
+    \item \identifier{MPI\_REPLACE}
+    \end{itemize}
+%
+  \end{itemize}
 %
 \end{frame}
 
@@ -261,6 +365,145 @@ int main(int argc, char* argv[]) {
     return 0;
 }
   \end{C}
+%
+\end{frame}
+
+% --------------------------------------
+% other collective operations
+\begin{frame}[fragile]
+%
+  \frametitle{Other collective operations}
+%
+  \begin{itemize}
+%
+  \item \function{MPI\_Scan} computes partial reductions: the \th{p} process receives the
+    result from processes 0 through $p-1$
+    \begin{C}
+int MPI_Scan(
+        void* send_buffer, void* recv_buffer,
+        int count, MPI_Datatype datatype, MPI_Op operation,
+        MPI_Comm communicator
+        );
+   \end{C}
+%
+  \item \function{MPI\_Reduce} collects the result at only the given process \identifier{root}
+    \begin{C}
+int MPI_Reduce(
+        void* send_buffer, void* recv_buffer,
+        int count, MPI_Datatype datatype, MPI_Op operation,
+        int root, MPI_Comm communicator
+        );
+   \end{C}
+%
+   \item synchronization is also a global operation:
+    \begin{C}
+int MPI_Barrier(MPI_Comm communicator);
+   \end{C}
+%
+   participating processes block at a barrier until they have all reached it
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% scatter
+\begin{frame}[fragile]
+%
+  \frametitle{Scatter}
+%
+  \begin{itemize}
+%
+  \item \function{MPI\_Scatter} sends data from \identifier{root} to all processes 
+    \begin{C}
+int MPI_Scatter(
+        void* send_buffer, int send_count, MPI_Datatype send_datatype,
+        void* recv_buffer, int recv_count, MPI_Datatype recv_datatype,
+        int root, MPI_Comm communicator
+        );
+    \end{C}
+    \begin{figure}
+      \centering
+      \includegraphics[scale=1.0]{figures/mpi-scatter.pdf}
+    \end{figure}
+%
+  \item it is as if the data in \identifier{send\_buffer} were split in $p$ segments, and the
+    \th{i} process receives the \th{i} segment
+%
+  \item the \identifier{send\_xxx} arguments are only meaningful for \identifier{root}; they
+    are ignored for other processes
+%
+  \item the arguments \identifier{root} and \identifier{communicator} must be passed identical
+    values by all processes
+%
+  \end{itemize}
+% 
+\end{frame}
+
+% --------------------------------------
+% gather
+\begin{frame}[fragile]
+%
+  \frametitle{Gather}
+%
+  \begin{itemize}
+%
+  \item the converse is \function{MPI\_Gather} with \identifier{root} receiving data from all
+    processes
+    \begin{C}
+int MPI_Gather(
+        void* send_buffer, int send_count, MPI_Datatype send_datatype,
+        void* recv_buffer, int recv_count, MPI_Datatype recv_datatype,
+        int root, MPI_Comm communicator
+        );
+   \end{C}
+   \begin{figure}
+     \centering
+     \includegraphics[scale=1.0]{figures/mpi-gather.pdf}
+   \end{figure}
+%
+  \item it is as if $p$ messages, one from each processes, were concatenated in rank order and
+    placed at \identifier{recv\_buffer}
+%
+  \item the \identifier{recv\_xxx} arguments are only meaningful for \identifier{root}; they
+    are ignored for other processes
+%
+  \item the arguments \identifier{root} and \identifier{communicator} must be passed identical
+    values by all processes
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% broadcasts
+\begin{frame}[fragile]
+%
+  \frametitle{Broadcasting operations}
+%
+  \begin{itemize}
+%
+  \item \function{MPI\_Alltoall} sends data from all processes to all processes
+    \begin{C}
+int MPI_Alltoall(
+        void* send_buffer, int send_count, MPI_Datatype send_datatype,
+        void* recv_buffer, int recv_count, MPI_Datatype recv_datatype,
+        MPI_Comm communicator
+        );
+   \end{C}
+%
+   a global scatter/gather
+%
+ \item use \function{MPI\_Bcast} to send the contents of a buffer from \identifier{root} to all
+   processes in a communicator
+   \begin{C}
+int MPI_Bcast(
+        void* buffer, int count, MPI_Datatype datatype,
+        int root, MPI_Comm communicator
+        );
+   \end{C}
+%
+  \end{itemize}
 %
 \end{frame}
 
