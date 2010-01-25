@@ -23,7 +23,7 @@ RECURSE_DIRS = \
 #--------------------------------------------------------------------------
 #
 
-all: tidy export
+all: tidy 
 
 tidy::
 	BLD_ACTION="tidy" $(MM) recurse
