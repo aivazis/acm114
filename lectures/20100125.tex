@@ -135,7 +135,7 @@
 % initializing the runtime environment
 \begin{frame}[fragile]
 %
-  \frametitle{Getting started}
+  \frametitle{At runtime}
 %
   \begin{itemize}
 %
@@ -502,6 +502,152 @@ int MPI_Bcast(
         int root, MPI_Comm communicator
         );
    \end{C}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% sending and receiving messages
+\begin{frame}[fragile]
+%
+  \frametitle{Point to point communication}
+%
+  \begin{itemize}
+%
+  \item to send a message
+    \begin{C}
+int MPI_Send(
+        void* buffer, int count, MPI_Datatype datatype,
+        int destination, int tag, MPI_Comm communicator
+        );
+   \end{C}
+%
+  \item to receive a message
+    \begin{C}
+int MPI_Recv(
+        void* buffer, int count, MPI_Datatype datatype,
+        int source, int tag, MPI_Comm communicator
+        );
+   \end{C}
+%
+  \item the \identifier{tag} enables choosing the order you may receive pending messages
+%
+  \item but for a given (\identifier{source},\identifier{tag},\identifier{communicator})
+    messages are received in the order they were sent
+%
+  \item receiving via wildcards: \identifier{MPI\_ANY\_SOURCE} and \identifier{MPI\_ANY\_TAG}
+% 
+  \item in {\em standard} communication mode, sending and receiving messages are {\em blocking},
+   so the function does not return until you can safely access the \identifier{buffer}
+   \begin{itemize}
+   \item to read, free, etc.
+   \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% communication modes
+\begin{frame}[fragile]
+%
+  \frametitle{Communication modes}
+%
+  \begin{itemize}
+%
+  \item in standard mode, the specification does not explicitly mention buffering strategy
+    \begin{itemize}
+    \item buffering messages would remove some of the access constraints but it requires time
+      and storage for the multiple copies
+    \item portability across implementations implies conservative assumptions about the order
+      of initiation of sends and receives to avoid deadlock
+    \end{itemize}
+%
+  \item in {\em ready} mode, you must post a receive before the matching send can be initiated
+    \begin{itemize}
+    \item \function{MPI\_Rsend}, \function{MPI\_Rrecv}
+    \end{itemize}
+%
+  \item in {\em buffered} mode, sends can be initiated, and may complete, regardless of when
+    the matching receive is initiate
+    \begin{itemize}
+    \item \function{MPI\_Bsend}, \function{MPI\_Brecv}
+    \end{itemize}
+%
+  \item in {\em synchronous} mode, sends can be initiated regardless of whether the matching
+    receive has been initiated, but the send will not return until the message has been
+    received
+    \begin{itemize}
+    \item \function{MPI\_Ssend}, \function{MPI\_Srecv}
+    \end{itemize}
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% asynchronous communications
+\begin{frame}[fragile]
+%
+  \frametitle{Asynchronous communication}
+%
+  \begin{itemize}
+%
+  \item there are non-blocking versions of all these
+    \begin{C}
+int MPI_Isend(
+        void* buffer, int count, MPI_Datatype datatype,
+        int destination, int tag, 
+        MPI_Comm communicator, MPI_Request* request
+        );
+    \end{C}
+    \begin{itemize}
+    \item faster, but you must take care to not access the message buffers until the messages
+      have been delivered
+    \end{itemize}
+%
+  \item for sends
+    \begin{itemize}
+    \item standard mode: \function{MPI\_Isend}
+    \item ready mode: \function{MPI\_Irsend}
+    \item buffered mode: \function{MPI\_Ibsend}
+    \item synchronous mode: \function{MPI\_Issend}
+    \end{itemize}
+%
+  \item only one call for receives: \function{MPI\_Irecv}
+%
+  \item extra \identifier{request} argument to check for completion of the request
+    \begin{itemize}
+    \item \function{MPI\_Test}, \function{MPI\_Wait} and their relatives
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% manipulating communicators
+\begin{frame}[fragile]
+%
+  \frametitle{Manipulating communicators}
+%
+  \begin{itemize}
+%
+  \item 
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% timing
+\begin{frame}[fragile]
+%
+  \frametitle{Timing}
+%
+  \begin{itemize}
+%
+  \item 
 %
   \end{itemize}
 %
