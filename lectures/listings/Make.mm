@@ -35,6 +35,8 @@ squares_threads: squares_threads.c
 squares_mpi: squares_mpi.c
 	$(CC) $< -o $@ -lmpi
 
+tick_mpi: tick_mpi.c
+	$(CC) $< -o $@ -lmpi
 
 PROJ_CLEAN += dilog *_threads *_mpi
 
