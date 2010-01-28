@@ -10,19 +10,115 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
 
-\lecture{Programming GPUs}{20100129}
+\lecture{Programming NVidia GPUs with CUDA}{20100129}
 
 % --------------------------------------
 % template
 \begin{frame}[fragile]
 %
-  \frametitle{Programming GPUs}
+  \frametitle{Hybrid architectures}
 %
   \begin{itemize}
 %
-  \item 
+  \item recall the layout of SIMD machines
+    \begin{itemize}
+    \item a large number of small, special purpose processors
+    \item a single ``controller'' manages the instruction stream
+      \begin{itemize}
+      \item each processor executes the same instruction on its local data
+      \item may be able  to specify which processors are active/idle
+      \end{itemize}
+    \end{itemize}
+    \begin{figure}
+      \centering
+      \includegraphics[width=.50\linewidth]{figures/simd.pdf}
+      \label{fig:simd}
+    \end{figure}
+%
+  \item modern hybrid systems based on GPUs have somewhat more elaborate architectures
+    \begin{itemize}
+      \item multi-tier memory layouts
+      \item large core counts per board
+      \item elaborate access rules that enable the hardware to be very fast
+      \item recent ones finally support double precision floating point arithmetic
+      \item broadly available -- it's in your graphics card, thanks to video gaming
+    \end{itemize}
 %
   \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% CUDA architecture
+\begin{frame}[fragile]
+%
+  \frametitle{nVidia GPU architecture}
+%
+  \begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{figures/simd.pdf}
+    \label{fig:simd}
+  \end{figure}
+%
+\end{frame}
+
+% --------------------------------------
+% getting started
+\begin{frame}[fragile]
+%
+  \frametitle{Getting started}
+%
+  \begin{itemize}
+%
+  \item getting the drivers, tools and code samples
+%
+  \item compiling and linking
+%
+  \item staging and launching
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% programming model
+\begin{frame}[fragile]
+%
+  \frametitle{The programming model fundamentals}
+%
+  \begin{itemize}
+%
+  \item memory
+%
+  \item thread granularity
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% hello world
+\begin{frame}[fragile]
+%
+  \frametitle{Hello world -- not!}
+  \label{slide:hello-world-cuda}
+%
+  \begin{C}
+%
+// kernel
+__global__ void vec_add(double* a, double* b, double* c) {
+    int i = threadIdx.x;
+    c[i] = a[i] + b[a];
+}
+
+int main(int argc, char* argv[]) {
+  // invoke the kernel
+  vec_add <<<1,N>>> (a,b,c);
+
+  return 0;
+}
+%
+  \end{C}
 %
 \end{frame}
 
