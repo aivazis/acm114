@@ -53,6 +53,7 @@ FIGURES = \
     figures/cuda-blocks.pdf \
     figures/distributed-memory.pdf \
     figures/generic-parallel-architecture.pdf \
+    figures/mpi-alltoall-pattern.pdf \
     figures/mpi-bcast-pattern.pdf \
     figures/mpi-data-patterns.pdf \
     figures/mpi-gather.pdf \
