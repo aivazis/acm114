@@ -54,9 +54,27 @@
 %
   \frametitle{nVidia GPU architecture}
 %
+  \begin{itemize}
+  \item The GPU boards are hosted by a conventional processor
+    \begin{itemize}
+    \item connected through PCI Express, which is the limiting factor in moving data to and
+      from the device memory
+    \end{itemize}
+  \item computing power and memory configurations vary from
+    \begin{itemize}
+    \item a single 2-core GPU with 128M of memory on older video cards
+    \item to 30 $\times$ 8-core SIMTs with 4G of memory on the Tesla C1060
+      \begin{itemize}
+      \item 240 cores; peak: 978 Gflops single precision, 78 Gflops double precision
+      \item rivulet.cacr.caltech.edu has four such boards
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}  
+  
+%
   \begin{figure}
     \centering
-    \includegraphics[width=1.0\linewidth]{figures/simd.pdf}
+    \includegraphics[width=0.75\linewidth]{figures/cuda-architecture.pdf}
     \label{fig:simd}
   \end{figure}
 %
