@@ -65,7 +65,7 @@
     \item a single 2-core GPU with 128M of memory on older video cards
     \item to 30 $\times$ 8-core SIMTs with 4G of memory on the Tesla C1060
       \begin{itemize}
-      \item 240 cores; peak: 978 Gflops single precision, 78 Gflops double precision
+      \item 240 cores; peak: 933 Gflops single precision, 78 Gflops double precision
       \item rivulet.cacr.caltech.edu has four such boards
       \end{itemize}
     \end{itemize}
@@ -89,12 +89,30 @@
   \begin{itemize}
 %
   \item getting the drivers, tools and code samples
+    \begin{itemize}
+    \item visit \href{http://nvidia.com/cuda}
+    \end{itemize}
 %
   \item compiling and linking
+    \begin{itemize}
+    \item \cc\ for CUDA: a few extensions
+    \item source is a mixture of the code that runs on the host and the {\em kernels} that run
+      on the \identifier{GPU}
+    \item there are restrictions on what kind of code you can include in a kernel
+    \item \identifier{nvcc} is the special compiler and linker
+    \end{itemize}
 %
   \item staging and launching
+    \begin{itemize}
+    \item the resulting executable runs on the hosts
+    \item launches threads on the GPU through special statements
+    \end{itemize}
 %
   \item the emulator
+    \begin{itemize}
+    \item the SDK comes with a software emulator
+    \item extremely useful for debugging
+    \end{itemize}
 %
   \item special hardware
     \begin{itemize}
@@ -103,6 +121,52 @@
     \end{itemize}
 %
   \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% sanity check
+\begin{frame}[fragile]
+%
+  \frametitle{Sanity check}
+  \label{slide:sanity-cuda}
+%
+  \begin{C}[basicstyle=\tt\bfseries\tiny]
+#include <cuda.h>
+#include <assert.h>
+
+int main(int argc, char* argv[]) {
+    int i;
+    int N = 12;
+    // allocate some buffers on the host
+    float *send_host = (float *) malloc(N*sizeof(float));
+    float *recv_host = (float *) malloc(N*sizeof(float));
+    // allocate matching ones on the device
+    float *send_device, *recv_device;
+    cudaMalloc((void **) &recv_device, N*sizeof(float));
+    cudaMalloc((void **) &send_device, N*sizeof(float));
+    // and initialize the host data
+    for (i=0; i<N; i++) {
+        send_host[i] = 2.0f + i*i;
+        recv_host[i] = 0.0f;
+    }
+    // send the data from the host to the device
+    cudaMemcpy(recv_device, send_host, N*sizeof(float), cudaMemcpyHostToDevice);
+    // move the data in device memory
+    cudaMemcpy(send_device, recv_device, N*sizeof(float), cudaMemcpyDeviceToDevice);
+    // get it back on the host
+    cudaMemcpy(recv_host, send_device, N*sizeof(float), cudaMemcpyDeviceToHost);
+    // check the result
+    for (i=0; i<N; i++) {
+      assert(send_host[i] == recv_host[i]);
+    }
+    // free the buffers;
+    free(send_host)l free(recv_host);
+    cudaFree(send_device); cudaFree(recv_device);
+
+    return 0;
+}
+  \end{C}
 %
 \end{frame}
 
