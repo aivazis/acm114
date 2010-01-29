@@ -26,7 +26,7 @@
     \item a single ``controller'' manages the instruction stream
       \begin{itemize}
       \item each processor executes the same instruction on its local data
-      \item may be able  to specify which processors are active/idle
+      \item may be able to specify which processors are active/idle
       \end{itemize}
     \end{itemize}
     \begin{figure}
@@ -76,6 +76,14 @@
 %
   \item staging and launching
 %
+  \item the emulator
+%
+  \item special hardware
+    \begin{itemize}
+    \item your video card
+    \item Tesla boards
+    \end{itemize}
+%
   \end{itemize}
 %
 \end{frame}
@@ -97,6 +105,20 @@
 \end{frame}
 
 % --------------------------------------
+% the execution model
+\begin{frame}[fragile]
+%
+  \frametitle{The execution model}
+%
+  \begin{itemize}
+%
+  \item 
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % hello world
 \begin{frame}[fragile]
 %
@@ -104,7 +126,6 @@
   \label{slide:hello-world-cuda}
 %
   \begin{C}
-%
 // kernel
 __global__ void vec_add(double* a, double* b, double* c) {
     int i = threadIdx.x;
@@ -117,7 +138,6 @@ int main(int argc, char* argv[]) {
 
   return 0;
 }
-%
   \end{C}
 %
 \end{frame}
