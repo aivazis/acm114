@@ -18,6 +18,16 @@ PROJECT = acm114
 
 all: tidy
 
+TESTS = \
+    dilog \
+    hello_threads \
+    hello_mpi \
+    squares_threads \
+    squares_mpi \
+    tick_mpi \
+    memxchng_cuda \
+    scale_cuda \
+
 #--------------------------------------------------------------------------
 #
 dilog: dilog.cc
@@ -38,7 +48,13 @@ squares_mpi: squares_mpi.c
 tick_mpi: tick_mpi.c
 	$(CC) $< -o $@ -lmpi
 
-PROJ_CLEAN += dilog *_threads *_mpi
+memxchng_cuda: memxchng.cu
+	nvcc $< -o $@
+
+scale_cuda: scale.cu
+	nvcc $< -o $@
+
+PROJ_CLEAN += ${TESTS}
 
 
 # end of file 

@@ -49,6 +49,8 @@ FIGURES = \
     figures/asymptotic-o.pdf \
     figures/asymptotic-omega.pdf \
     figures/asymptotic-theta.pdf \
+    figures/cuda-architecture.pdf \
+    figures/cuda-blocks.pdf \
     figures/distributed-memory.pdf \
     figures/generic-parallel-architecture.pdf \
     figures/mpi-bcast-pattern.pdf \

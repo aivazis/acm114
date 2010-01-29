@@ -132,12 +132,12 @@
   \label{slide:sanity-cuda}
 %
   \begin{C}[basicstyle=\tt\bfseries\tiny]
+// memxchng.cu: making sure the compiler and cuda runtime are accessible
 #include <cuda.h>
 #include <assert.h>
 
 int main(int argc, char* argv[]) {
-    int i;
-    int N = 12;
+    const int N = 12;
     // allocate some buffers on the host
     float *send_host = (float *) malloc(N*sizeof(float));
     float *recv_host = (float *) malloc(N*sizeof(float));
@@ -146,7 +146,7 @@ int main(int argc, char* argv[]) {
     cudaMalloc((void **) &recv_device, N*sizeof(float));
     cudaMalloc((void **) &send_device, N*sizeof(float));
     // and initialize the host data
-    for (i=0; i<N; i++) {
+    for (int i=0; i<N; i++) {
         send_host[i] = 2.0f + i*i;
         recv_host[i] = 0.0f;
     }
@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
     // get it back on the host
     cudaMemcpy(recv_host, send_device, N*sizeof(float), cudaMemcpyDeviceToHost);
     // check the result
-    for (i=0; i<N; i++) {
+    for (int i=0; i<N; i++) {
       assert(send_host[i] == recv_host[i]);
     }
     // free the buffers;
@@ -171,22 +171,6 @@ int main(int argc, char* argv[]) {
 \end{frame}
 
 % --------------------------------------
-% programming model
-\begin{frame}[fragile]
-%
-  \frametitle{The programming model fundamentals}
-%
-  \begin{itemize}
-%
-  \item memory
-%
-  \item thread granularity
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
 % the execution model
 \begin{frame}[fragile]
 %
@@ -194,33 +178,227 @@ int main(int argc, char* argv[]) {
 %
   \begin{itemize}
 %
-  \item 
+  \item \identifier{nvcc} splits the source code into two parts
+    \begin{itemize}
+    \item the code that runs on the host
+    \item the device {\em kernel}, the code that runs of the GPU 
+      \begin{itemize}
+      \item built out of specially marked subroutines in the program
+      \end{itemize}
+    \end{itemize}
+  \item the program is launched on the host and runs sequentially
+  \item at specific points in the code, the program
+    \begin{itemize}
+    \item launches the kernel and runs it on the GPU by many threads in parallel
+    \item the host continues on with out blocking 
+    \item until it encounters some blocking call to the CUDA runtime
+    \end{itemize}
+%
+  \item the execution context is specified by organizing
+    \begin{itemize}
+    \item groups of threads in {\em blocks}
+    \item groups of blocks in {\em grids}
+    \item blocks are scheduled and executed in arbitrary order
+      \begin{itemize}
+      \item in {\em warps}: 32 SIMD threads at a time (on currently available devices)
+      \end{itemize}
+    \end{itemize}
+%
+  \item at runtime, each thread is given
+    \begin{itemize}
+    \item \identifier{threadIdx}: its own thread id
+    \item \identifier{blockIdx}: the id of the block of active threads
+    \item \identifier{blockDim}: the geometry of the block of active threads
+    \end{itemize}
 %
   \end{itemize}
 %
 \end{frame}
 
 % --------------------------------------
-% hello world
+% the memory manipulations
 \begin{frame}[fragile]
 %
-  \frametitle{Hello world -- not!}
+  \frametitle{Adding a bit of work}
   \label{slide:hello-world-cuda}
 %
   \begin{C}
-// kernel
-__global__ void vec_add(double* a, double* b, double* c) {
-    int i = threadIdx.x;
-    c[i] = a[i] + b[a];
+// scale.cu: multiply each element in an array by a given float
+#include <cuda.h>
+#include <assert.h>
+
+// manipulate the host array
+void scale_host(float* a, float scale, int N) {
+    // loop over all array elements and multiply them by 2 
+    for (int i=0; i<N; i++) {
+        a[i] *= scale;
+    }
+    return;
 }
 
-int main(int argc, char* argv[]) {
-  // invoke the kernel
-  vec_add <<<1,N>>> (a,b,c);
-
-  return 0;
+// and here is the corresponding code for the GPU
+__global__ void scale_device(float* a, int N) {
+    // this thread is responsible for one element of the array
+    // compute its offset using the block geometry builtins
+    int idx = blockIdx.x * blockDim.x  + threadIdx.x;
+    // make sure we don't do go past the last one
+    if (idx < N) {
+        // do the arithmetic
+        a[idx] *= scale;
+    }
+    return;
 }
   \end{C}
+%
+\end{frame}
+
+% --------------------------------------
+% launching the kernel
+\begin{frame}[fragile]
+%
+  \frametitle{Launching the kernel}
+  \label{slide:launching-kernel-cuda}
+%
+  \begin{C}
+    . . .
+    // send the data from the host to the device
+    cudaMemcpy(
+        array_dev, send_host, N*sizeof(float), cudaMemcpyHostToDevice);
+
+    // set up the device execution context for our threads
+    // each thread will take care of one element
+    int blockSz = 4; // 4 threads per block
+    // compute the number of blocks needed
+    int nBlocks = N/blockSz; 
+    // adjust up to make sure we cover the entire array
+    if (N % nBlocks) {
+        nBlocks++;
+    }
+    // scale the array on the device
+    float scale = 2.0f;
+    scale_device <<<nBlocks, blockSz>>> (array_dev, scale, N);
+    // scale the input array on the host
+    scale_host(send_host, scale, N);
+
+    // get it back on the host
+    cudaMemcpy(
+        recv_host, array_dev, N*sizeof(float), cudaMemcpyDeviceToHost);
+    . . .
+
+  \end{C}
+%
+\end{frame}
+
+% --------------------------------------
+% the Tesla C1060
+\begin{frame}[fragile]
+%
+  \frametitle{Capabilities of the Tesla C1060 board}
+%
+  \begin{shell}[basicstyle=\tt\bfseries\tiny]
+
+Device 1: "Tesla C1060"
+  CUDA Driver Version:                           2.30
+  CUDA Runtime Version:                          2.30
+  CUDA Capability Major revision number:         1
+  CUDA Capability Minor revision number:         3
+  Total amount of global memory:                 4294705152 bytes
+  Number of multiprocessors:                     30
+  Number of cores:                               240
+  Total amount of constant memory:               65536 bytes
+  Total amount of shared memory per block:       16384 bytes
+  Total number of registers available per block: 16384
+  Warp size:                                     32
+  Maximum number of threads per block:           512
+  Maximum sizes of each dimension of a block:    512 x 512 x 64
+  Maximum sizes of each dimension of a grid:     65535 x 65535 x 1
+  Maximum memory pitch:                          262144 bytes
+  Texture alignment:                             256 bytes
+  Clock rate:                                    1.30 GHz
+  Concurrent copy and execution:                 Yes
+  Run time limit on kernels:                     No
+  Integrated:                                    No
+  Support host page-locked memory mapping:       Yes
+  Compute mode:                                  Default
+                                                 (multiple host threads can 
+                                                 use this device simultaneously)
+  \end{shell}
+%
+\end{frame}
+
+% --------------------------------------
+% memory hierarchy
+\begin{frame}[fragile]
+%
+  \frametitle{Memory hierarchy}
+%
+  \begin{minipage}{.55\linewidth}
+    \begin{itemize}
+    \item each thread gets
+      \begin{itemize}
+      \item a set of {\em registers}: really fast but limited memory
+      \item memory {\em shared} by all threads in its block
+      \item private {\em local} memory allocated from the global address space
+      \item access to the device {\em global} memory pool
+      \end{itemize}
+    \item {\em texture} and {\em constant} memory are beyond scope here
+      \begin{itemize}
+      \item not really useful for general purpose programming
+      \end{itemize}
+    \item latency and bandwidth for these memory pools are very different
+      \begin{itemize}
+      \item the name of the game: resource management
+      \item the price to pay for the astronomical performance
+      \end{itemize}
+    \end{itemize}
+  \end{minipage}
+ %
+  \hfill
+  \begin{minipage}{.40\linewidth}
+    \includegraphics[scale=0.65]{figures/cuda-blocks.pdf}
+  \end{minipage}
+%
+\end{frame}
+
+% --------------------------------------
+% summary
+\begin{frame}[fragile]
+%
+  \frametitle{Summary}
+%
+  \begin{itemize}
+%
+  \item GPUs brought hybrid programming models back to center stage
+    \begin{itemize}
+    \item but our parallelization steps don't change
+    \item just the balance between fine and coarse grain tasks
+    \end{itemize}
+%
+  \item high performance computing the way it used to be
+    \begin{itemize}
+    \item resource allocation and management strategies define performance
+    \item true enough for sequential, \mpi\ and threaded programs anyway
+    \end{itemize}
+%
+  \item barely scratched the surface here
+    \begin{itemize}
+    \item let me know if you are interested in pursuing further
+    \end{itemize}
+%
+  \item if you must program in a hybrid model
+    \begin{itemize}
+    \item why not write multi-threaded host programs
+      \begin{itemize}
+      \item to take advantage of mode devices per host
+      \item to overlap calculations on the host and GPU
+      \end{itemize}
+    \item why not use \mpi\ as well and scale out to multiple nodes
+      \begin{itemize}
+      \item for some really massive calculations!
+      \end{itemize}
+    \end{itemize}
+%
+  \end{itemize}
 %
 \end{frame}
 
