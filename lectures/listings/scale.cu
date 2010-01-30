@@ -29,7 +29,7 @@ __global__ void scale_dev(float* array, float scale, int N) {
     // this thread is responsible for one element of the array
     // compute its offset using the block geometry builtins
     int idx = blockIdx.x * blockDim.x  + threadIdx.x;
-    // make sure we don't do go past the last one
+    // make sure we don't go past the last one
     if (idx < N) {
         // do the arithmetic
         array[idx] *= scale;
