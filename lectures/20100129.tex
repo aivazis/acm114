@@ -66,7 +66,7 @@
     \item to 30 $\times$ 8-core SIMTs with 4G of memory on the Tesla C1060
       \begin{itemize}
       \item 240 cores; peak: 933 Gflops single precision, 78 Gflops double precision
-      \item rivulet.cacr.caltech.edu has four such boards
+      \item \href{rivulet.cacr.caltech.edu} has four such boards
       \end{itemize}
     \end{itemize}
   \end{itemize}  
@@ -104,7 +104,7 @@
 %
   \item staging and launching
     \begin{itemize}
-    \item the resulting executable runs on the hosts
+    \item the resulting executable runs on the host
     \item launches threads on the GPU through special statements
     \end{itemize}
 %
@@ -161,7 +161,7 @@ int main(int argc, char* argv[]) {
       assert(send_host[i] == recv_host[i]);
     }
     // free the buffers;
-    free(send_host)l free(recv_host);
+    free(send_host); free(recv_host);
     cudaFree(send_device); cudaFree(recv_device);
 
     return 0;
@@ -190,7 +190,7 @@ int main(int argc, char* argv[]) {
   \item at specific points in the code, the program
     \begin{itemize}
     \item launches the kernel and runs it on the GPU by many threads in parallel
-    \item the host continues on with out blocking 
+    \item the host continues on without blocking 
     \item until it encounters some blocking call to the CUDA runtime
     \end{itemize}
 %
@@ -237,7 +237,7 @@ void scale_host(float* a, float scale, int N) {
 }
 
 // and here is the corresponding code for the GPU
-__global__ void scale_device(float* a, int N) {
+__global__ void scale_device(float* a, float scale, int N) {
     // this thread is responsible for one element of the array
     // compute its offset using the block geometry builtins
     int idx = blockIdx.x * blockDim.x  + threadIdx.x;
@@ -389,7 +389,7 @@ Device 1: "Tesla C1060"
     \begin{itemize}
     \item why not write multi-threaded host programs
       \begin{itemize}
-      \item to take advantage of mode devices per host
+      \item to take advantage of more devices per host
       \item to overlap calculations on the host and GPU
       \end{itemize}
     \item why not use \mpi\ as well and scale out to multiple nodes
