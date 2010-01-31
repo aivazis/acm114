@@ -30,6 +30,13 @@
 
 % figures
 \usepackage{graphicx}
+\definecolor{acm114@cream}{rgb}{0.96, .95, .89}
+\definecolor{acm114@sand}{rgb}{0.86, .85, .77}
+\definecolor{acm114@stone}{rgb}{0.55, .54, .46}
+\definecolor{acm114@leather}{rgb}{0.48, .47, .38}
+\definecolor{acm114@olive}{rgb}{0.28, .29, .25}
+\definecolor{acm114@lava}{rgb}{0.25, .23, .22}
+
 
 % listings and their configurations
 \usepackage[slide,algoruled,linesnumbered,noend]{algorithm2e}
@@ -41,14 +48,9 @@
 
 \usepackage{subfigure}
 \usepackage{textcomp}
-\usepackage{listings}
 
-\definecolor{acm114@cream}{rgb}{0.96, .95, .89}
-\definecolor{acm114@sand}{rgb}{0.86, .85, .77}
-\definecolor{acm114@stone}{rgb}{0.55, .54, .46}
-\definecolor{acm114@leather}{rgb}{0.48, .47, .38}
-\definecolor{acm114@olive}{rgb}{0.28, .29, .25}
-\definecolor{acm114@lava}{rgb}{0.25, .23, .22}
+\usepackage{listings}
+\lstloadlanguages{C,C++,python,bash}
 
 \lstnewenvironment{shell}[2][]{
   \lstset{
@@ -148,6 +150,39 @@
     %
     #1
   }}{}
+
+\lstnewenvironment{C++}[2][]{
+  \lstset{
+    language=C++,
+    columns=flexible,
+    upquote=true,
+    %
+    aboveskip=\medskipamount,
+    belowskip=\smallskipamount,
+    %
+    numbers=left,
+    numberstyle=\color{acm114@stone}\tiny,
+    firstnumber=last,
+    stepnumber=1,
+    numbersep=5pt,
+    numberblanklines=true,
+    %
+    basicstyle=\tt\bfseries\scriptsize,
+    keywordstyle=\color{acm114@leather}\bfseries,
+    commentstyle=\color{acm114@stone}\slshape,
+    stringstyle=\color{acm114@olive}\slshape,
+    showstringspaces=false,
+    %
+    frame=,
+    captionpos=t,
+    backgroundcolor=\color{acm114@cream},
+    xleftmargin=0em,
+    xrightmargin=0em,
+    %
+    escapeinside={/*}{*/},
+    %
+    #1
+  }}{#2}
 
 % references
 \usepackage[numbers]{natbib}
