@@ -13,6 +13,50 @@
 \lecture{A look at parallelism and implementations}{20100201}
 
 % --------------------------------------
+% problem statement
+\begin{frame}[fragile]
+%
+  \frametitle{Approximating $\Li$ using a numerical quadrature}
+%
+  \begin{itemize}
+%
+  \item the second homework assignment involved $\Li(z)$, defined by
+    \begin{equation*}
+      \Li(z) \bydef - \int_{0}^{z} dz' \; \frac{\log(1-z')}{z'}
+    \end{equation*}
+%
+    \item the assignment asked for approximating this integral using a simple
+      quadrature based on the mid-point rule
+      \begin{equation*}
+      \Li(z) 
+      \approx 
+      \Li(z, N) 
+      \bydef
+      - \frac{z}{N} \sum_{n=0}^{N-1} \left.
+        \frac{\log(1-z')}{z'}
+      \right|_{z'=(n+\frac{1}{2})\frac{z}{N}}
+    \end{equation*}
+%
+    \item three implementations
+      \begin{itemize}
+      \item sequential: to get a feeling for how to convert the algorithm into a functioning
+        program
+      \item parallel using threads: to walk through the parallelization steps and use
+        \identifier{pthreads} to get better performance
+      \item parallel using \mpi: to get a feel for how \mpi-based programs solve the task
+        partitioning problem
+      \end{itemize}
+%
+    \item let's walk through composing, building and running my solutions
+      \begin{itemize}
+      \item on my desktop, on \href{mind-meld.cacr.caltech.edu}, and on \href{shc.cacr.caltech.edu}
+      \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % the sequential driver - preamble
 \begin{frame}[fragile]
 %
@@ -739,8 +783,15 @@ int main(int argc, char* argv[]) {
 %
   \frametitle{Building and running the \mpi\ driver}
 %
+  \begin{itemize}
+  \item on my desktop, or \href{mind-meld.cacr.caltech.edu}
+    \begin{itemize}
+    \item where there is no queue manager
+    \end{itemize}
+  \end{itemize}
+%
   \begin{shell}{}
-#> g++ dilog_mpi.cc -o dilog_mpi -lmpi_cxx -lmpi
+#> mpic++ dilog_mpi.cc -o dilog_mpi -lmpi_cxx -lmpi
 #> mpirun -np 4 dilog_mpi -N 1e7 -z 1.0
 Li2(1)=
  computed: 1.6449340301295035
@@ -756,6 +807,44 @@ real    0m3.697s
 user    0m0.018s
 sys     0m0.015s
 #>
+  \end{shell}
+%
+\end{frame}
+
+% --------------------------------------
+% running the mpi driver
+\begin{frame}[fragile]
+%
+  \frametitle{Running the \mpi\ driver on a shared resource}
+%
+  \begin{itemize}
+  \item on \href{shc.cacr.caltech.edu} there is a queue manager
+    \begin{itemize}
+    \item don't use \identifier{mpirun}: you are running on the head node
+    \item instead, request a dedicated node
+    \end{itemize}
+  \end{itemize}
+%
+  \begin{shell}{}
+# shc-a> mpic++ dilog_mpi.cc -o dilog_mpi
+# shc-a> qsub -I -l nodes=1:core8 -l walltime=0:15:00
+qsub: waiting for job 105059.mistress to start
+qsub: job 105059.mistress ready
+Logging in as aivazis on shc168, a Linux-2.x_x86_64 system
+  setting up: (environment) (aliases) (machines) (tools: Linux-2.x_x86_64)
+# shc168> time mpirun -np 8 dilog_mpi -N 1e9 -z 1.0
+Li2(1)=
+ computed: 1.6449340044883614
+    exact: 1.6449340668482264
+    error: 3.79102520315773892e-08
+
+real    0m10.501s
+user    1m14.642s
+sys     0m0.273s
+# shc168> exit
+logout
+qsub: job 105059.mistress completed
+# shc-a>
   \end{shell}
 %
 \end{frame}
