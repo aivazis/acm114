@@ -161,6 +161,33 @@ int main(int argc, char* argv[]) {
 \end{frame}
 
 % --------------------------------------
+% running the sequential driver
+\begin{frame}[fragile]
+%
+  \frametitle{Building and running the sequential driver}
+%
+  \begin{shell}{}
+#> g++ dilog_sequential.cc -o dilog_sequential
+#> dilog_sequential -N 1e7 -z 1.0
+Li2(1)=
+ computed: 1.6449340282186398
+    exact: 1.6449340668482264
+    error: 2.34839726522278546e-08
+#> time dilog_sequential -N 1e9 -z 1.0
+Li2(1)=
+ computed: 1.6449339414016682
+    exact: 1.6449340668482264
+    error: 7.62623625958871898e-08
+
+real    0m19.885s
+user    0m19.877s
+sys     0m0.003s
+#>
+  \end{shell}
+%
+\end{frame}
+
+% --------------------------------------
 % the threaded driver - preamble
 \begin{frame}[fragile]
 %
@@ -401,7 +428,7 @@ int main(int argc, char* argv[]) {
 % the threaded driver - main program
 \begin{frame}[fragile]
 %
-  \frametitle{Threaded implementation - part 7}
+  \frametitle{Threaded implementation - part 8}
 %
   \begin{itemize}
   \item error checking and the invocation of the task master
@@ -434,7 +461,7 @@ int main(int argc, char* argv[]) {
 % the threaded driver - main program
 \begin{frame}[fragile]
 %
-  \frametitle{Threaded implementation - part 8}
+  \frametitle{Threaded implementation - part 9}
 %
   \begin{itemize}
   \item the task master -- printing out the answers
@@ -467,6 +494,33 @@ int main(int argc, char* argv[]) {
   \end{lstlisting}
 %
   \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% running the threaded driver
+\begin{frame}[fragile]
+%
+  \frametitle{Building and running the threaded driver}
+%
+  \begin{shell}{}
+#> g++ dilog_threads.cc -o dilog_threads -pthread
+#> dilog_threads -N 1e7 -z 1.0 -t 4
+Li2(1)=
+ computed: 1.6449340301295035
+    exact: 1.6449340668482264
+    error: 2.23223068274304058e-08
+#> time dilog_threads -N 1e9 -z 1.0 -t 8
+Li2(1)=
+ computed: 1.6449340044883614
+    exact: 1.6449340668482264
+    error: 3.79102520315773892e-08
+
+real    0m2.803s
+user    0m20.693s
+sys     0m0.006s
+#>
+  \end{shell}
 %
 \end{frame}
 
@@ -676,6 +730,33 @@ int main(int argc, char* argv[]) {
   \end{lstlisting}
 %
   \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% running the mpi driver
+\begin{frame}[fragile]
+%
+  \frametitle{Building and running the \mpi\ driver on mind-meld}
+%
+  \begin{shell}{}
+#> g++ dilog_mpi.cc -o dilog_mpi -lmpi_cxx -lmpi
+#> mpirun -np 4 dilog_mpi -N 1e7 -z 1.0
+Li2(1)=
+ computed: 1.6449340301295035
+    exact: 1.6449340668482264
+    error: 2.23223068274304058e-08
+#> time mpirun -np 8 dilog_mpi -N 1e9 -z 1.0
+Li2(1)=
+ computed: 1.6449340044883614
+    exact: 1.6449340668482264
+    error: 3.79102520315773892e-08
+
+real    0m3.697s
+user    0m0.018s
+sys     0m0.015s
+#>
+  \end{shell}
 %
 \end{frame}
 
