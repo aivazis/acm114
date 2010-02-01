@@ -52,13 +52,6 @@ int main(int argc, char* argv[]) {
             break;
         }
     }
-
-    // build a database of the known dilogarithm values
-    const double pi = M_PI;
-    std::map<double, double> answers;
-    answers[1.0] = pi*pi/6;
-    answers[-1.0] = -pi*pi/12;
-
     // error checking
     // abort if N < 1
     if (N < 1) {
@@ -71,6 +64,11 @@ int main(int argc, char* argv[]) {
         std::cout << "math domain error: z > 1" << std::endl;
         return 0;
     } 
+    // build a database of the known dilogarithm values
+    const double pi = M_PI;
+    std::map<double, double> answers;
+    answers[1.0] = pi*pi/6;
+    answers[-1.0] = -pi*pi/12;
 
     // compute
     double value = dilog(z, N);

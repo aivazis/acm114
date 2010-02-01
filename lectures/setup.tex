@@ -51,34 +51,35 @@
 
 \usepackage{listings}
 \lstloadlanguages{C,C++,python,bash}
+\lstset{
+  columns=flexible,
+  upquote=true,
+  % 
+  aboveskip=\medskipamount,
+  belowskip=\smallskipamount,
+  % 
+  numbers=left,
+  numberstyle=\color{acm114@stone}\tiny,
+  stepnumber=1,
+  numbersep=5pt,
+  numberblanklines=true,
+  % 
+  basicstyle=\tt\bfseries\scriptsize,
+  keywordstyle=\color{acm114@leather}\bfseries,
+  commentstyle=\color{acm114@stone}\slshape,
+  stringstyle=\color{acm114@olive}\slshape,
+  showstringspaces=false,
+  % 
+  frame=,
+  captionpos=t,
+  backgroundcolor=\color{acm114@cream},
+  xleftmargin=0em,
+  xrightmargin=0em
+} 
 
 \lstnewenvironment{shell}[2][]{
   \lstset{
     language=bash,
-    %
-    columns=flexible,
-    upquote=true,
-    %
-    aboveskip=\bigskipamount,
-    belowskip=\bigskipamount,
-    %
-    numbers=left,
-    numberstyle=\color{acm114@stone}\tiny,
-    stepnumber=1,
-    numbersep=5pt,
-    numberblanklines=true,
-    %
-    basicstyle=\tt\tiny,
-    keywordstyle=,
-    commentstyle=\color{acm114@stone}\slshape\bfseries,
-    stringstyle=\color{acm114@olive}\slshape,
-    showstringspaces=false,
-    %
-    frame=none,
-    captionpos=t,
-    backgroundcolor=\color{acm114@cream},
-    xleftmargin=0em,
-    xrightmargin=0em,
     %
     escapeinside={\#@}{@},
     %
@@ -89,31 +90,6 @@
   \lstset{
     language=python,
     morekeywords={self,yield,False,True,None},
-    %
-    columns=flexible,
-    upquote=true,
-    %
-    aboveskip=\bigskipamount,
-    belowskip=\bigskipamount,
-    %
-    numbers=left,
-    numberstyle=\color{acm114@stone}\tiny,
-    stepnumber=1,
-    numbersep=5pt,
-    numberblanklines=true,
-    %
-    basicstyle=\tt\scriptsize,
-    keywordstyle=\color{acm114@leather}\bfseries,
-    commentstyle=\color{acm114@stone}\slshape,
-    stringstyle=\color{acm114@olive}\slshape,
-    showstringspaces=false,
-    %
-    frame=none,
-    captionpos=t,
-    backgroundcolor=\color{acm114@cream},
-    xleftmargin=0em,
-    xrightmargin=0em,
-    %
     escapeinside={\#@}{@},
     %
     #1
@@ -122,29 +98,6 @@
 \lstnewenvironment{C}[1][]{
   \lstset{
     language=c,
-    columns=flexible,
-    upquote=true,
-    %
-    aboveskip=\medskipamount,
-    belowskip=\smallskipamount,
-    %
-    numbers=left,
-    numberstyle=\color{acm114@stone}\tiny,
-    stepnumber=1,
-    numbersep=5pt,
-    numberblanklines=true,
-    %
-    basicstyle=\tt\bfseries\scriptsize,
-    keywordstyle=\color{acm114@leather}\bfseries,
-    commentstyle=\color{acm114@stone}\slshape,
-    stringstyle=\color{acm114@olive}\slshape,
-    showstringspaces=false,
-    %
-    frame=,
-    captionpos=t,
-    backgroundcolor=\color{acm114@cream},
-    xleftmargin=0em,
-    xrightmargin=0em,
     %
     escapeinside={//@}{@},
     %
@@ -154,30 +107,6 @@
 \lstnewenvironment{C++}[2][]{
   \lstset{
     language=C++,
-    columns=flexible,
-    upquote=true,
-    %
-    aboveskip=\medskipamount,
-    belowskip=\smallskipamount,
-    %
-    numbers=left,
-    numberstyle=\color{acm114@stone}\tiny,
-    firstnumber=last,
-    stepnumber=1,
-    numbersep=5pt,
-    numberblanklines=true,
-    %
-    basicstyle=\tt\bfseries\scriptsize,
-    keywordstyle=\color{acm114@leather}\bfseries,
-    commentstyle=\color{acm114@stone}\slshape,
-    stringstyle=\color{acm114@olive}\slshape,
-    showstringspaces=false,
-    %
-    frame=,
-    captionpos=t,
-    backgroundcolor=\color{acm114@cream},
-    xleftmargin=0em,
-    xrightmargin=0em,
     %
     escapeinside={/*}{*/},
     %

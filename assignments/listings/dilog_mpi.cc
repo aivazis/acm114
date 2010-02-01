@@ -41,7 +41,7 @@ double dilog(double zprime, long N, int id, int processes) {
         z += dz;
     }
 
-    // collect the partial answers from all the proceses
+    // collect the partial answers from all the processes
     double value;
     MPI_Allreduce(&sum, &value, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
 
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
     double z = 1.0;
     // read the command line
     int command;
-    while ((command = getopt(argc, argv, "z:N:t:")) != -1) {
+    while ((command = getopt(argc, argv, "z:N:")) != -1) {
         switch (command) {
         case 'z':
             // get the argument of the dilogarithm 
