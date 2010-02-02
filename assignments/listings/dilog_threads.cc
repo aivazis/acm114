@@ -50,7 +50,7 @@ void* worker(void* arg) {
     double z = ctxt->z_low + dz/2;
     // loop over the subdivisions assigned to this thread
     double sum = 0.0;
-    for (int i=0; i < ctxt->subdivisions; i++) {
+    for (long i=0; i < ctxt->subdivisions; i++) {
         sum += std::log(1-z)/z;
         z += dz;
     }

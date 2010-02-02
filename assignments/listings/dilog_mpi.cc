@@ -36,7 +36,7 @@ double dilog(double zprime, long N, int id, int processes) {
     double sum = 0.0;
     double z = z_low + dz/2;
     // loop over the subdivisions assigned to this thread
-    for (int i=0; i < nominal_load; i++)  {
+    for (long i=0; i < nominal_load; i++)  {
         sum += std::log(1-z)/z;
         z += dz;
     }

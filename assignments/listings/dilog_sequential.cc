@@ -24,7 +24,7 @@ double dilog(double z, long N) {
     double x = dx/2;
     double sum = 0;
     // loop
-    for (int i=0; i < N; i++) {
+    for (long i=0; i < N; i++) {
         sum += std::log(1-x)/x;
         x += dx;
     }
@@ -35,7 +35,7 @@ double dilog(double z, long N) {
 // main program
 int main(int argc, char* argv[]) {
     //  default values for the command line options
-    int N = 1000;
+    long N = 1000;
     double z = 1.0;
 
     // read the command line
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
             break;
         // get the number of subdivisions
         case 'N':
-            N = (int) atof(optarg);
+            N = (long) atof(optarg);
             break;
         }
     }
