@@ -1,0 +1,39 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\lecture{Functional decomposition}{20100203}
+
+% --------------------------------------
+% problem statement
+\begin{frame}[fragile]
+%
+  \frametitle{Functional decomposition}
+%
+  \begin{itemize}
+%
+  \item parallelization by {\em functional decomposition} determines the fine grain parallel
+    tasks by partitioning the problem into semi-independent tasks
+%
+  \item our numerical integration examples fall in  this category
+    \begin{itemize}
+    \item partitioning identified the finest grain work unit as the evaluation of the integrand
+    \item little or no communication/synchronization is required among the tasks
+    \item coarsening consists of grouping fine grain tasks into larger work units in a straight
+      forward manner
+    \item the mapping of the coarse grain tasks onto processing units is trivial
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% end of file 

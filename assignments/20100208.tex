@@ -1,0 +1,66 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\pagestyle{headandfoot}
+\runningfootrule
+\firstpageheader{ACM/CS 114}{Assignment 3}{Due: 8 Feb 2010}
+\runningheader{}{}{}
+\firstpagefooter{}{}{}
+\runningfooter{ACM/CS 114}{Assignment 2}{\thepage}
+
+
+% --------------------------------------
+% Monte Carlo integration
+\def\Li{\mbox{\rm Li}_{2}}
+\def\dilog{\mbox{\tt dilog}}
+
+An alternative expression for dilogarithm $\Li$ is
+%
+\begin{equation}
+\Li(z) \bydef
+- \int_{0}^{z} dz' \; \frac{\log(1-z')}{z'} \label{eq:li-double}
+\end{equation}
+%
+which explains the name.
+
+\begin{questions}
+
+\question The effectiveness of computing using stochastic techniques is intimately related to
+the properties of the pseudo-random generator used.
+
+\begin{parts}
+  \part Choose a random number generator and use it to fill a container with 10 numbers between
+  0 and 1. Do you get the same 10 numbers every time you run the program? How can you seed your
+  generator so that each execution of your program produces the same sequence? How can you seed
+  it so that each execution produces different random numbers?
+
+  \part Use your generator to fill a container with $10^6$ numbers between 0 and 1. Partition
+  the interval $[0,1]$ into 10 bins of equal length and build a frequency histogram, i.e.~plot
+  the number of times random numbers from your container fall within each bin. What is the
+  average occupancy of the bins? What is the standard deviation?
+
+  \part Repeat the above steps using 100 bins.
+
+\end{parts}
+
+\question Let's use Monte Carlo integration to approximate the value of the integral in
+\eqref{li-double}. Implement the sequential version and test it for $z = 1$. How many integrand
+evaluations are required to get the error to drop below $10^{-4}$ and $10^{-6}$?
+
+\question Implement a parallel version using threads.
+
+\question Implement a parallel version using \mpi.
+
+\end{questions}
+
+
+% end of file 
