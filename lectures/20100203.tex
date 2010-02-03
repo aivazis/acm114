@@ -107,7 +107,7 @@
 %
   \item the integration is restricted to $\Omega$ by introducing
     \begin{equation}
-        \theta_{\Omega}
+        \Theta_{\Omega}
         =
         \left\{
           \begin{array}{ll}
@@ -121,7 +121,7 @@
     \begin{equation}
       I_{\Omega} (f)
       =
-      \int_{B} dx \, \theta_{\Omega} \, f
+      \int_{B} dx \, \Theta_{\Omega} \, f
       \label{eq:integral-box}
     \end{equation}
 %
@@ -158,12 +158,12 @@
     \end{equation}
 %
     and the sum over the points $x \in X_{\tilde{N}}$ can be extended to the entire sample
-    $X_{N}$ by using the filter $\theta_{\Omega}$
+    $X_{N}$ by using the filter $\Theta_{\Omega}$
 %
     \begin{equation}
       I_{\Omega} (f; X_{N})
       =
-      B \, \frac{1}{N} \sum_{x \in X_{N}} \theta_{\Omega} \, f(x)
+      B \, \frac{1}{N} \sum_{x \in X_{N}} \Theta_{\Omega} \, f(x)
     \end{equation}
 %
   \end{itemize}
@@ -184,7 +184,7 @@
     \begin{equation}
       I_{\Omega} (f; X_{N})
       =
-      B \, \frac{1}{N} \sum_{x \in X_{N}} \theta_{\Omega} \, f(x)
+      B \, \frac{1}{N} \sum_{x \in X_{N}} \Theta_{\Omega} \, f(x)
     \end{equation}
 %
   \item using
@@ -213,27 +213,71 @@
 % random number generators
 \begin{frame}[fragile]
 %
-  \frametitle{Random number generators}
+  \frametitle{Pseudo-random number generators}
 %
   \begin{itemize}
 %
-  \item 
+  \item essential when solving problems using stochastic methods
+  \item most generators are terrible, e.g.~\identifier{libc}
+    \begin{itemize}
+    \item always check that you are getting the statistics you expect
+    \item \identifier{/dev/random} is better, but not portable and produces integers only
+    \end{itemize}
+  \item get the GNU scientific library
+    \begin{itemize}
+    \item from \href{http://www.gnu.org/software/gsl}, or your OS distribution
+    \item broad scope, extensive documentation
+    \item thread safe
+    \item pick \RANLUX\ or something similar
+    \end{itemize}
+%
+  \item there are algorithms that use uniformly distributed random numbers to generate numbers
+    of any distribution function
 %
   \end{itemize}
 %
 \end{frame}
 
 % --------------------------------------
-% GSL
+% c++ implementation
 \begin{frame}[fragile]
 %
-  \frametitle{GSL -- the GNU scientific library}
+  \frametitle{Monte Carlo estimate of $\pi$}
 %
-  \begin{itemize}
-%
-  \item 
-%
-  \end{itemize}
+\begin{C}[basicstyle=\tt\bfseries\tiny]
+#include <cmath>
+#include <iostream>
+#include <gsl/gsl_rng.h>
+
+int main(int, char*[]) {
+    // the number of points in the sample
+    const long N = (long) 1.0e7;
+    // point counters
+    long interiorPoints = 0, totalPoints = 0;
+
+    // create the random number generator
+    gsl_rng * generator = gsl_rng_alloc(gsl_rng_ranlxs2);
+
+    // integrate by sampling some number of times
+    for (long i=0; i<N; ++i) {
+        // create a random point
+        double x = gsl_rng_uniform(generator);
+        double y = gsl_rng_uniform(generator);
+        // check whether it is inside the unit quarter circle
+        if ((x*x + y*y) <= 1.0) { // no need to waste time computing the square root
+            // update the interior point counter
+            interiorPoints++;
+        }
+        // update the total number of points
+        totalPoints++;
+    }
+
+    // print the results
+    std::cout << "pi: " << 4.*((double)interiorPoints)/totalPoints << std::endl;
+
+    return 0;
+}
+\end{C}
 %
 \end{frame}
 
