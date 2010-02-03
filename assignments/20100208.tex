@@ -23,14 +23,21 @@
 \def\Li{\mbox{\rm Li}_{2}}
 \def\dilog{\mbox{\tt dilog}}
 
-An alternative expression for dilogarithm $\Li$ is
+In this assignment, we will use Monte Carlo integration to compute an approximation to the
+value of $\pi$ by computing the area of the upper right quadrant of a unit circle centered at
+the origin, as shown in \figref{pie}.
 %
-\begin{equation}
-\Li(z) \bydef
-- \int_{0}^{z} dz' \; \frac{\log(1-z')}{z'} \label{eq:li-double}
-\end{equation}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=.75]{figures/pie.pdf}
+\caption{Estimating $\pi$ by computing the area of a quadrant of the unit circle
+  \label{fig:pie}}
+\end{figure}
 %
-which explains the name.
+
+You can get an estimate for $\pi/4$ by generating random points in the unit box and counting
+the fraction that fall within the shaded quarter circle.
+
 
 \begin{questions}
 
@@ -44,7 +51,7 @@ the properties of the pseudo-random generator used.
   it so that each execution produces different random numbers?
 
   \part Use your generator to fill a container with $10^6$ numbers between 0 and 1. Partition
-  the interval $[0,1]$ into 10 bins of equal length and build a frequency histogram, i.e.~plot
+  the interval $[0,1]$ into 10 bins of equal width and build a frequency histogram, i.e.~plot
   the number of times random numbers from your container fall within each bin. What is the
   average occupancy of the bins? What is the standard deviation?
 
@@ -52,15 +59,26 @@ the properties of the pseudo-random generator used.
 
 \end{parts}
 
-\question Let's use Monte Carlo integration to approximate the value of the integral in
-\eqref{li-double}. Implement the sequential version and test it for $z = 1$. How many integrand
-evaluations are required to get the error to drop below $10^{-4}$ and $10^{-6}$?
+\question Compute an estimate for $\pi$.
 
-\question Implement a parallel version using threads.
+\begin{parts}
 
-\question Implement a parallel version using \mpi.
+\part Implement the sequential version. How many points are required to get the error to
+drop below $10^{-3}$ and $10^{-5}$?
+
+\part Implement a parallel version using threads. Make sure that your random number
+generator is thread safe.
+
+\part Implement a parallel version using \mpi. Make sure that you seed your generator properly
+so that each process gets a different sequence of random numbers.
+\end{parts}
+
+\question Monte Carlo integration converges to the answer very slowly. However, it has the
+great advantage that its convergence properties are not affected by the dimensionality of the
+problem. Adapt one of your parallel implementations to compute another estimate for $\pi$ using
+the volume of the positive octant of a unit ball centered at the origin. How many points in
+three dimensions does it take to get the error to  drop below $10^{-5}$?
 
 \end{questions}
-
 
 % end of file 
