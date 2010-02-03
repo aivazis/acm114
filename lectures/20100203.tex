@@ -13,27 +13,54 @@
 \lecture{Functional decomposition}{20100203}
 
 % --------------------------------------
-% problem statement
+% functional decomposition
 \begin{frame}[fragile]
 %
   \frametitle{Functional decomposition}
 %
   \begin{itemize}
 %
-  \item parallelization by {\em functional decomposition} determines the fine grain parallel
-    tasks by partitioning the problem into semi-independent tasks
+  \item {\em functional decomposition} determines the fine grain parallel tasks by partitioning
+    the problem into semi-independent tasks that can be executed in parallel
 %
-  \item our numerical integration examples fall in  this category
+  \item our numerical integration examples fall in this category
     \begin{itemize}
-    \item partitioning identified the finest grain work unit as the evaluation of the integrand
-    \item little or no communication/synchronization is required among the tasks
+    \item partitioning identified the finest grain work unit as the evaluation of the
+      integrand; no need for fancy domain decomposition
+    \item little or no communication/synchronization is required among the tasks, i.e. the are
+      embarrassingly parallel
     \item coarsening consists of grouping fine grain tasks into larger work units in a straight
       forward manner
     \item the mapping of the coarse grain tasks onto processing units is trivial
     \end{itemize}
 %
+  \item in general, the computations involved in carrying out the coarse tasks are
+    computationally equivalent
+    \begin{itemize}
+    \item the computation is {\em self balancing}
+    \item or there is no need for sophisticated load balancing
+    \end{itemize}
+%
+  \item scalability and parallel efficiency are determined by the particulars of the problem,
+    such as inherent limitations on the largest problem size of interest
+%
   \end{itemize}
 %
 \end{frame}
+
+% --------------------------------------
+% relevant problems
+\begin{frame}[fragile]
+%
+  \frametitle{Blank}
+%
+  \begin{itemize}
+%
+  \item a variety of interesting problems can be cast in this form
+%
+  \end{itemize}
+%
+\end{frame}
+
 
 % end of file 
