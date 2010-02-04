@@ -27,7 +27,7 @@
     \begin{itemize}
     \item partitioning identified the finest grain work unit as the evaluation of the
       integrand; no need for fancy domain decomposition
-    \item little or no communication/synchronization is required among the tasks, i.e. the are
+    \item little or no communication/synchronization is required among the tasks, i.e. they are
       embarrassingly parallel
     \item coarsening consists of grouping fine grain tasks into larger work units in a straight
       forward manner
@@ -336,7 +336,7 @@ int main(int, char*[]) {
       processor, or a nearby one? when does this information become available?
     \end{itemize}
 %
-    \item there is a spectrum of available solution depending on how information about task
+    \item there is a spectrum of available solutions depending on how information about task
       details becomes available
       \begin{itemize}
       \item static: all necessary information is available initially
@@ -397,7 +397,7 @@ int main(int, char*[]) {
   \item task manager:
     \begin{itemize}
     \item maintain a central pool of tasks that are ready to be scheduled
-    \item once a processor completes its current task, assign it a new one form the pool
+    \item once a processor completes its current task, assign it a new one from the pool
     \item if a computation of a task generates more, add them to the pool
     \end{itemize}
 %
@@ -405,7 +405,7 @@ int main(int, char*[]) {
     \begin{itemize}
     \item tasks have no dependencies on each other
     \item tasks are very weakly inter-dependent (but not studied extensively)
-    \item task cost in not known
+    \item task cost is not known
     \item locality is not important
     \end{itemize}
 %
