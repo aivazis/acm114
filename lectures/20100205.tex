@@ -1,0 +1,134 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\lecture{Optimization}{20100205}
+
+% --------------------------------------
+% the problem in general
+\begin{frame}[fragile]
+%
+  \frametitle{Optimization}
+%
+  \begin{itemize}
+%
+  \item broadly speaking, given a function $f$ and a region $\Omega$ in its domain,
+    optimization seeks an $x \in \Omega$ such that $f(x)$ is an extremum; we write
+    \begin{equation}
+      \optimum{\Omega} f
+    \end{equation}
+% 
+    \item $f$ is often referred to as the {\em objective function}, $\Omega$ is known as {\em
+        configuration space}, and the $x \in \Omega$ are called {\em configurations}; other
+      names may be common in your field
+%
+    \item typically only interested in maxima or minima
+%
+    \item the configuration space $\Omega$ is an essential part of the problem
+      \begin{itemize}
+      \item may be specified in terms of {\em constraints} satisfied by allowable
+        configurations
+      \end{itemize}
+%
+  \item if $f$ is not convex, there may be more than one local extremum; {\em global
+      optimization} is the study of algorithms that converge to the actual extremum in finite
+    time.
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% parallel optimization
+\begin{frame}[fragile]
+%
+  \frametitle{Parallel optimization}
+%
+  \begin{itemize}
+%
+  \item sources of potential parallelism
+    \begin{itemize}
+    \item exploration of the configuration space
+    \item evaluation of $f$
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+
+% --------------------------------------
+% quasi-newton
+\begin{frame}[fragile]
+%
+  \frametitle{Overview of quasi-Newton}
+%
+  \begin{itemize}
+%
+    \item family of methods use the Taylor expansion of $f$ about an iterate $x$ to construct a
+      quadratic local approximation and use the first and second derivatives to find the
+      stationary point
+%
+    \item the Taylor expansion yields
+      \begin{equation}
+        f(x+dx) 
+        \approx 
+        f(x) 
+        + (\partial_{i} f) dx^{i} 
+        + \frac{1}{2} dx^{i} (\partial_{ij} f) dx^{j}
+    \end{equation}
+    in terms of the gradient $\partial_{i} f$ and the Hessian $\partial_{ij} f$ about the
+    iterate $x$
+% 
+  \item differentiate and set to 0 to provide the update step
+    \begin{equation}
+      \partial_{i} f + (\partial_{ij} f) dx^{j} \approx 0
+    \end{equation}
+    by inverting the Hessian
+%
+    \item the distinguishing features among members of this family are the way $(\partial_{ij}
+      f)$ is approximated since the secant equation
+      \begin{equation}
+        \partial_{i} f(x+dx) = \partial_{i} f(x) + (\partial_{ij} f(x)) dx^{j}
+      \end{equation}
+      is not enough to constrain it fully in more than one dimension
+% 
+  \end{itemize}
+% 
+\end{frame}
+
+% --------------------------------------
+% simulated annealing
+\begin{frame}[fragile]
+%
+  \frametitle{Simulated annealing}
+%
+  \begin{itemize}
+  \item 
+  \end{itemize}
+%
+\end{frame}
+
+
+% --------------------------------------
+% genetic algorithms
+\begin{frame}[fragile]
+%
+  \frametitle{Genetic algorithms}
+%
+  \begin{itemize}
+  \item 
+  \end{itemize}
+%
+\end{frame}
+
+
+% end of file 

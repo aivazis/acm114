@@ -10,7 +10,6 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %
 
-
 % language
 \usepackage[english]{babel}
 
@@ -121,6 +120,8 @@
 \def\newblock{\small}
 
 % misc
+\usepackage{stackrel}
+
 \usepackage{dcolumn}
 \newcolumntype{d}[1]{D{.}{.}{#1}}
 
@@ -146,6 +147,11 @@
 \def\GSL{\mbox{\tt\small GSL}}
 \def\RANLUX{\mbox{\tt\small RANLUX}}
 \def\NULL{\mbox{\tt\small NULL}}
+
+\def\extremum#1{\stackrel[#1]{}{\mbox{\rm ext}}\,}
+\def\maximum#1{\stackrel[#1]{}{\mbox{\rm max}}\,}
+\def\minimum#1{\stackrel[#1]{}{\mbox{\rm min}}\,}
+\def\optimum#1{\stackrel[#1]{}{\mbox{\rm opt}}\,}
 
 \def\cc{\mbox{\tt\small C}}
 \def\cpp{\mbox{\tt\small C++}}
