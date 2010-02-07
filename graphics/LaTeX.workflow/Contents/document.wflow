@@ -239,7 +239,6 @@ template = r"""
 \begin{document}
 
 {
-\color{blue}
 \begin{eqnarray*}
 %s
 \end{eqnarray*}
@@ -420,9 +419,10 @@ document.close()</string>
 				<key>ActionParameters</key>
 				<dict>
 					<key>COMMAND_STRING</key>
-					<string>cd /tmp
+					<string>PATH=/opt/local/bin
+cd /tmp
 /opt/local/bin/latex graffle.tex
-/opt/local/bin/dvips -E -f -X 1200 -Y 1200 graffle.dvi &gt; graffle.ps
+/opt/local/bin/dvips -q -E -X 1200 -Y 1200 graffle.dvi -o graffle.ps
 /opt/local/bin/epstopdf graffle.ps</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
@@ -924,40 +924,40 @@ rm -rf graffle.*</string>
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>00004EF5-D16B-452C-BDF3-4B700B5F141D</key>
+		<key>47B8CCFD-EAF0-47E5-9E06-A65E1100808A</key>
+		<dict>
+			<key>from</key>
+			<string>CEA16CE4-E36C-482F-B810-2202D05AC860 - CEA16CE4-E36C-482F-B810-2202D05AC860</string>
+			<key>to</key>
+			<string>A8FAAA5B-D90F-4F86-BC4A-13C8596AA263 - A8FAAA5B-D90F-4F86-BC4A-13C8596AA263</string>
+		</dict>
+		<key>66B3F3F4-397F-4D08-A34E-B53540F976F5</key>
 		<dict>
 			<key>from</key>
 			<string>90192859-4213-4A9B-822F-972B5F3989EC - 90192859-4213-4A9B-822F-972B5F3989EC</string>
 			<key>to</key>
 			<string>EC2B2155-C0A6-460D-8ACB-C1523935B4E6 - EC2B2155-C0A6-460D-8ACB-C1523935B4E6</string>
 		</dict>
-		<key>239FE176-23AB-4850-A7E6-9BE9DFBFBE27</key>
+		<key>8BF9D590-EE07-44E4-8ECE-5F2C6AAD6132</key>
 		<dict>
 			<key>from</key>
-			<string>EC2B2155-C0A6-460D-8ACB-C1523935B4E6 - EC2B2155-C0A6-460D-8ACB-C1523935B4E6</string>
-			<key>to</key>
 			<string>863E481B-983B-47B5-B20B-4E9170F4221E - 863E481B-983B-47B5-B20B-4E9170F4221E</string>
+			<key>to</key>
+			<string>CEA16CE4-E36C-482F-B810-2202D05AC860 - CEA16CE4-E36C-482F-B810-2202D05AC860</string>
 		</dict>
-		<key>930B6701-0A06-4B2A-93BE-D243FF08F0CB</key>
+		<key>B8F71777-DBC5-44E0-89C2-EEAA041F71F7</key>
 		<dict>
 			<key>from</key>
 			<string>26301FBD-D3A7-4547-9A3B-27BFABDF3830 - 26301FBD-D3A7-4547-9A3B-27BFABDF3830</string>
 			<key>to</key>
 			<string>90192859-4213-4A9B-822F-972B5F3989EC - 90192859-4213-4A9B-822F-972B5F3989EC</string>
 		</dict>
-		<key>B9F47E3D-0BC1-4660-AECC-774EDF198545</key>
+		<key>BA8C6BA7-C815-4A1D-80EE-C3D9FA5369BB</key>
 		<dict>
 			<key>from</key>
+			<string>EC2B2155-C0A6-460D-8ACB-C1523935B4E6 - EC2B2155-C0A6-460D-8ACB-C1523935B4E6</string>
+			<key>to</key>
 			<string>863E481B-983B-47B5-B20B-4E9170F4221E - 863E481B-983B-47B5-B20B-4E9170F4221E</string>
-			<key>to</key>
-			<string>CEA16CE4-E36C-482F-B810-2202D05AC860 - CEA16CE4-E36C-482F-B810-2202D05AC860</string>
-		</dict>
-		<key>FF01AE74-2796-4F5A-BF47-DD497A8FD80B</key>
-		<dict>
-			<key>from</key>
-			<string>CEA16CE4-E36C-482F-B810-2202D05AC860 - CEA16CE4-E36C-482F-B810-2202D05AC860</string>
-			<key>to</key>
-			<string>A8FAAA5B-D90F-4F86-BC4A-13C8596AA263 - A8FAAA5B-D90F-4F86-BC4A-13C8596AA263</string>
 		</dict>
 	</dict>
 	<key>state</key>
@@ -973,7 +973,7 @@ rm -rf graffle.*</string>
 				<key>subviewState</key>
 				<array>
 					<string>0.000000, 0.000000, 473.000000, 966.000000, NO</string>
-					<string>0.000000, 967.000000, 473.000000, 239.000000, NO</string>
+					<string>0.000000, 967.000000, 473.000000, 39.000000, NO</string>
 				</array>
 			</dict>
 			<key>actionsMinorSplitViewState</key>
@@ -1013,8 +1013,8 @@ rm -rf graffle.*</string>
 			<real>327</real>
 			<key>subviewState</key>
 			<array>
-				<string>0.000000, 0.000000, 473.000000, 1251.000000, NO</string>
-				<string>474.000000, 0.000000, 840.000000, 1251.000000, NO</string>
+				<string>0.000000, 0.000000, 473.000000, 1051.000000, NO</string>
+				<string>474.000000, 0.000000, 840.000000, 1051.000000, NO</string>
 			</array>
 		</dict>
 		<key>minorSplitViewState</key>
@@ -1023,14 +1023,14 @@ rm -rf graffle.*</string>
 			<real>0.0</real>
 			<key>subviewState</key>
 			<array>
-				<string>0.000000, 0.000000, 840.000000, 1060.000000, NO</string>
-				<string>0.000000, 1070.000000, 840.000000, 162.000000, NO</string>
+				<string>0.000000, 0.000000, 840.000000, 860.000000, NO</string>
+				<string>0.000000, 870.000000, 840.000000, 162.000000, NO</string>
 			</array>
 		</dict>
 		<key>windowFrame</key>
-		<string>{{1117, 50}, {1313, 1328}}</string>
+		<string>{{1961, 60}, {1313, 1128}}</string>
 		<key>workflowViewScrollPosition</key>
-		<string>{{0, 402}, {825, 1060}}</string>
+		<string>{{0, 602}, {825, 860}}</string>
 	</dict>
 	<key>workflowMetaData</key>
 	<dict>

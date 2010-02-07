@@ -45,6 +45,7 @@ SECTIONS = \
     20100201.tex \
     20100203.tex \
     20100205.tex \
+    20100208.tex \
     sandbox.tex \
 
 FIGURES = \
@@ -78,6 +79,29 @@ FIGURES = \
     figures/reduction-tree-sum.pdf \
     figures/shared-memory.pdf \
     figures/simd.pdf \
+    figures/structured.pdf \
+    figures/structured-1d-centered.pdf \
+    figures/structured-1d-left.pdf \
+    figures/structured-1d-middle.pdf \
+    figures/structured-1d-right.pdf \
+    figures/structured-1d-5c.pdf \
+    figures/structured-1d-51.pdf \
+    figures/structured-1d-52.pdf \
+    figures/structured-1d-54.pdf \
+    figures/structured-1d-55.pdf \
+    figures/structured-2d-centered.pdf \
+    figures/structured-2d-e.pdf \
+    figures/structured-2d-middle.pdf \
+    figures/structured-2d-n.pdf \
+    figures/structured-2d-ne.pdf \
+    figures/structured-2d-nw.pdf \
+    figures/structured-2d-s.pdf \
+    figures/structured-2d-se.pdf \
+    figures/structured-2d-sw.pdf \
+    figures/structured-2d-w.pdf \
+    figures/structured-coordinates.pdf \
+    figures/structured-partitioning.pdf \
+    figures/structured-updates.pdf \
     figures/threads-memory.pdf \
     figures/threads-reduction.pdf \
     figures/threads.pdf \

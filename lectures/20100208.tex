@@ -20,10 +20,362 @@
 %
   \begin{itemize}
 %
+  \item lattices: logically Cartesian grids
+    \begin{itemize}
+    \item flow, lattice dynamics, wave propagation, image processing
+    \end{itemize}
+%
+  \item suitable when it is possible to find an invertible map $\phi$ from the problem domain
+    $\Omega$ to $\mathbb{Z}^{d}$
+%
+  \item data representation: multi-dimensional arrays
+    \begin{itemize}
+    \item $\phi$ maps points in $\Omega$ to loop indices
+    \item with {\em guard cells} for enforcing boundary conditions
+    \end{itemize}
+% 
+  \end{itemize}
+%
+  \begin{figure}
+    \includegraphics[scale=0.5]{figures/structured.pdf}
+  \end{figure} 
+%
+\end{frame}
+
+% --------------------------------------
+% advantages
+\begin{frame}[fragile]
+%
+  \frametitle{Advantages}
+%
+  \begin{itemize}
+%
+  \item advantages: logically rectangular
+    \begin{itemize}
+    \item indexing: easy traversal using loops
+    \item fixed stride: predictable memory layout
+    \item topology: finding neighbors is trivial
+    \end{itemize}
+%
+    \item disadvantages:
+      \begin{itemize}
+      \item non-trivial geometries are hard to model
+      \end{itemize}
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% data layout
+\begin{frame}[fragile]
+%
+  \frametitle{Data layouts}
+%
+  \begin{itemize}
+%
+  \item na\"ive use of multi-dimensional arrays does not perform well
+    \begin{itemize}
+    \item for large problem sizes
+    \item for complex physics updates that require keeping track of multiple fields
+    \end{itemize}
+%
+  \item representing scalar, vector and tensor fields
+    \begin{itemize}
+    \item optimal layout is problem dependent
+    \item goal is to minimize cache misses while updating the fields
+    \end{itemize}
+%
+  \item the conventional mapping to arrays lays out the data in matrix form
+    \begin{itemize}
+    \item not necessarily the most convenient convention
+    \end{itemize}
+% 
+  \end{itemize}
+%
+  \begin{figure}
+    \includegraphics[scale=0.7]{figures/structured-coordinates.pdf}
+  \end{figure} 
+%
+\end{frame}
+
+% --------------------------------------
+% updates
+\begin{frame}[fragile]
+%
+  \frametitle{Updating the grid}
+%
+  \begin{itemize}
+%
+  \item updates: stencils and locality
+  \item steady state, explicit time integration
+% 
+  \end{itemize}
+%
+  \begin{figure}
+    \includegraphics[scale=0.5]{figures/structured-updates.pdf}
+  \end{figure} 
+%
+\end{frame}
+
+% --------------------------------------
+% numerics
+\begin{frame}[fragile]
+%
+  \frametitle{Computing derivatives}
+%
+  \begin{itemize}
+%
+  \item there are three different first order approximations
+    \begin{itemize}
+%
+    \item forward difference:
+      \begin{equation}
+      \partial \raisebox{-.4em}{\includegraphics{figures/structured-1d-centered.pdf}}
+      =
+      \frac{1}{\delta}
+      \left(
+        \raisebox{-.4em}{\includegraphics{figures/structured-1d-right.pdf}} 
+        -
+        \raisebox{-.4em}{\includegraphics{figures/structured-1d-middle.pdf}} 
+      \right)
+      \end{equation}
+%
+    \item backward difference:
+      \begin{equation}
+      \partial \raisebox{-.4em}{\includegraphics{figures/structured-1d-centered.pdf}}
+      =
+      \frac{1}{\delta}
+      \left(
+        \raisebox{-.4em}{\includegraphics{figures/structured-1d-middle.pdf}} 
+        -
+        \raisebox{-.4em}{\includegraphics{figures/structured-1d-left.pdf}} 
+      \right)
+      \end{equation}
+%
+    \item central difference:
+      \begin{equation}
+      \partial \raisebox{-.4em}{\includegraphics{figures/structured-1d-centered.pdf}}
+      =
+      \frac{1}{2\delta}
+      \left(
+        \raisebox{-.4em}{\includegraphics{figures/structured-1d-right.pdf}} 
+        -
+        \raisebox{-.4em}{\includegraphics{figures/structured-1d-left.pdf}} 
+      \right)
+      \end{equation}
+%
+    \end{itemize}
+    where $\delta$ is the uniform grid spacing
+%
+    \item forward and backward differences are most often used for {\em explicit} time
+      integration
+%
+    \item central differences are used to compute spatial derivatives
+%
+    \item the second order central difference is given by
+      \begin{equation}
+      \partial \raisebox{-.2em}{\includegraphics{figures/structured-1d-5c.pdf}}
+      =
+      \frac{1}{12\delta}
+      \left(
+        -
+        \raisebox{-.2em}{\includegraphics{figures/structured-1d-55.pdf}} 
+        +
+        8 \raisebox{-.2em}{\includegraphics{figures/structured-1d-54.pdf}} 
+        -
+        8 \raisebox{-.2em}{\includegraphics{figures/structured-1d-52.pdf}} 
+        +
+        \raisebox{-.2em}{\includegraphics{figures/structured-1d-51.pdf}} 
+      \right)
+      \end{equation}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% numerics
+\begin{frame}[fragile]
+%
+  \frametitle{Patial derivatives in two dimensions}
+%
+  \begin{itemize}
+%
+  \item let $\delta_{x}$ and $\delta_{y}$ be the uniform grid spacing along each dimension
+%
+  \item then, the first order central difference approximation to the spatial derivatives are
+    given by
+    \begin{eqnarray}
+      \partial_{x} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      & = &
+      \frac{1}{2\delta_{x}}
+      \left(
+        \raisebox{-.5em}{\includegraphics{figures/structured-2d-e.pdf}} 
+        - \raisebox{-.5em}{\includegraphics{figures/structured-2d-w.pdf}} 
+      \right )
+      \\
+      \partial_{y} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      & = &
+      \frac{1}{2\delta_{y}}
+      \left(
+        \raisebox{-.5em}{\includegraphics{figures/structured-2d-s.pdf}} 
+        - \raisebox{-.5em}{\includegraphics{figures/structured-2d-n.pdf}} 
+      \right )
+    \end{eqnarray}
+%
+  \item and the second order derivatives are given by
+    \begin{eqnarray}
+      \partial_{xx} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      & = &
+      \frac{1}{\delta_{x}^{2}}
+      \left(
+        \raisebox{-.5em}{\includegraphics{figures/structured-2d-e.pdf}} 
+        -2 \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}} 
+        + \raisebox{-.5em}{\includegraphics{figures/structured-2d-w.pdf}} 
+      \right )
+      \\
+      \partial_{yy} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      & = &
+      \frac{1}{\delta_{y}^{2}}
+      \left(
+        \raisebox{-.5em}{\includegraphics{figures/structured-2d-s.pdf}} 
+        -2 \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}} 
+        + \raisebox{-.5em}{\includegraphics{figures/structured-2d-n.pdf}} 
+      \right )
+      \\
+      \partial_{xy} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      & = &
+      \frac{1}{4\delta_{x}\delta_{y}}
+      \left(
+        \raisebox{-.5em}{\includegraphics{figures/structured-2d-se.pdf}} 
+        - \raisebox{-.5em}{\includegraphics{figures/structured-2d-ne.pdf}} 
+        - \raisebox{-.5em}{\includegraphics{figures/structured-2d-sw.pdf}} 
+        + \raisebox{-.5em}{\includegraphics{figures/structured-2d-nw.pdf}} 
+      \right )
+    \end{eqnarray}
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% example
+\begin{frame}[fragile]
+%
+  \frametitle{Example}
+%
+  \begin{itemize}
+%
+  \item Laplace's equation
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% parallelizing
+\begin{frame}[fragile]
+%
+  \frametitle{Parallelization}
+%
+  \begin{itemize}
+%
+  \item with threads
+  \item with \mpi
+%
+  \end{itemize}
+% 
+\end{frame}
+
+% --------------------------------------
+% threads
+\begin{frame}[fragile]
+%
+  \frametitle{Overview}
+%
+  \begin{itemize}
+%
   \item
 % 
   \end{itemize}
 %
 \end{frame}
+
+
+% --------------------------------------
+% partitioning
+\begin{frame}[fragile]
+%
+  \frametitle{Partitioning the grid}
+%
+  \begin{itemize}
+%
+  \item {\em domain decomposition}
+% 
+  \end{itemize}
+%
+  \begin{figure}
+    \includegraphics[scale=0.6]{figures/structured-partitioning.pdf}
+  \end{figure} 
+%
+\end{frame}
+
+% --------------------------------------
+% communication patterns
+\begin{frame}[fragile]
+%
+  \frametitle{Communication patterns}
+%
+  \begin{itemize}
+%
+  \item
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% mpi virtual topologies
+\begin{frame}[fragile]
+%
+  \frametitle{Using virtual topologies in \mpi}
+%
+  \begin{itemize}
+%
+  \item
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% synchronous exchanges
+\begin{frame}[fragile]
+%
+  \frametitle{Synchronous exchanges}
+%
+  \begin{itemize}
+%
+  \item
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% asynchronous exchanges
+\begin{frame}[fragile]
+%
+  \frametitle{Asynchronous exchanges}
+%
+  \begin{itemize}
+%
+  \item
+% 
+  \end{itemize}
+%
+\end{frame}
+
 
 % end of file 
