@@ -432,6 +432,40 @@
 % \end{figure}
 
 % --------------------------------------
+% parallelization
+\begin{frame}[fragile]
+%
+  \frametitle{Parallelization}
+%
+  \begin{itemize}
+%
+  \item the finest grain of work is clearly the cell update based on the value of its four
+    nearest neighbors
+%
+  \item the shared memory implementation requires
+    \begin{itemize}
+    \item a scheme so that threads can update cells without the need for locks
+    \item while maximizing locality of data access
+    \item even the computation of the convergence criterion can be parallelized
+    \end{itemize}
+%
+  \item with \mpi
+    \begin{itemize}
+    \item must partition the mesh among processes
+    \item each process work on its own subgrid
+    \item communication is required every iteration
+    \item parallel convergence testing involves a collective operation
+    \end{itemize}
+%
+  \end{itemize}
+%
+  \begin{figure}
+    \includegraphics[scale=0.4]{figures/structured-partitioning.pdf}
+  \end{figure} 
+% 
+\end{frame}
+
+% --------------------------------------
 % sequential
 \begin{frame}[fragile]
 %
@@ -517,6 +551,18 @@ void initialize(Grid & grid) {};
 void laplace(Grid & grid, double tolerance){};
 
   \end{lstlisting}
+%
+  \begin{itemize}
+%
+  \item we have separated out {\em visualization} in a different object to support different
+    formats without disturbing the data representation
+%
+  \item \identifier{initialize} and \identifier{laplace} have trivial implementations
+    \begin{itemize}
+    \item enables testing the scaffolding without worrying about the solver
+      implementation just yet
+    \end{itemize}
+  \end{itemize}
 % 
 \end{frame}
 
@@ -581,114 +627,8 @@ public:
 void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
     return;
 }
-
   \end{lstlisting}
 % 
 \end{frame}
-
-% --------------------------------------
-% parallelizing
-\begin{frame}[fragile]
-%
-  \frametitle{Parallelization}
-%
-  \begin{itemize}
-%
-  \item with threads
-  \item with \mpi
-%
-  \end{itemize}
-% 
-\end{frame}
-
-% --------------------------------------
-% threads
-\begin{frame}[fragile]
-%
-  \frametitle{Parallelization with threads}
-%
-  \begin{itemize}
-%
-  \item
-% 
-  \end{itemize}
-%
-\end{frame}
-
-
-% --------------------------------------
-% partitioning
-\begin{frame}[fragile]
-%
-  \frametitle{Partitioning the grid}
-%
-  \begin{itemize}
-%
-  \item {\em domain decomposition}
-% 
-  \end{itemize}
-%
-  \begin{figure}
-    \includegraphics[scale=0.6]{figures/structured-partitioning.pdf}
-  \end{figure} 
-%
-\end{frame}
-
-% --------------------------------------
-% communication patterns
-\begin{frame}[fragile]
-%
-  \frametitle{Communication patterns}
-%
-  \begin{itemize}
-%
-  \item
-% 
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% mpi virtual topologies
-\begin{frame}[fragile]
-%
-  \frametitle{Using virtual topologies in \mpi}
-%
-  \begin{itemize}
-%
-  \item
-% 
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% synchronous exchanges
-\begin{frame}[fragile]
-%
-  \frametitle{Synchronous exchanges}
-%
-  \begin{itemize}
-%
-  \item
-% 
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% asynchronous exchanges
-\begin{frame}[fragile]
-%
-  \frametitle{Asynchronous exchanges}
-%
-  \begin{itemize}
-%
-  \item
-% 
-  \end{itemize}
-%
-\end{frame}
-
 
 % end of file 
