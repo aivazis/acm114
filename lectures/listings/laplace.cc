@@ -23,7 +23,7 @@ void laplace(Grid & grid, double tolerance);
 // the solution representation
 class Grid {
 public:
-    // interface
+    // interface: TBD
 
     // meta methods
 public:
@@ -31,7 +31,7 @@ public:
     ~Grid();
 
     // disabled interface
-    // grid own dynamic memory, so don't let the compiler screw up
+    // grid will own dynamic memory, so don't let the compiler screw up
 private:
     Grid(const Grid &);
     const Grid & operator= (const Grid &);
@@ -76,7 +76,6 @@ void laplace(Grid & grid, double tolerance) {
 
 // main program
 int main(int argc, char* argv[]) {
-
     // default values for our user configurable settings
     long N = 10;
     double tolerance = 1.0e-6;
@@ -110,6 +109,8 @@ int main(int argc, char* argv[]) {
 
     // open a stream to hold the answer
     std::fstream output(filename, std::ios_base::out);
+
+    // build a visualizer and render the solution in our chosen format
     Visualizer visualizer;
     visualizer.csv(potential, output);
 
