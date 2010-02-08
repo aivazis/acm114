@@ -41,7 +41,7 @@ hello_mpi: hello_mpi.c
 	$(CC) $< -o $@ -lmpi
 
 laplace: laplace.cc
-	$(CXX) $< -o $@
+	$(CXX) -g $< -o $@
 
 squares_threads: squares_threads.c
 	$(CXX) -pthread $< -o $@
