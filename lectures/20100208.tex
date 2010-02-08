@@ -541,6 +541,8 @@ int main(int argc, char* argv[]) {
   \item back up to the beginning of the file
     \begin{lstlisting}[language=c++,name=seq:frame, firstnumber=1]
 #include <getopt.h>
+#include <cmath>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 
@@ -557,7 +559,7 @@ void laplace(Grid & grid, double tolerance){};
   \item we have separated out {\em visualization} in a different object to support different
     formats without disturbing the data representation
 %
-  \item \identifier{initialize} and \identifier{laplace} have trivial implementations
+  \item \identifier{initialize} and \identifier{laplace} have trivial implementations for now
     \begin{itemize}
     \item enables testing the scaffolding without worrying about the solver
       implementation just yet
