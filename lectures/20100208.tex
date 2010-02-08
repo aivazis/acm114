@@ -57,9 +57,16 @@
     \item topology: finding neighbors is trivial
     \end{itemize}
 %
-    \item disadvantages:
+    \item disadvantages: many problems don't fit in simple boxes...
       \begin{itemize}
       \item non-trivial geometries are hard to model
+      \item the representational simplicity disappears quickly as modeling complexity increases
+        \begin{itemize}
+        \item domain feature resolution
+        \item complex initial and boundary conditions 
+        \item adaptive refinement: allowing the properties of the solution to direct where
+          computational resources are spent
+        \end{itemize}
       \end{itemize}
 % 
   \end{itemize}
@@ -70,11 +77,16 @@
 % data layout
 \begin{frame}[fragile]
 %
-  \frametitle{Data layouts}
+  \frametitle{Data layout and performance}
 %
   \begin{itemize}
 %
-  \item na\"ive use of multi-dimensional arrays does not perform well
+  \item in multi-tier memory architectures
+    \begin{itemize}
+    \item good data locality enables efficient cache use
+    \end{itemize}
+%
+  \item multi-dimensional arrays: na\"ive implementations do not perform well
     \begin{itemize}
     \item for large problem sizes
     \item for complex physics updates that require keeping track of multiple fields
@@ -90,6 +102,8 @@
     \begin{itemize}
     \item not necessarily the most convenient convention
     \end{itemize}
+%
+  \item take ownership of the indexing function
 % 
   \end{itemize}
 %
@@ -107,13 +121,28 @@
 %
   \begin{itemize}
 %
-  \item updates: stencils and locality
-  \item steady state, explicit time integration
+  \item two broad categories of problems
+    \begin{itemize}
+      \item steady state problems: iterates represent progress towards enforcing a spatial
+        relationship dictated by the differential equation
+      \item time dependent problems: iterates represent the time evolution of the solution to
+        the spatial problem
+    \end{itemize}
+%
+  \item two broad strategies:
+    \begin{itemize}
+      \item {\em implicit} solvers cast the constraints among iterates as a large system of
+        simultaneous equations
+      \item {\em explicit} solvers keep track of only a small number of the iterates
+        and use them to advance the solution one step at a time
+    \end{itemize}
+%
+  \item the complexity of the update determines the {\em stencil}
 % 
   \end{itemize}
 %
   \begin{figure}
-    \includegraphics[scale=0.5]{figures/structured-updates.pdf}
+    \includegraphics[scale=0.4]{figures/structured-updates.pdf}
   \end{figure} 
 %
 \end{frame}
@@ -207,7 +236,7 @@
   \item then, the first order central difference approximations to the spatial derivatives are
     given by
     \begin{eqnarray}
-      \partial_{x} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      \partial_{x} \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}}
       & = &
       \frac{1}{2\delta_{x}}
       \left(
@@ -215,7 +244,7 @@
         - \raisebox{-.5em}{\includegraphics{figures/structured-2d-w.pdf}} 
       \right )
       \\
-      \partial_{y} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      \partial_{y} \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}}
       & = &
       \frac{1}{2\delta_{y}}
       \left(
@@ -226,7 +255,7 @@
 %
   \item and the second order derivatives are given by
     \begin{eqnarray}
-      \partial_{xx} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      \partial_{xx} \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}}
       & = &
       \frac{1}{\delta_{x}^{2}}
       \left(
@@ -235,7 +264,7 @@
         + \raisebox{-.5em}{\includegraphics{figures/structured-2d-w.pdf}} 
       \right )
       \\
-      \partial_{yy} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      \partial_{yy} \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}}
       & = &
       \frac{1}{\delta_{y}^{2}}
       \left(
@@ -244,7 +273,7 @@
         + \raisebox{-.5em}{\includegraphics{figures/structured-2d-n.pdf}} 
       \right )
       \\
-      \partial_{xy} \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      \partial_{xy} \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}}
       & = &
       \frac{1}{4\delta_{x}\delta_{y}}
       \left(
@@ -263,52 +292,46 @@
 % example
 \begin{frame}[fragile]
 %
-  \frametitle{Solving a simple PDE on a structured grid}
+  \frametitle{Solving a simple PDE on a uniform structured grid}
 %
   \begin{itemize}
 %
-  \item Laplace's equation
+  \item Laplace equation over some domain $\Omega \in \mathbb{R}^{d}$, subject to Dirichlet
+    boundary conditions
     \begin{equation}
-      \nabla^{2} \phi = 0
+      \begin{array}{ccc}
+      \nabla^{2} \phi = 0 & {\rm with} & \phi(\partial \Omega) = f
+      \end{array}
       \label{eq:laplace}
     \end{equation}
-    over some domain $\Omega \in \mathbb{R}^{d}$, subject to Dirichlet boundary conditions
-    \begin{equation}
-      \phi(\partial \Omega) = f
-    \end{equation}
+%
+  \item let the grid be uniform: $\delta_{x} =  \delta_{y}$
 %
   \item in two dimensions, using first order central differences, \eqref{laplace} becomes
     \begin{eqnarray}
-      \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      (\partial_{xx} + \partial_{yy})
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}}
       & = &
-      \frac{1}{4}
-      (
-        \raisebox{-.5em}{\includegraphics{figures/structured-2d-n.pdf}} 
-        + \raisebox{-.5em}{\includegraphics{figures/structured-2d-e.pdf}} 
-        + \raisebox{-.5em}{\includegraphics{figures/structured-2d-s.pdf}} 
-        + \raisebox{-.5em}{\includegraphics{figures/structured-2d-w.pdf}} 
-      ) 
+      0
       \\
+      4 \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}} 
       & = &
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-e.pdf}} 
+      + \raisebox{-.5em}{\includegraphics{figures/structured-2d-w.pdf}} 
+      + \raisebox{-.5em}{\includegraphics{figures/structured-2d-s.pdf}} 
+      + \raisebox{-.5em}{\includegraphics{figures/structured-2d-n.pdf}} 
+    \end{eqnarray}
+%
+  \item and translates into the following constraint among grid elements
+    \begin{equation}
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-middle.pdf}}
+      =
       \frac{1}{4}
       \raisebox{-.5em}{\includegraphics{figures/structured-2d-average.pdf}} 
       \label{eq:laplace-central}
-    \end{eqnarray}
+    \end{equation}
+    using a shorthand for the sum of the neighboring cells
 %
-  \item we will solve this equation using the Jacobi iterative scheme:
-    \begin{itemize}
-    \item make an initial guess for $\phi$ over a discretization of $\Omega$
-    \item apply the boundary conditions
-    \item interpret \eqref{laplace-central} as an update step to compute the next iteration
-      \begin{equation}
-      \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}_{t+1}
-      =
-      \frac{1}{4}
-      \raisebox{-.5em}{\includegraphics{figures/structured-2d-average.pdf}}_{t}
-      \end{equation}
-    \item stop when a convergence criterion is met
-    \end{itemize}
-% 
   \end{itemize}
 %
 \end{frame}
@@ -340,6 +363,20 @@
       \phi(x,y) = \sin(\pi x) e^{-\pi y}
     \end{equation}
 %
+  \item we will solve this equation using the Jacobi iterative scheme:
+    \begin{itemize}
+    \item make an initial guess for $\phi$ over a discretization of $\Omega$
+    \item apply the boundary conditions
+    \item interpret \eqref{laplace-central} as an update step to compute the next iteration
+      \begin{equation}
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}_{t+1}
+      =
+      \frac{1}{4}
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-average.pdf}}_{t}
+      \end{equation}
+    \item stop when a convergence criterion is met
+    \end{itemize}
+%
   \end{itemize}
 %
 \end{frame}
@@ -348,14 +385,61 @@
 % parallelizing
 \begin{frame}[fragile]
 %
+  \frametitle{Implementation strategy}
+%
+  \begin{itemize}
+%
+  \item grid resolution:
+    \begin{itemize}
+     \item ideally determined by analyzing the boundary conditions, since discrete sampling may
+       wash out sharp features
+     \item for our simple example, this can be done as part of the solver initialization
+     \item we will use an $N \times N$ grid and let $N$ be user specified so we can control the
+       problem size
+       \begin{equation}
+         \delta_{x} = \delta_{y} = \frac{1}{N}
+       \end{equation}
+     \end{itemize}
+%
+  \item data layout
+    \begin{itemize}
+    \item investigate the effect of data locality by trying out various layouts
+    \end{itemize}
+%
+  \item setting up the update
+    \begin{itemize}
+      \item we only need to keep track of two iterants
+      \item can be done in place; do you see how?
+    \end{itemize}
+%
+  \item convergence criterion
+    \begin{itemize}
+    \item we will stop iterating when
+      \begin{equation}
+        \maximum{\Omega} (\phi_{t+1} - \phi_{t})) < \epsilon
+      \end{equation}
+      and let the user specify $\epsilon$
+    \end{itemize}
+%
+  \end{itemize}
+% 
+\end{frame}
+
+%
+% \begin{figure}
+%   \centering
+%   \includegraphics[scale=0.5]{figures/structured-dirichlet.pdf}
+% \end{figure}
+
+% --------------------------------------
+% sequential
+\begin{frame}[fragile]
+%
   \frametitle{Sequential implementation}
 %
   \begin{itemize}
 %
-  \item resolution? ideally determined by analyzing the boundary conditions
-  \item data layout? cache and locality: arrays vs. custom allocations
-  \item setting up the update: in place? copy? indexing function?
-  \item convergence criterion?
+  \item
 %
   \end{itemize}
 % 

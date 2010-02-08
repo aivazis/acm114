@@ -101,6 +101,7 @@ FIGURES = \
     figures/structured-2d-sw.pdf \
     figures/structured-2d-w.pdf \
     figures/structured-coordinates.pdf \
+    figures/structured-dirichlet.pdf \
     figures/structured-partitioning.pdf \
     figures/structured-updates.pdf \
     figures/threads-memory.pdf \

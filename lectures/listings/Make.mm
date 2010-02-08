@@ -22,6 +22,7 @@ TESTS = \
     dilog \
     hello_threads \
     hello_mpi \
+    laplace \
     squares_threads \
     squares_mpi \
     tick_mpi \
@@ -39,6 +40,9 @@ hello_threads: hello_threads.cc
 hello_mpi: hello_mpi.c
 	$(CC) $< -o $@ -lmpi
 
+laplace: laplace.cc
+	$(CXX) $< -o $@
+
 squares_threads: squares_threads.c
 	$(CXX) -pthread $< -o $@
 
@@ -54,7 +58,7 @@ memxchng_cuda: memxchng.cu
 scale_cuda: scale.cu
 	nvcc $< -o $@
 
-PROJ_CLEAN += ${TESTS}
+PROJ_CLEAN += ${TESTS} laplace.csv
 
 
 # end of file 
