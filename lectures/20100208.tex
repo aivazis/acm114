@@ -685,7 +685,6 @@ void initialize(Grid & grid) {
 %
   \frametitle{The grid class declaration}
 %
-%
   \begin{lstlisting}[language=c++,name=seq:grid]
 // the solution representation
 class Grid {
@@ -724,7 +723,6 @@ private:
 %
   \frametitle{The grid class implementation}
 %
-%
   \begin{lstlisting}[language=c++,name=seq:grid]
 // the grid implementation
 // interface
@@ -758,7 +756,6 @@ Grid::~Grid() {
 %
   \frametitle{Grid visualization}
 %
-%
   \begin{lstlisting}[language=c++,name=seq:visualizer]
 // the visualizer class
 class Visualizer {
@@ -791,11 +788,37 @@ void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
 \end{frame}
 
 % --------------------------------------
+% the results of initialization
+\begin{frame}[fragile]
+%
+  \frametitle{Printing out the initial grid}
+%
+  \begin{itemize}
+  \item we should be able to print out the initialized grid
+  \end{itemize}
+%
+  \begin{shell}{}
+#> mm laplace
+#> laplace
+#> cat laplace.csv
+0,0,0.3826,0.7071,0.9239,1,0.9239,0.7071,0.3827,1.225e-16
+1,0,0,0,0,0,0,0,0,0
+2,0,0,0,0,0,0,0,0,0
+3,0,0,0,0,0,0,0,0,0
+4,0,0,0,0,0,0,0,0,0
+5,0,0,0,0,0,0,0,0,0
+6,0,0,0,0,0,0,0,0,0
+7,0,0,0,0,0,0,0,0,0
+8,0,0.01654,0.0306,0.03992,0.04321,0.0399,0.03056,0.01654,0
+  \end{shell}
+%
+\end{frame}
+
+% --------------------------------------
 % the solver
 \begin{frame}[fragile]
 %
   \frametitle{Fleshing out the solver}
-%
 %
   \begin{lstlisting}[language=c++,name=seq:solver]
 // the solver driver

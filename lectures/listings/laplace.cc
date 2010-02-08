@@ -46,8 +46,7 @@ private:
     const size_t _size;
     const double _delta;
     double* _block;
-    // disabled interface
-    // grid will own dynamic memory, so don't let the compiler screw up
+    // disable these
 private:
     Grid(const Grid &);
     const Grid & operator= (const Grid &);
