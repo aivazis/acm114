@@ -263,11 +263,82 @@
 % example
 \begin{frame}[fragile]
 %
-  \frametitle{Example}
+  \frametitle{Solving a simple PDE on a structured grid}
 %
   \begin{itemize}
 %
   \item Laplace's equation
+    \begin{equation}
+      \nabla^{2} \phi = 0
+      \label{eq:laplace}
+    \end{equation}
+    over some domain $\Omega \in \mathbb{R}^{d}$, subject to Dirichlet boundary conditions
+    \begin{equation}
+      \phi(\partial \Omega) = f
+    \end{equation}
+%
+  \item in two dimensions, using first order central differences, \eqref{laplace} becomes
+    \begin{eqnarray}
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}
+      & = &
+      \frac{1}{4}
+      (
+        \raisebox{-.5em}{\includegraphics{figures/structured-2d-n.pdf}} 
+        + \raisebox{-.5em}{\includegraphics{figures/structured-2d-e.pdf}} 
+        + \raisebox{-.5em}{\includegraphics{figures/structured-2d-s.pdf}} 
+        + \raisebox{-.5em}{\includegraphics{figures/structured-2d-w.pdf}} 
+      ) 
+      \\
+      & = &
+      \frac{1}{4}
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-average.pdf}} 
+      \label{eq:laplace-central}
+    \end{eqnarray}
+%
+  \item we will solve this equation using the Jacobi iterative scheme:
+    \begin{itemize}
+    \item make an initial guess for $\phi$ over a discretization of $\Omega$
+    \item apply the boundary conditions
+    \item interpret \eqref{laplace-central} as an update step to compute the next iteration
+      \begin{equation}
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}_{t+1}
+      =
+      \frac{1}{4}
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-average.pdf}}_{t}
+      \end{equation}
+    \item stop when a convergence criterion is met
+    \end{itemize}
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% example
+\begin{frame}[fragile]
+%
+  \frametitle{An example}
+%
+  \begin{itemize}
+%
+% 
+  \item specifically,
+    \begin{itemize}
+    \item let $\Omega$ be the unit box in two dimensions
+    \item and let $\phi$ satisfy the following boundary conditions
+      \begin{equation}
+        \begin{array}{rcrcll}
+          & & \phi(x,0) & = & \sin(\pi x)           & 0 \leq x \leq 1 \\
+          & & \phi(x,1) & = & \sin(\pi x) e^{-\pi}  & 0 \leq x \leq 1 \\
+          \phi(0,y) & = & \phi(1, y) & = & 0        & 0 \leq y \leq 1
+        \end{array}
+      \end{equation}
+    \end{itemize}
+%
+  \item the exact solution is given by
+    \begin{equation}
+      \phi(x,y) = \sin(\pi x) e^{-\pi y}
+    \end{equation}
 % 
   \end{itemize}
 %

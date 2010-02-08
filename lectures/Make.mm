@@ -89,6 +89,7 @@ FIGURES = \
     figures/structured-1d-52.pdf \
     figures/structured-1d-54.pdf \
     figures/structured-1d-55.pdf \
+    figures/structured-2d-average.pdf \
     figures/structured-2d-centered.pdf \
     figures/structured-2d-e.pdf \
     figures/structured-2d-middle.pdf \
