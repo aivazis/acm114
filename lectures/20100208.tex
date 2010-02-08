@@ -339,9 +339,26 @@
     \begin{equation}
       \phi(x,y) = \sin(\pi x) e^{-\pi y}
     \end{equation}
-% 
+%
   \end{itemize}
 %
+\end{frame}
+
+% --------------------------------------
+% parallelizing
+\begin{frame}[fragile]
+%
+  \frametitle{Sequential implementation}
+%
+  \begin{itemize}
+%
+  \item resolution? ideally determined by analyzing the boundary conditions
+  \item data layout? cache and locality: arrays vs. custom allocations
+  \item setting up the update: in place? copy? indexing function?
+  \item convergence criterion?
+%
+  \end{itemize}
+% 
 \end{frame}
 
 % --------------------------------------
