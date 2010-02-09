@@ -58,7 +58,7 @@ memxchng_cuda: memxchng.cu
 scale_cuda: scale.cu
 	nvcc $< -o $@
 
-PROJ_CLEAN += ${TESTS} laplace.csv
+PROJ_CLEAN += ${TESTS} laplace.csv *.dSYM
 
 
 # end of file 
