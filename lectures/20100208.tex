@@ -369,10 +369,10 @@
     \item apply the boundary conditions
     \item interpret \eqref{laplace-central} as an update step to compute the next iteration
       \begin{equation}
-      \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}_{t+1}
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-centered.pdf}}_{t}
       =
       \frac{1}{4}
-      \raisebox{-.5em}{\includegraphics{figures/structured-2d-average.pdf}}_{t}
+      \raisebox{-.5em}{\includegraphics{figures/structured-2d-average.pdf}}_{t-1}
       \end{equation}
     \item stop when a convergence criterion is met
     \end{itemize}
@@ -416,7 +416,7 @@
     \begin{itemize}
     \item we will stop iterating when
       \begin{equation}
-        \maximum{\Omega} (\phi_{t+1} - \phi_{t})) < \epsilon
+        \maximum{\Omega} (\phi_{t} - \phi_{t-1})) < \epsilon
       \end{equation}
       and let the user specify $\epsilon$
     \end{itemize}
