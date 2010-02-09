@@ -1,0 +1,315 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\lecture{Structured grids - II}{20100210}
+
+% --------------------------------------
+% sequential
+\begin{frame}[fragile]
+%
+  \frametitle{Sequential implementation - the preamble}
+%
+  \begin{itemize}
+  \item back up to the beginning of the file
+    \begin{lstlisting}[language=c++,name=seq:frame, firstnumber=1]
+#include <getopt.h>
+#include <cmath>
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+
+// forward declarations
+class Grid;
+class Visualizer;
+
+// the solver; does nothing for the time being
+void initialize(Grid & grid) {};
+void laplace(Grid & grid, double tolerance){};
+
+    \end{lstlisting}
+%
+  \item we have separated out {\em visualization} in a different object to support different
+    formats without disturbing the data representation
+%
+  \item \identifier{initialize} and \identifier{laplace} have trivial implementations for now
+    \begin{itemize}
+    \item enables testing the scaffolding without worrying about the solver
+      implementation just yet
+    \end{itemize}
+  \end{itemize}
+% 
+\end{frame}
+
+% --------------------------------------
+% sequential
+\begin{frame}[fragile]
+%
+  \frametitle{Sequential implementation - the grid object stub}
+%
+  \begin{lstlisting}[language=c++,name=seq:frame]
+// the solution representation
+class Grid {
+    // interface: TBD
+public:
+
+    // meta methods
+public:
+    Grid(size_t size);
+    ~Grid();
+
+    // private data members: TBD
+private:
+
+    // disabled interface
+    // grid will own dynamic memory, so don't let the compiler screw up
+private:
+    Grid(const Grid &);
+    const Grid & operator= (const Grid &);
+};
+
+// the grid implementation
+Grid::Grid(size_t size) {
+}
+
+Grid::~Grid() {
+}
+
+  \end{lstlisting}
+% 
+\end{frame}
+
+% --------------------------------------
+% sequential
+\begin{frame}[fragile]
+%
+  \frametitle{Sequential implementation - the visualizer stub}
+%
+  \begin{lstlisting}[language=c++,name=seq:frame, firstnumber=1]
+// the visualizer class
+class Visualizer {
+    // local type aliases
+public:
+    typedef std::ostream stream_t;
+
+    // interface
+public:
+    void csv(const Grid & grid, stream_t & stream);
+
+    // meta methods
+public:
+    inline Visualizer() {}
+};
+
+// the Visualizer class implementation
+void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
+    return;
+}
+  \end{lstlisting}
+%
+
+\begin{itemize}
+\item the code now compiles and links
+  \begin{itemize}
+  \item consistency check that the object collaborations are ok, for now
+  \item can be tested for command line option parsing
+  \end{itemize}
+\end{itemize}
+% 
+\end{frame}
+
+% --------------------------------------
+% the grid initializer
+\begin{frame}[fragile]
+%
+  \frametitle{Fleshing out the initializer}
+%
+  \begin{lstlisting}[language=c++,name=seq:initializer]
+// the grid initializer:
+// zero out and apply our boundary conditions 
+void initialize(Grid & grid) {
+    // ask the grid to clear its memory
+    grid.clear();
+    // apply the dirichlet conditions
+    for (size_t cell=0; cell < grid.size(); cell++) {
+        // evaluate sin(pi x)
+        double sin = std::sin(cell * grid.delta() * pi);
+        // along the x axis, at top and  bottom
+        grid(cell, 0) = sin;
+        grid(cell, grid.size()-1) = sin * std::exp(-pi);
+        // along the y axis, left and right
+        grid(0, cell) = 0.0;
+        grid(grid.size()-1, cell) = 0.0;
+    }
+
+    return;
+}
+  \end{lstlisting}
+%
+  \begin{itemize}
+  \item the grid knows its size, its spacing $\delta$, and can zero out its  memory
+  \item access to grid elements happens through an overloaded \identifier{operator()} so we can
+    {\em encapsulate} the indexing function
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the grid declaration
+\begin{frame}[fragile]
+%
+  \frametitle{The grid class declaration}
+%
+  \begin{lstlisting}[language=c++,name=seq:grid]
+// the solution representation
+class Grid {
+    // interface
+public:
+    // zero out all cells
+    void clear();
+    // the grid dimensions
+    size_t size() const {return _size;}
+    // the grid spacing
+    double delta() const {return _delta;}
+    // access to the cells
+    double & operator()(size_t i, size_t j) {return _block[j*_size+i];}
+    double operator()(size_t i, size_t j) const {return _block[j*_size+i];}
+    // meta methods
+public:
+    Grid(size_t size);
+    ~Grid();
+    // data members
+private:
+    const size_t _size;
+    const double _delta;
+    double* _block;
+    // disable these
+private:
+    Grid(const Grid &);
+    const Grid & operator= (const Grid &);
+};
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the grid implementation
+\begin{frame}[fragile]
+%
+  \frametitle{The grid class implementation}
+%
+  \begin{lstlisting}[language=c++,name=seq:grid]
+// the grid implementation
+// interface
+void Grid::clear() {
+    for (size_t i=0; i < _size*_size; i++) {
+        _block[i] = 0.0;
+    }
+
+    return;
+}
+
+// constructor
+Grid::Grid(size_t size) :
+    _size(size), 
+    _delta((1.0 - 0.0)/(size-1)),
+    _block(new double[size*size]) {
+}
+
+// destructor
+Grid::~Grid() {
+    delete [] _block;
+}
+
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the grid visualizer
+\begin{frame}[fragile]
+%
+  \frametitle{Grid visualization}
+%
+  \begin{lstlisting}[language=c++,name=seq:visualizer]
+// the visualizer class
+class Visualizer {
+    // local type aliases
+public:
+    typedef std::ostream stream_t;
+    // interface
+public:
+    void csv(const Grid & grid, stream_t & stream);
+    // meta methods
+public:
+    inline Visualizer() {}
+};
+
+// the Visualizer class implementation
+void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
+    for (size_t j=0; j < grid.size(); j++) {
+        stream << j;
+        for (size_t i=0; i < grid.size(); i++) {
+            stream << "," << grid(i,j);
+        }
+        stream << std::endl;
+    }
+
+    return;
+}
+
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the results of initialization
+\begin{frame}[fragile]
+%
+  \frametitle{Printing out the initial grid}
+%
+  \begin{itemize}
+  \item we should be able to print out the initialized grid
+  \end{itemize}
+%
+  \begin{shell}{}
+#> mm laplace
+#> laplace
+#> cat laplace.csv
+0,0,0.3826,0.7071,0.9239,1,0.9239,0.7071,0.3827,1.225e-16
+1,0,0,0,0,0,0,0,0,0
+2,0,0,0,0,0,0,0,0,0
+3,0,0,0,0,0,0,0,0,0
+4,0,0,0,0,0,0,0,0,0
+5,0,0,0,0,0,0,0,0,0
+6,0,0,0,0,0,0,0,0,0
+7,0,0,0,0,0,0,0,0,0
+8,0,0.01654,0.0306,0.03992,0.04321,0.0399,0.03056,0.01654,0
+  \end{shell}
+%
+\end{frame}
+
+% --------------------------------------
+% the solver
+\begin{frame}[fragile]
+%
+  \frametitle{Fleshing out the solver}
+%
+  \begin{lstlisting}[language=c++,name=seq:solver]
+// the solver driver
+void laplace(Grid & grid, double tolerance) {
+    return;
+}
+  \end{lstlisting}
+%
+\end{frame}
+
+% end of file 
