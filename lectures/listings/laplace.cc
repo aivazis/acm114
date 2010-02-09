@@ -132,7 +132,7 @@ void laplace(Grid & grid, double tolerance) {
 // main program
 int main(int argc, char* argv[]) {
     // default values for our user configurable settings
-    long N = 9;
+    size_t N = 10;
     double tolerance = 1.0e-6;
     const char* filename = "laplace.csv";
     // read the command line
@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
             break;
         // get the grid size
         case 'N':
-            N = (long) atof(optarg);
+            N = (size_t) atof(optarg);
             break;
         // get the name of the output file
         case 'o':
