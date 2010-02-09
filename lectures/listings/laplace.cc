@@ -139,7 +139,7 @@ int main(int argc, char* argv[]) {
     int command;
     while ((command = getopt(argc, argv, "N:e:o:")) != -1) {
         switch (command) {
-        // get the convergence tolerancae
+        // get the convergence tolerance
         case 'e':
             tolerance = atof(optarg);
             break;
