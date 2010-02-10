@@ -40,4 +40,4 @@ export::
 try-export:
 	/usr/bin/rsync -n --delete -ruavz . acm114@pyre.caltech.edu:web/www
 
-# End of file 
+# end of file 
