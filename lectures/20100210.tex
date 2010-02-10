@@ -16,6 +16,36 @@
 % sequential
 \begin{frame}[fragile]
 %
+  \frametitle{Sequential implementation - driving the solver}
+%
+  \begin{lstlisting}[language=c++,name=seq:frame]
+    // allocate space for the solution
+    Grid potential(N);
+
+    // initialize and apply our boundary conditions
+    initialize(potential);
+
+    // call the solver
+    laplace(potential, tolerance);
+
+    // open a stream to hold the answer
+    std::fstream output(filename, std::ios_base::out);
+
+    // build a visualizer and render the solution in our chosen format
+    Visualizer visualizer;
+    visualizer.csv(potential, output);
+
+    // all done
+    return 0;
+}
+  \end{lstlisting}
+% 
+\end{frame}
+
+% --------------------------------------
+% sequential
+\begin{frame}[fragile]
+%
   \frametitle{Sequential implementation - the preamble}
 %
   \begin{itemize}
@@ -279,7 +309,6 @@ void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
 %
   \begin{itemize}
   \item we should be able to print out the initialized grid
-  \end{itemize}
 %
   \begin{shell}{}
 #> mm laplace
@@ -295,6 +324,21 @@ void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
 7,0,1,1,1,1,1,1,1,0
 8,0,0.01654,0.0306,0.03992,0.04321,0.0399,0.03056,0.01654,0
   \end{shell}
+%
+  \item notice that
+    \begin{itemize}
+    \item the top line contains some recognizable value
+    \item the left and right borders are set to zero
+    \item the interior of the grid is painted with our initial guess
+    \end{itemize}
+%
+  \item still to do:
+    \begin{itemize}
+    \item write the update
+    \item build a grid with the exact solution 
+    \item build the error field (why?)
+    \end{itemize}
+  \end{itemize}
 %
 \end{frame}
 
@@ -344,6 +388,50 @@ void laplace(Grid & current, double tolerance) {
 \end{frame}
 
 % --------------------------------------
+% the updated grid class
+\begin{frame}[fragile]
+%
+  \frametitle{Adding the new grid interface}
+%
+  \begin{itemize}
+  \item here is the declaration of \function{Grid::swapBlocks}
+%
+    \begin{lstlisting}[language=c++,firstnumber=30]
+class Grid {
+    // interface
+    public:
+    ...
+    // exchange the data blocks of two compatible grids
+    static void swapBlocks(Grid &, Grid &);
+    ...
+};
+    \end{lstlisting}
+%
+  \item and its definition
+%
+    \begin{lstlisting}[language=c++,firstnumber=69]
+void Grid::swapBlocks(Grid & g1, Grid & g2) {
+    // bail out if the two operands are not compatible
+    if (g1.size() != g2.size()) {
+        throw "Grid::swapblocks: size mismatch";
+    }
+    if (g1.delta() != g2.delta()) {
+        throw "Grid::swapblocks: spacing mismatch";
+    }
+    // but if they are, just exhange their data buffers
+    double * temp = g1._block;
+    g1._block = g2._block;
+    g2._block = temp;
+    // all done
+    return;
+}
+    \end{lstlisting}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % rework the driver to print out the exact solution and the error field
 \begin{frame}[fragile]
 %
@@ -380,6 +468,86 @@ void laplace(Grid & current, double tolerance) {
     return 0;
 }
   \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% computing the exact and error fields
+\begin{frame}[fragile]
+% 
+  \frametitle{Computing the exact solution and the error field}
+%
+  \begin{lstlisting}[language=c++,firstnumber=143]
+void exact(Grid & grid) {
+    //  paint the exact solution
+    for (size_t j=0; j < grid.size(); j++) {
+        for (size_t i=0; i < grid.size(); i++) {
+            double x = i*grid.delta();
+            double y = j*grid.delta();
+            grid(i,j) = std::exp(-pi*y)*std::sin(pi*x);
+        }
+    }
+    return;
+}
+
+void relative_error(
+    const Grid & computed, const Grid & exact, Grid & error) {
+    //  compute the relative error
+    for (size_t j=0; j < exact.size(); j++) {
+        for (size_t i=0; i < exact.size(); i++) {
+            if (exact(i,j) == 0.0) { // hm... sloppy!
+                error(i,j) = std::abs(computed(i,j));
+            } else {
+                error(i,j) = std::abs(computed(i,j) - exact(i,j))/exact(i,j);
+            }
+        }
+    }
+    return;
+}
+
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% summary
+\begin{frame}[fragile]
+%
+  \frametitle{Shortcomings}
+%
+  \begin{itemize}
+%
+  \item numerics:
+    \begin{itemize}
+    \item it converges very slowly; other update {\em schemes} improve on this
+    \item our approximation is very low order, so it takes very large grids to produce a few
+      digits of accuracy
+    \item the convergence criterion has some unwanted properties; it triggers
+      \begin{itemize}
+      \item prematurely: large swaths of constant values may never get updated
+      \item it would trigger if we were updating the wrong grid!
+      \end{itemize}
+    \end{itemize}
+%
+  \item design:
+    \begin{itemize}
+    \item separate the problem specification from its solution
+    \item there are other objects lurking, waiting to be uncovered
+    \item someone should make the graphic visualizer
+    \item restarts anybody?
+    \item how would you try out different convergence criteria? update schemes? memory layouts?
+    \end{itemize}
+%
+    \item usability:
+      \begin{itemize}
+      \item supporting interchangeable parts requires damage to the top level driver
+        \begin{itemize}
+        \item to enable the user to make the selection
+        \item to expose new command line arguments that configure the new parts
+        \end{itemize}
+      \end{itemize}
+%
+  \end{itemize}
 %
 \end{frame}
 

@@ -19,6 +19,7 @@ PROJECT = acm114
 all: tidy
 
 TESTS = \
+    abi \
     dilog \
     hello_threads \
     hello_mpi \
@@ -31,6 +32,9 @@ TESTS = \
 
 #--------------------------------------------------------------------------
 #
+abi: abi.cc
+	$(CXX) $< -o $@
+
 dilog: dilog.cc
 	$(CXX) $< -o $@
 

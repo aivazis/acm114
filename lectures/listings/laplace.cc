@@ -67,7 +67,7 @@ void Grid::clear(double value) {
 }
 
 void Grid::swapBlocks(Grid & g1, Grid & g2) {
-    // bail outif the two operands are not compatible
+    // bail out if the two operands are not compatible
     if (g1.size() != g2.size()) {
         throw "Grid::swapblocks: size mismatch";
     }
@@ -152,7 +152,7 @@ void exact(Grid & grid) {
     return;
 }
 
-void relative_error(const Grid & computed, const Grid & exact, Grid & error) {
+void relative_error(const Grid& computed, const Grid& exact, Grid& error) {
     //  compute the relative error
     for (size_t j=0; j < exact.size(); j++) {
         for (size_t i=0; i < exact.size(); i++) {
