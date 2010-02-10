@@ -175,7 +175,7 @@ void laplace(Grid & current, double tolerance) {
     initialize(next);
 
     // put an upper bound on the number of iterations
-    long max_iterations = (long) (1./tolerance);
+    long max_iterations = (long) 1.0e4;
     for (long iterations = 0; iterations<max_iterations; iterations++) {
         if (iterations%50 == 0) {
             std::cout << "     " << iterations << std::endl;

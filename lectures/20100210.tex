@@ -93,7 +93,7 @@ Grid::~Grid() {
 %
   \frametitle{Sequential implementation - the visualizer stub}
 %
-  \begin{lstlisting}[language=c++,name=seq:frame, firstnumber=1]
+  \begin{lstlisting}[language=c++,name=seq:frame, firstnumber=97]
 // the visualizer class
 class Visualizer {
     // local type aliases
@@ -134,7 +134,7 @@ void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
 %
   \begin{lstlisting}[language=c++,name=seq:initializer]
 // the grid initializer:
-// zero out and apply our boundary conditions 
+// clear the grid contents and apply our boundary conditions 
 void initialize(Grid & grid) {
     // ask the grid to clear its memory
     grid.clear(1.0);
@@ -155,7 +155,7 @@ void initialize(Grid & grid) {
   \end{lstlisting}
 %
   \begin{itemize}
-  \item the grid knows its size, its spacing $\delta$, and can zero out its  memory
+  \item the grid knows its size, its spacing $\delta$, and can initialize out its  memory
   \item access to grid elements happens through an overloaded \identifier{operator()} so we can
     {\em encapsulate} the indexing function
   \end{itemize}
@@ -168,12 +168,12 @@ void initialize(Grid & grid) {
 %
   \frametitle{The grid class declaration}
 %
-  \begin{lstlisting}[language=c++,name=seq:grid]
+  \begin{lstlisting}[language=c++,name=seq:grid,firstnumber=29]
 // the solution representation
 class Grid {
     // interface
 public:
-    // zero out all cells
+    // set all cells to the specified value
     void clear(double value=0.0);
     // the grid dimensions
     size_t size() const {return _size;}
@@ -196,6 +196,7 @@ private:
     Grid(const Grid &);
     const Grid & operator= (const Grid &);
 };
+
   \end{lstlisting}
 %
 \end{frame}
@@ -239,7 +240,7 @@ Grid::~Grid() {
 %
   \frametitle{Grid visualization}
 %
-  \begin{lstlisting}[language=c++,name=seq:visualizer]
+  \begin{lstlisting}[language=c++,name=seq:visualizer,firstnumer=97]
 // the visualizer class
 class Visualizer {
     // local type aliases
@@ -303,14 +304,14 @@ void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
 %
   \frametitle{Fleshing out the solver}
 %
-  \begin{lstlisting}[language=c++,basicstyle=\tt\bfseries\tiny,name=seq:solver]
+  \begin{lstlisting}[language=c++,basicstyle=\tt\bfseries\tiny,name=seq:solver,firstnumber=169]
 // the solver driver
 void laplace(Grid & current, double tolerance) {
     // create and initialize temporary storage
     Grid next(current.size());
     initialize(next);
     // put an upper bound on the number of iterations
-    long max_iterations = (long) (1./tolerance);
+    long max_iterations = (long) 1e4;;
     for (long iterations = 0; iterations<max_iterations; iterations++) {
         double max_dev = 0.0;
         // do an iteration step
@@ -337,6 +338,46 @@ void laplace(Grid & current, double tolerance) {
         }
     }
     return;
+}
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% rework the driver to print out the exact solution and the error field
+\begin{frame}[fragile]
+%
+  \frametitle{Reworking the driver}
+%
+  \begin{lstlisting}[language=c++,basicstyle=\tt\bfseries\tiny,name=seq:driver,firstnumber=239]
+    // build a visualizer
+    Visualizer vis;
+
+    // compute the exact solution
+    Grid solution(N);
+    exact(solution);
+    std::fstream exact_stream("exact.csv", std::ios_base::out);
+    vis.csv(solution, exact_stream);
+    
+    // allocate space for the solution
+    Grid potential(N);
+    // initialize and apply our boundary conditions
+    initialize(potential);
+    // call the solver
+    laplace(potential, tolerance);
+    // open a stream to hold the answer
+    std::fstream output_stream(filename, std::ios_base::out);
+    // build a visualizer and render the solution in our chosen format
+    vis.csv(potential, output_stream);
+
+    // compute the error field
+    Grid error(N);
+    relative_error(potential, solution, error);
+    std::fstream error_stream("error.csv", std::ios_base::out);
+    vis.csv(error, error_stream);
+
+    // all done
+    return 0;
 }
   \end{lstlisting}
 %
