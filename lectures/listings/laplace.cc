@@ -31,7 +31,7 @@ class Grid {
     // interface
 public:
     // zero out all cells
-    void clear();
+    void clear(double value=0.0);
     // the grid dimensions
     size_t size() const { return _size; }
     // the grid spacing
@@ -58,9 +58,9 @@ private:
 
 // the grid implementation
 // interface
-void Grid::clear() {
+void Grid::clear(double value) {
     for (size_t i=0; i < _size*_size; i++) {
-        _block[i] = 0.0;
+        _block[i] = value;
     }
 
     return;
@@ -69,10 +69,10 @@ void Grid::clear() {
 void Grid::swapBlocks(Grid & g1, Grid & g2) {
     // bail outif the two operands are not compatible
     if (g1.size() != g2.size()) {
-        return;
+        throw "Grid::swapblocks: size mismatch";
     }
     if (g1.delta() != g2.delta()) {
-        return;
+        throw "Grid::swapblocks: spacing mismatch";
     }
     // but if they are, just exhange their data buffers
     double * temp = g1._block;
@@ -123,7 +123,7 @@ void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
 // the grid initializer: zero out and apply our boundary conditions 
 void initialize(Grid & grid) {
     // ask the grid to clear its memory
-    grid.clear();
+    grid.clear(1.0);
 
     // apply the dirichlet conditions
     for (size_t cell=0; cell < grid.size(); cell++) {
@@ -212,8 +212,8 @@ void laplace(Grid & current, double tolerance) {
 // main program
 int main(int argc, char* argv[]) {
     // default values for our user configurable settings
-    size_t N = 10;
-    double tolerance = 1.0e-6;
+    size_t N = 9;
+    double tolerance = 1.0e-3;
     const char* filename = "laplace.csv";
     // read the command line
     int command;

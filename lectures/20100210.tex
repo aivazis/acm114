@@ -137,7 +137,7 @@ void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
 // zero out and apply our boundary conditions 
 void initialize(Grid & grid) {
     // ask the grid to clear its memory
-    grid.clear();
+    grid.clear(1.0);
     // apply the dirichlet conditions
     for (size_t cell=0; cell < grid.size(); cell++) {
         // evaluate sin(pi x)
@@ -174,7 +174,7 @@ class Grid {
     // interface
 public:
     // zero out all cells
-    void clear();
+    void clear(double value=0.0);
     // the grid dimensions
     size_t size() const {return _size;}
     // the grid spacing
@@ -209,9 +209,9 @@ private:
   \begin{lstlisting}[language=c++,name=seq:grid]
 // the grid implementation
 // interface
-void Grid::clear() {
+void Grid::clear(double value) {
     for (size_t i=0; i < _size*_size; i++) {
-        _block[i] = 0.0;
+        _block[i] = value;
     }
 
     return;
@@ -284,14 +284,14 @@ void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
 #> mm laplace
 #> laplace
 #> cat laplace.csv
-0,0,0.3826,0.7071,0.9239,1,0.9239,0.7071,0.3827,1.225e-16
-1,0,0,0,0,0,0,0,0,0
-2,0,0,0,0,0,0,0,0,0
-3,0,0,0,0,0,0,0,0,0
-4,0,0,0,0,0,0,0,0,0
-5,0,0,0,0,0,0,0,0,0
-6,0,0,0,0,0,0,0,0,0
-7,0,0,0,0,0,0,0,0,0
+0,0,0.3827,0.7071,0.9239,1,0.9239,0.7071,0.3827,1.225e-16
+1,0,1,1,1,1,1,1,1,0
+2,0,1,1,1,1,1,1,1,0
+3,0,1,1,1,1,1,1,1,0
+4,0,1,1,1,1,1,1,1,0
+5,0,1,1,1,1,1,1,1,0
+6,0,1,1,1,1,1,1,1,0
+7,0,1,1,1,1,1,1,1,0
 8,0,0.01654,0.0306,0.03992,0.04321,0.0399,0.03056,0.01654,0
   \end{shell}
 %
@@ -303,9 +303,39 @@ void Visualizer::csv(const Grid & grid, Visualizer::stream_t & stream) {
 %
   \frametitle{Fleshing out the solver}
 %
-  \begin{lstlisting}[language=c++,name=seq:solver]
+  \begin{lstlisting}[language=c++,basicstyle=\tt\bfseries\tiny,name=seq:solver]
 // the solver driver
-void laplace(Grid & grid, double tolerance) {
+void laplace(Grid & current, double tolerance) {
+    // create and initialize temporary storage
+    Grid next(current.size());
+    initialize(next);
+    // put an upper bound on the number of iterations
+    long max_iterations = (long) (1./tolerance);
+    for (long iterations = 0; iterations<max_iterations; iterations++) {
+        double max_dev = 0.0;
+        // do an iteration step
+        // leave the boundary alone
+        // iterate over the interior of the grid
+        for (size_t j=1; j < current.size()-1; j++) {
+            for (size_t i=1; i < current.size()-1; i++) {
+                // update
+                next(i,j) = 0.25*(
+                    current(i+1,j)+current(i-1,j)+current(i,j+1)+current(i,j-1));
+                // compute the deviation from the last generation
+                double dev = std::abs(next(i,j) - current(i,j));
+                // and update the maximum deviation
+                if (dev > max_dev) {
+                    max_dev = dev;
+                }
+            }
+        }
+        // swap the blocks between the two grids
+        Grid::swapBlocks(current, next);
+        // check covergence
+        if (max_dev < tolerance) {
+            break;
+        }
+    }
     return;
 }
   \end{lstlisting}
