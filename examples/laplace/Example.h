@@ -31,11 +31,12 @@ public:
 
     // meta methods
 public:
-    inline Example();
+    inline Example(double delta);
     virtual ~Example();
 
     // data members
 private:
+    double _delta;
 
     // disable these
 private:

@@ -15,7 +15,8 @@
 #else
 
 // constructor
-acm114::laplace::Example::Example() {
+acm114::laplace::Example::Example(double delta):
+    _delta(delta) {
 }
 
 #endif

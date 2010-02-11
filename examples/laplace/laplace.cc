@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
         << "    tolerance: " << tolerance << std::endl;
 
     // instantiate a problem
-    Example problem;
+    Example problem((1.0 - 0.0)/N);
 
     // all done
     return 0;

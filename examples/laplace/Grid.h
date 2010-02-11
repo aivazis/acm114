@@ -13,20 +13,26 @@
 #if !defined(acm114_laplace_Grid_h)
 #define acm114_laplace_Grid_h
 
+namespace acm114 {
+    namespace laplace {
+        class Grid;
+    }
+}
+
 // the solution representation
-class Grid {
+class acm114::laplace::Grid {
     // interface
 public:
     // zero out all cells
     void clear(double value=0.0);
     // the grid dimensions
-    size_t size() const { return _size; }
+    inline size_t size() const; 
     // the grid spacing
-    double delta() const { return _delta; }
+    inline double delta() const;
 
     // access to the cells
-    double & operator()(size_t i, size_t j) { return _block[j*_size+i]; }
-    double operator()(size_t i, size_t j) const { return _block[j*_size+i]; }
+    inline double & operator()(size_t i, size_t j); 
+    inline double operator()(size_t i, size_t j) const;
 
     // exchange the data blocks of two compatible grids
     static void swapBlocks(Grid &, Grid &);
