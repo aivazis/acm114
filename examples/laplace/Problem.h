@@ -30,9 +30,10 @@ public:
 
     // interface
 public:
-    void csv(string_t seed) const;
+    inline string_t name() const;
 
     inline const Grid & exact() const;
+    inline const Grid & deviation() const;
 
     inline Grid & solution();
     inline const Grid & solution() const;
@@ -46,11 +47,12 @@ public:
 
     // meta methods
 public:
-    inline Problem(double width, size_t points);
+    inline Problem(string_t name, double width, size_t points);
     virtual ~Problem();
 
     // data members
 protected:
+    string_t _name;
     double _delta;
     Grid _solution;
     Grid _exact;

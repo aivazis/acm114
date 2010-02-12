@@ -16,7 +16,7 @@
 
 namespace acm114 {
     namespace laplace {
-        class Grid;
+        class Problem;
         class Visualizer;
     }
 }
@@ -31,7 +31,7 @@ public:
 
     // interface
 public:
-    void csv(const Grid & grid, stream_t & stream);
+    void csv(const Problem & problem);
 
     // meta methods
 public:

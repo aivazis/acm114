@@ -15,12 +15,20 @@
 #else
 
 // interface
+acm114::laplace::Problem::string_t acm114::laplace::Problem::name() const {
+    return _name;
+}
+
 const acm114::laplace::Grid & acm114::laplace::Problem::solution() const {
     return _solution;
 }
 
 acm114::laplace::Grid & acm114::laplace::Problem::solution() {
     return _solution;
+}
+
+const acm114::laplace::Grid & acm114::laplace::Problem::deviation() const {
+    return _deviation;
 }
 
 const acm114::laplace::Grid & acm114::laplace::Problem::exact() const {
@@ -36,7 +44,8 @@ acm114::laplace::Grid & acm114::laplace::Problem::error() {
 }
 
 // constructor
-acm114::laplace::Problem::Problem(double width, size_t points) :
+acm114::laplace::Problem::Problem(string_t name, double width, size_t points) :
+    _name(name),
     _delta(width/(points-1)),
     _solution(points),
     _exact(points),

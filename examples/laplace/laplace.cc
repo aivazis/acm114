@@ -15,6 +15,7 @@
 
 #include "Example.h"
 #include "Jacobi.h"
+#include "Visualizer.h"
 
 using namespace acm114::laplace;
 
@@ -57,13 +58,14 @@ int main(int argc, char* argv[]) {
         << "    tolerance: " << tolerance << std::endl;
 
     // instantiate a problem
-    Example problem(1.0, N);
+    Example problem("cliche", 1.0, N);
     //  instantiate a solver
     Jacobi solver(tolerance, threads);
     // solve
     solver.solve(problem);
     // save the results
-    problem.csv(seed);
+    Visualizer vis;
+    vis.csv(problem);
     // all done
     return 0;
 }

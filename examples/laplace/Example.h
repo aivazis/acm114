@@ -31,7 +31,7 @@ public:
 
     // meta methods
 public:
-    inline Example(double width, size_t points);
+    inline Example(string_t name, double width, size_t points);
     virtual ~Example();
 
     // disable these

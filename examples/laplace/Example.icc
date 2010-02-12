@@ -15,8 +15,8 @@
 #else
 
 // constructor
-acm114::laplace::Example::Example(double width, size_t points):
-    Problem(width, points) {
+acm114::laplace::Example::Example(string_t name, double width, size_t points):
+    Problem(name, width, points) {
 }
 
 #endif
