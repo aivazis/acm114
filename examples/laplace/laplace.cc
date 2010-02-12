@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
     Jacobi solver(tolerance, threads);
     // solve
     solver.solve(problem);
-    // write the answer to the file
+    // save the results
     problem.csv(seed);
     // all done
     return 0;

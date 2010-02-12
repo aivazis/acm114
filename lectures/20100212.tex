@@ -318,11 +318,28 @@ void relative_error(
       \item this is the argument to \function{pthread\_create}
       \end{itemize}
     \item a mutex to protect the update of the global convergence criterion
+    \item a \function{pthread\_create} compatible worker routine
     \item a change at the top-level driver to enable the user to choose the number of threads
     \end{itemize}
 %
-  \item
+  \item and a strategy for managing the thread life cycle
+    \begin{itemize}
 %
+    \item synchronization is trivial if
+      \begin{itemize}
+      \item we spawn our threads to perform the updates of a single iteration
+      \item harvest them
+      \item check the convergence criterion 
+      \item stop, or respawn them if another iteration is necessary
+      \end{itemize}
+%
+    \item can the convergence test be done in parallel?
+      \begin{itemize}
+        \item so we don't have to pay the create/harvest overhead?
+      \end{itemize}
+%
+    \end{itemize}
+% 
   \end{itemize}
 %
 \end{frame}
