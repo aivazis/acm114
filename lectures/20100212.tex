@@ -221,7 +221,7 @@ void relative_error(
 \end{frame}
 
 % --------------------------------------
-% summary
+% assessment
 \begin{frame}[fragile]
 %
   \frametitle{Shortcomings}
@@ -259,6 +259,190 @@ void relative_error(
       \end{itemize}
 %
   \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% assessment
+\begin{frame}[fragile]
+%
+  \frametitle{Assessing our fundamental}
+%
+  \begin{itemize}
+%
+  \item \class{Grid} is a good starting point for abstracting structured grids
+    \begin{itemize}
+    \item assumes ownership of the memory associated with a structured grid
+    \item encapsulates the indexing function
+    \item extend it to
+      \begin{itemize}
+      \item support different memory layout strategies
+      \item support non-square grids (?)
+      \item support non-uniform grids (?)
+      \item higher dimensions
+      \item if you need any of these, consider using one of the many excellent class libraries
+        written by experts
+      \end{itemize}
+    \end{itemize}
+%
+  \item \class{Visualizer}, under another name, can form the basis for a more general
+    persistence library
+    \begin{itemize}
+    \item to support HDF5, NetCDF, bitmaps, voxels, etc.
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the Problem class
+\begin{frame}[fragile]
+% 
+  \frametitle{The \class{Problem} class: the interface}
+%
+  \begin{lstlisting}[language=c++,name=Problem]
+// the solution representation
+class acm114::laplace::Problem {
+    //typedefs
+public:
+    typedef std::string string_t;
+    // interface
+public:
+    inline string_t name() const;
+    inline const Grid & exact() const;
+    inline const Grid & deviation() const;
+    inline Grid & solution();
+    inline const Grid & solution() const;
+    inline Grid & error();
+    inline const Grid & error() const;
+    // abstract
+    virtual void initialize() = 0;
+    virtual void initialize(Grid &) const = 0;
+    // meta methods
+public:
+    inline Problem(string_t name, double width, size_t points);
+    virtual ~Problem();
+    // data members
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the Problem class
+\begin{frame}[fragile]
+% 
+  \frametitle{The \class{Problem} class: the data}
+%
+  \begin{lstlisting}[language=c++,name=Problem]
+protected:
+    string_t _name;
+    double _delta;
+    Grid _solution;
+    Grid _exact;
+    Grid _error;
+    Grid _deviation;
+    // disable these
+private:
+    Problem(const Problem &);
+    const Problem & operator= (const Problem &);
+};
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% our specific example
+\begin{frame}[fragile]
+% 
+  \frametitle{The \class{Example} class}
+%
+  \begin{lstlisting}[language=c++]
+class acm114::laplace::Example : public acm114::laplace::Problem {
+    // interface
+public:
+    virtual void initialize();
+    virtual void initialize(Grid &) const;
+
+    // meta methods
+public:
+    inline Example(string_t name, double width, size_t points);
+    virtual ~Example();
+
+    // disable these
+private:
+    Example(const Example &);
+    const Example & operator= (const Example &);
+};
+
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the solver basis
+\begin{frame}[fragile]
+% 
+  \frametitle{The \class{Solver} class}
+%
+  \begin{lstlisting}[language=c++]
+class acm114::laplace::Solver {
+    // interface
+public:
+    virtual void solve(Problem &) = 0;
+
+    // meta methods
+public:
+    inline Solver();
+    virtual ~Solver();
+
+    // data members
+private:
+
+    // disable these
+private:
+    Solver(const Solver &);
+    const Solver & operator= (const Solver &);
+};
+
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{The \class{Jacobi} class}
+%
+  \begin{lstlisting}[language=c++]
+class acm114::laplace::Jacobi {
+    // interface
+public:
+    virtual void solve(Problem &);
+
+    // meta methods
+public:
+    inline Jacobi(double tolerance, size_t workers);
+    virtual ~Jacobi();
+
+    // implementation details
+protected:
+    virtual void _solve(Problem &);
+    static void * _update(void *);
+
+    // data members
+private:
+    double _tolerance;
+    size_t _workers;
+
+    // disable these
+private:
+    Jacobi(const Jacobi &);
+    const Jacobi & operator= (const Jacobi &);
+};
+
+  \end{lstlisting}
 %
 \end{frame}
 
@@ -336,11 +520,198 @@ void relative_error(
     \item can the convergence test be done in parallel?
       \begin{itemize}
         \item so we don't have to pay the create/harvest overhead?
+        \item if so, how do we guarantee correctness and consistency?
       \end{itemize}
 %
     \end{itemize}
 % 
   \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: thread data}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:threaded]
+struct Task {
+    // shared information 
+    size_t workers;
+    Grid & current;
+    Grid & next;
+    double maxDeviation;
+    pthread_mutex_t lock; // mutex to control access to the convergence criterion
+
+    Task(size_t workers, Grid & current, Grid & next) :
+        workers(workers), current(current), next(next), maxDeviation(0.0) {
+        pthread_mutex_init(&lock, 0);
+    }
+};
+
+struct Context {
+    // thread info
+    size_t id;
+    pthread_t descriptor;
+    Task * task;
+};
+
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: driving the update}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:threaded]
+void Jacobi::solve(Problem & problem) {
+    // initialize the problem
+    problem.initialize();
+    // do the actual solve
+    _solve(problem);
+    // compute and store the error
+    std::cout << "  computing absolute error" << std::endl;
+    //  compute the relative error
+    Grid & error = problem.error();
+    const Grid & exact = problem.exact();
+    const Grid & solution = problem.solution();
+
+    for (size_t j=0; j < exact.size(); j++) {
+        for (size_t i=0; i < exact.size(); i++) {
+            if (exact(i,j) == 0.0) {
+                error(i,j) = std::abs(solution(i,j));
+            } else {
+                error(i,j) = std::abs(solution(i,j) - exact(i,j))/exact(i,j);
+            }
+        }
+    }
+    std::cout << " --- done." << std::endl;
+    return;
+}
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: the master thread}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:threaded]
+void Jacobi::_solve(Problem & problem) {
+    Grid & current = problem.solution();
+
+    // create and initialize temporary storage
+    Grid next(current.size());
+    problem.initialize(next);
+
+    // shared thread info
+    Task task(_workers, current, next);
+    // per-thread information
+    Context context[_workers];
+
+    // let's get going
+    std::cout << "jacobi: tolerance=" << _tolerance << std::endl;
+
+    // put an upper bound on the number of iterations
+    const size_t max_iterations = (size_t) 1.0e4;
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: the master thread, part 2}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:threaded,basicstyle=\tt\bfseries\tiny]
+    for (size_t iterations = 0; iterations<max_iterations; iterations++) {
+        if (iterations % 100 == 0) {
+            std::cout << "     " << iterations << std::endl;
+        }
+        // reset the maximium deviation
+        task.maxDeviation = 0.0;
+        // spawn the threads
+        for (size_t tid=0; tid < _workers; tid++) {
+            context[tid].id = tid;
+            context[tid].task = &task;
+
+            int status = pthread_create(&context[tid].descriptor, 0, _update, &context[tid]);
+            if (status) {
+                throw ("error in pthread_create");
+            }
+        }
+        // harvest the threads
+        for (size_t tid = 0; tid < _workers; tid++) {
+            pthread_join(context[tid].descriptor, 0);
+        }
+
+        // swap the blocks between the two grids
+        Grid::swapBlocks(current, next);
+        // check covergence
+        if (task.maxDeviation < _tolerance) {
+            std::cout << " ### convergence in " << iterations << " iterations!" << std::endl;
+            break;
+        }
+    }
+    std::cout << " --- done." << std::endl;
+
+    return;
+}
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: update in the worker threads}
+%
+  \begin{lstlisting}[language=c++,basicstyle=\tt\bfseries\tiny,name=Jacobi:threaded]
+void * Jacobi::_update(void * arg) {
+    Context * context = static_cast<Context *>(arg);
+
+    size_t id = context->id;
+    Task * task = context->task;
+
+    size_t workers = task->workers;
+    Grid & current = task->current;
+    Grid & next = task->next;
+    pthread_mutex_t lock = task->lock;
+
+    double max_dev = 0.0;
+    // do an iteration step
+    // leave the boundary alone
+    // iterate over the interior of the grid
+    for (size_t j=id+1; j < current.size()-1; j+=workers) {
+        for (size_t i=1; i < current.size()-1; i++) {
+            next(i,j) = 0.25*(current(i+1,j)+current(i-1,j)+current(i,j+1)+current(i,j-1));
+            // compute the deviation from the last generation
+            double dev = std::abs(next(i,j) - current(i,j));
+            // and update the maximum deviation
+            if (dev > max_dev) {
+                max_dev = dev;
+            }
+        }
+    }
+
+    // grab the lock and update the global maximum deviation
+    pthread_mutex_lock(&lock);
+    if (task->maxDeviation < max_dev) {
+        task->maxDeviation = max_dev;
+    }
+    pthread_mutex_unlock(&lock);
+
+    return 0;
+}
+  \end{lstlisting}
 %
 \end{frame}
 
