@@ -17,7 +17,9 @@ PROJ_SAR = $(BLD_LIBDIR)/$(PACKAGE).$(EXT_SAR)
 PROJ_DLL = $(BLD_LIBDIR)/$(PACKAGE).$(EXT_SO)
 PROJ_TMPDIR = $(BLD_TMPDIR)/$(PROJECT)/$(PACKAGE)
 PROJ_TIDY += *.csv *.dSYM
-PROJ_CLEAN += laplace $(PROJ_DLL) $(PROJ_SAR)
+PROJ_CLEAN += $(PROGRAMS) $(PROJ_DLL) $(PROJ_SAR)
+PROJ_CXX_FLAGS = -pthread
+
 
 PROJ_SRCS = \
     Example.cc \
@@ -27,11 +29,12 @@ PROJ_SRCS = \
     Solver.cc \
     Visualizer.cc \
 
+PROGRAMS = laplace partition
 
 #--------------------------------------------------------------------------
 #
 
-all: laplace
+all: $(PROGRAMS)
 
 #--------------------------------------------------------------------------
 #
@@ -39,6 +42,9 @@ all: laplace
 LIBRARIES = $(PROJ_SAR) $(EXTERNAL_LIBS)
 
 laplace: laplace.cc $(PROJ_SAR)
-	$(CXX) $(CXXFLAGS) -pthread -o $@ $(LCXX_FLAGS) $< $(LIBRARIES)
+	$(CXX) $(CXXFLAGS) -pthread $< -o $@ $(LCXX_FLAGS) $(LIBRARIES)
+
+partition: partition.cc
+	$(CXX) $(CXXFLAGS) $< -o $@ $(LCXX_FLAGS)
 
 # end of file 

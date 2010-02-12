@@ -34,6 +34,11 @@ public:
     inline Jacobi(double tolerance, size_t workers);
     virtual ~Jacobi();
 
+    // implementation details
+protected:
+    virtual void _solve(Problem &);
+    static void * _update(void *);
+
     // data members
 private:
     double _tolerance;
