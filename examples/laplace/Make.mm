@@ -16,12 +16,16 @@ PACKAGE = liblaplace
 PROJ_SAR = $(BLD_LIBDIR)/$(PACKAGE).$(EXT_SAR)
 PROJ_DLL = $(BLD_LIBDIR)/$(PACKAGE).$(EXT_SO)
 PROJ_TMPDIR = $(BLD_TMPDIR)/$(PROJECT)/$(PACKAGE)
-PROJ_CLEAN += laplace *.csv *.dSYM $(PROJ_DLL) $(PROJ_SAR)
+PROJ_TIDY += *.csv *.dSYM
+PROJ_CLEAN += laplace $(PROJ_DLL) $(PROJ_SAR)
 
 PROJ_SRCS = \
     Example.cc \
     Grid.cc \
+    Jacobi.cc \
     Problem.cc \
+    Solver.cc \
+    Visualizer.cc \
 
 
 #--------------------------------------------------------------------------
@@ -32,7 +36,9 @@ all: laplace
 #--------------------------------------------------------------------------
 #
 
+LIBRARIES = $(PROJ_SAR) $(EXTERNAL_LIBS)
+
 laplace: laplace.cc $(PROJ_SAR)
-	$(CXX) -pthread -g -o $@ $^
+	$(CXX) $(CXXFLAGS) -pthread -o $@ $(LCXX_FLAGS) $< $(LIBRARIES)
 
 # end of file 

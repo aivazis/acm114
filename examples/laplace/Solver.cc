@@ -10,15 +10,13 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
 
-#if !defined(acm114_laplace_Example_icc)
-#error This header file contains implementation details of the class Example
-#else
+#include <portinfo>
 
-// constructor
-acm114::laplace::Example::Example(double width, size_t points):
-    Problem(width, points) {
-}
+#include "Solver.h"
 
-#endif
+using namespace acm114::laplace;
+
+// destructor
+Solver::~Solver() {}
 
 // end of file

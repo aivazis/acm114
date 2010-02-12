@@ -11,19 +11,25 @@
 //
 
 #include <portinfo>
-#include <cstdlib>
 
 #include "Grid.h"
 
 using namespace acm114::laplace;
 
+// interface
+void Grid::clear(double value) {
+    for (size_t i=0; i < _size*_size; i++) {
+        _block[i] = value;
+    }
+
+    return;
+}
+
+// statics
 void Grid::swapBlocks(Grid & g1, Grid & g2) {
     // bail out if the two operands are not compatible
     if (g1.size() != g2.size()) {
         throw "Grid::swapblocks: size mismatch";
-    }
-    if (g1.delta() != g2.delta()) {
-        throw "Grid::swapblocks: spacing mismatch";
     }
     // but if they are, just exhange their data buffers
     double * temp = g1._block;

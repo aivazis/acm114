@@ -1,4 +1,3 @@
-// -*- C++ -*-
 // -*- coding: utf-8 -*-
 //
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -10,14 +9,13 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
 
-#if !defined(acm114_laplace_Example_icc)
-#error This header file contains implementation details of the class Example
+
+#if !defined(acm114_laplace_Visualizer_icc)
+#error This header file contains implementation details of the class Visualizer
 #else
 
 // constructor
-acm114::laplace::Example::Example(double width, size_t points):
-    Problem(width, points) {
-}
+acm114::laplace::Visualizer::Visualizer() {}
 
 #endif
 

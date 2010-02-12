@@ -14,8 +14,36 @@
 #error This header file contains implementation details of the class Problem
 #else
 
+// interface
+const acm114::laplace::Grid & acm114::laplace::Problem::solution() const {
+    return _solution;
+}
+
+acm114::laplace::Grid & acm114::laplace::Problem::solution() {
+    return _solution;
+}
+
+const acm114::laplace::Grid & acm114::laplace::Problem::exact() const {
+    return _exact;
+}
+
+const acm114::laplace::Grid & acm114::laplace::Problem::error() const {
+    return _error;
+}
+
+acm114::laplace::Grid & acm114::laplace::Problem::error() {
+    return _error;
+}
+
 // constructor
-acm114::laplace::Problem::Problem() {
+acm114::laplace::Problem::Problem(double width, size_t points) :
+    _delta(width/(points-1)),
+    _solution(points),
+    _exact(points),
+    _error(points),
+    _deviation(points) {
 }
 
 #endif
+
+// end of file

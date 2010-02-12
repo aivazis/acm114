@@ -19,6 +19,8 @@ namespace acm114 {
     }
 }
 
+#include <cstdlib>
+
 // the solution representation
 class acm114::laplace::Grid {
     // interface
@@ -27,8 +29,6 @@ public:
     void clear(double value=0.0);
     // the grid dimensions
     inline size_t size() const; 
-    // the grid spacing
-    inline double delta() const;
 
     // access to the cells
     inline double & operator()(size_t i, size_t j); 
@@ -45,7 +45,6 @@ public:
 
 private:
     const size_t _size;
-    const double _delta;
     double* _block;
 
     // disable these

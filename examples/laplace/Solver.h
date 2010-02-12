@@ -10,40 +10,40 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
 
-#if !defined(acm114_laplace_Example_h)
-#define acm114_laplace_Example_h
+#if !defined(acm114_laplace_Solver_h)
+#define acm114_laplace_Solver_h
 
-#include "Problem.h"
-
-// namespace
 namespace acm114 {
     namespace laplace {
-        class Example;
+        class Solver;
+        class Problem;
     }
 }
 
-// the example problem from the lectures
-class acm114::laplace::Example : public acm114::laplace::Problem {
+// the solution representation
+class acm114::laplace::Solver {
     // interface
 public:
-    virtual void initialize();
-    virtual void initialize(Grid &) const;
+    virtual void solve(Problem &) = 0;
 
     // meta methods
 public:
-    inline Example(double width, size_t points);
-    virtual ~Example();
+    inline Solver();
+    virtual ~Solver();
+
+    // data members
+private:
 
     // disable these
 private:
-    Example(const Example &);
-    const Example & operator= (const Example &);
+    Solver(const Solver &);
+    const Solver & operator= (const Solver &);
 };
 
 // get the inline definitions
-#define acm114_laplace_Example_icc
-#include "Example.icc"
-#undef acm114_laplace_Example_icc
+#define acm114_laplace_Solver_icc
+#include "Solver.icc"
+#undef acm114_laplace_Solver_icc
 
 #endif
 

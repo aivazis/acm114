@@ -10,40 +10,45 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
 
-#if !defined(acm114_laplace_Example_h)
-#define acm114_laplace_Example_h
+#if !defined(acm114_laplace_Jacobi_h)
+#define acm114_laplace_Jacobi_h
 
-#include "Problem.h"
+#include "Solver.h"
 
-// namespace
 namespace acm114 {
     namespace laplace {
-        class Example;
+        class Jacobi;
     }
 }
 
-// the example problem from the lectures
-class acm114::laplace::Example : public acm114::laplace::Problem {
+#include <cstdlib>
+
+// the solution representation
+class acm114::laplace::Jacobi {
     // interface
 public:
-    virtual void initialize();
-    virtual void initialize(Grid &) const;
+    virtual void solve(Problem &);
 
     // meta methods
 public:
-    inline Example(double width, size_t points);
-    virtual ~Example();
+    inline Jacobi(double tolerance, size_t workers);
+    virtual ~Jacobi();
+
+    // data members
+private:
+    double _tolerance;
+    size_t _workers;
 
     // disable these
 private:
-    Example(const Example &);
-    const Example & operator= (const Example &);
+    Jacobi(const Jacobi &);
+    const Jacobi & operator= (const Jacobi &);
 };
 
 // get the inline definitions
-#define acm114_laplace_Example_icc
-#include "Example.icc"
-#undef acm114_laplace_Example_icc
+#define acm114_laplace_Jacobi_icc
+#include "Jacobi.icc"
+#undef acm114_laplace_Jacobi_icc
 
 #endif
 

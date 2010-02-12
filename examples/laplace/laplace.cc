@@ -14,6 +14,7 @@
 #include <iostream>
 
 #include "Example.h"
+#include "Jacobi.h"
 
 using namespace acm114::laplace;
 
@@ -56,7 +57,17 @@ int main(int argc, char* argv[]) {
         << "    tolerance: " << tolerance << std::endl;
 
     // instantiate a problem
-    Example problem((1.0 - 0.0)/N);
+    Example problem(1.0, N);
+    problem.initialize();
+
+    //  instantiate a solver
+    Jacobi solver(tolerance, threads);
+
+    // solve
+    solver.solve(problem);
+
+    // write the answer to the file
+    problem.csv(seed);
 
     // all done
     return 0;
