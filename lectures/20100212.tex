@@ -416,7 +416,7 @@ private:
   \frametitle{The \class{Jacobi} class}
 %
   \begin{lstlisting}[language=c++]
-class acm114::laplace::Jacobi {
+class acm114::laplace::Jacobi : public acm114::laplace::Solver {
     // interface
 public:
     virtual void solve(Problem &);

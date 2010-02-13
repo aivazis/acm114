@@ -24,7 +24,7 @@ namespace acm114 {
 #include <cstdlib>
 
 // the solution representation
-class acm114::laplace::Jacobi {
+class acm114::laplace::Jacobi : public acm114::laplace::Solver {
     // interface
 public:
     virtual void solve(Problem &);

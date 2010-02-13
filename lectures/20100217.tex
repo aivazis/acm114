@@ -1,0 +1,284 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\lecture{Structured grids - parallelization with threads}{20100217}
+
+% --------------------------------------
+% parallelization using threads
+\begin{frame}[fragile]
+%
+  \frametitle{Parallelization using threads}
+%
+  \begin{itemize}
+%
+  \item the shared memory implementation requires
+    \begin{itemize}
+    \item a scheme so that threads can update cells without the need for locks
+    \item while maximizing locality of data access
+    \item even the computation of the convergence criterion can be parallelized
+    \end{itemize}
+%
+  \item parallelization strategy
+    \begin{itemize}
+    \item we will focus on parallelizing the iterative grid update
+      \begin{itemize}
+      \item grid initialization, visualization, computing the exact answer and the error field
+        do not depend on the {\em number of iterations}
+      \end{itemize}
+    \item the finest grain of work is clearly an individual cell update based on the value of
+      its four nearest neighbors
+    \item for this two dimensional example, we can build coarser grain tasks using
+      \begin{itemize}
+      \item horizontal or vertical strips
+      \item non-overlapping blocks
+      \item the strategy gets more complicated if you want to perform the update in place
+      \end{itemize}
+    \item the communication patterns are trivial for the double buffering layout; only the
+      final update of the convergence criterion requires any locking
+    \item each coarse grain task can be assigned to a thread
+    \end{itemize}
+%
+  \end{itemize}
+% 
+\end{frame}
+
+% --------------------------------------
+% required changes to the sequential driver
+\begin{frame}[fragile]
+%
+  \frametitle{Required changes to the sequential solution}
+%
+  \begin{itemize}
+%
+  \item what is needed
+    \begin{itemize}
+    \item an object to hold the problem information shared among the threads
+    \item the per-thread administrative data structure that holds the thread id and the pointer
+      to the shared information
+      \begin{itemize}
+      \item this is the argument to \function{pthread\_create}
+      \end{itemize}
+    \item a mutex to protect the update of the global convergence criterion
+    \item a \function{pthread\_create} compatible worker routine
+    \item a change at the top-level driver to enable the user to choose the number of threads
+    \end{itemize}
+%
+  \item and a strategy for managing the thread life cycle
+    \begin{itemize}
+%
+    \item synchronization is trivial if
+      \begin{itemize}
+      \item we spawn our threads to perform the updates of a single iteration
+      \item harvest them
+      \item check the convergence criterion 
+      \item stop, or respawn them if another iteration is necessary
+      \end{itemize}
+%
+    \item can the convergence test be done in parallel?
+      \begin{itemize}
+        \item so we don't have to pay the create/harvest overhead?
+        \item if so, how do we guarantee correctness and consistency?
+      \end{itemize}
+%
+    \end{itemize}
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: thread data}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:threaded]
+struct Task {
+    // shared information 
+    size_t workers;
+    Grid & current;
+    Grid & next;
+    double maxDeviation;
+    pthread_mutex_t lock; // mutex to control access to the convergence criterion
+
+    Task(size_t workers, Grid & current, Grid & next) :
+        workers(workers), current(current), next(next), maxDeviation(0.0) {
+        pthread_mutex_init(&lock, 0);
+    }
+};
+
+struct Context {
+    // thread info
+    size_t id;
+    pthread_t descriptor;
+    Task * task;
+};
+
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: driving the update}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:threaded]
+void Jacobi::solve(Problem & problem) {
+    // initialize the problem
+    problem.initialize();
+    // do the actual solve
+    _solve(problem);
+    // compute and store the error
+    std::cout << "  computing absolute error" << std::endl;
+    //  compute the relative error
+    Grid & error = problem.error();
+    const Grid & exact = problem.exact();
+    const Grid & solution = problem.solution();
+
+    for (size_t j=0; j < exact.size(); j++) {
+        for (size_t i=0; i < exact.size(); i++) {
+            if (exact(i,j) == 0.0) {
+                error(i,j) = std::abs(solution(i,j));
+            } else {
+                error(i,j) = std::abs(solution(i,j) - exact(i,j))/exact(i,j);
+            }
+        }
+    }
+    std::cout << " --- done." << std::endl;
+    return;
+}
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: the master thread}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:threaded]
+void Jacobi::_solve(Problem & problem) {
+    Grid & current = problem.solution();
+
+    // create and initialize temporary storage
+    Grid next(current.size());
+    problem.initialize(next);
+
+    // shared thread info
+    Task task(_workers, current, next);
+    // per-thread information
+    Context context[_workers];
+
+    // let's get going
+    std::cout << "jacobi: tolerance=" << _tolerance << std::endl;
+
+    // put an upper bound on the number of iterations
+    const size_t max_iterations = (size_t) 1.0e4;
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: the master thread, part 2}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:threaded,basicstyle=\tt\bfseries\tiny]
+    for (size_t iterations = 0; iterations<max_iterations; iterations++) {
+        if (iterations % 100 == 0) {
+            std::cout << "     " << iterations << std::endl;
+        }
+        // reset the maximium deviation
+        task.maxDeviation = 0.0;
+        // spawn the threads
+        for (size_t tid=0; tid < _workers; tid++) {
+            context[tid].id = tid;
+            context[tid].task = &task;
+
+            int status = pthread_create(&context[tid].descriptor, 0, _update, &context[tid]);
+            if (status) {
+                throw ("error in pthread_create");
+            }
+        }
+        // harvest the threads
+        for (size_t tid = 0; tid < _workers; tid++) {
+            pthread_join(context[tid].descriptor, 0);
+        }
+
+        // swap the blocks between the two grids
+        Grid::swapBlocks(current, next);
+        // check covergence
+        if (task.maxDeviation < _tolerance) {
+            std::cout << " ### convergence in " << iterations << " iterations!" << std::endl;
+            break;
+        }
+    }
+    std::cout << " --- done." << std::endl;
+
+    return;
+}
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: update in the worker threads}
+%
+  \begin{lstlisting}[language=c++,basicstyle=\tt\bfseries\tiny,name=Jacobi:threaded]
+void * Jacobi::_update(void * arg) {
+    Context * context = static_cast<Context *>(arg);
+
+    size_t id = context->id;
+    Task * task = context->task;
+
+    size_t workers = task->workers;
+    Grid & current = task->current;
+    Grid & next = task->next;
+    pthread_mutex_t lock = task->lock;
+
+    double max_dev = 0.0;
+    // do an iteration step
+    // leave the boundary alone
+    // iterate over the interior of the grid
+    for (size_t j=id+1; j < current.size()-1; j+=workers) {
+        for (size_t i=1; i < current.size()-1; i++) {
+            next(i,j) = 0.25*(current(i+1,j)+current(i-1,j)+current(i,j+1)+current(i,j-1));
+            // compute the deviation from the last generation
+            double dev = std::abs(next(i,j) - current(i,j));
+            // and update the maximum deviation
+            if (dev > max_dev) {
+                max_dev = dev;
+            }
+        }
+    }
+
+    // grab the lock and update the global maximum deviation
+    pthread_mutex_lock(&lock);
+    if (task->maxDeviation < max_dev) {
+        task->maxDeviation = max_dev;
+    }
+    pthread_mutex_unlock(&lock);
+
+    return 0;
+}
+  \end{lstlisting}
+%
+\end{frame}
+
+% end of file 
