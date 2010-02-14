@@ -27,7 +27,10 @@ int main(int argc, char* argv[]) {
     const size_t Mb = 1024*kb;
     const size_t Gb = 1024*Mb;
     
-    const double pi = M_PI;
+    typedef int item_t;
+    const double dvalue = M_PI;
+    const int ivalue = 0xdeadbeef;
+    const long lvalue = 0xfeedbabedeadbeef;
 
     size_t N = 1;
     size_t threads = 1;
@@ -54,8 +57,8 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // compute how many doubles fit in our buffer
-    size_t doubles = N*Gb/sizeof(double);
+    // compute how many items fit in our buffer
+    size_t items = N*Gb/sizeof(item_t);
 
     // print out the chosen options
     std::cout << argv[0] << ":" << std::endl;
@@ -66,19 +69,19 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
 
     std::cout 
-        << "  buffer size: " << N << " Gb, or " << doubles << " doubles" << std::endl
+        << "  buffer size: " << N << " Gb, or " << items << " items" << std::endl
         << "      workers: " << threads << std::endl;
 
     // allocate the source buffer
-    double * src = new double[doubles];
+    item_t * src = new item_t[items];
     // allocate the destination buffer
-    double * dst = new double[doubles];
+    item_t * dst = new item_t[items];
 
     // initialize the source
     pyre::timer_t init("init");
     init.start();
-    for (size_t idx=0; idx < doubles; ++idx) {
-        src[idx] = pi;
+    for (size_t idx=0; idx < items; ++idx) {
+        src[idx] = ivalue;
     }
     init.stop();
 
@@ -89,7 +92,7 @@ int main(int argc, char* argv[]) {
         copy.start();
         size_t stride = strides[pass];
         for (size_t start=0; start < stride; start++) {
-            for (size_t idx=start; idx < doubles; idx+=stride) {
+            for (size_t idx=start; idx < items; idx+=stride) {
                 dst[idx] = src[idx];
                 // std::cout << " " << idx;
             }
@@ -97,8 +100,8 @@ int main(int argc, char* argv[]) {
         }
         copy.stop();
         std::cout << stride << "," << copy.read() << std::endl;
-        // chekc the copy took place
-        for (size_t idx=0; idx < doubles; ++idx) {
+        // verify that the copy took place
+        for (size_t idx=0; idx < items; ++idx) {
             assert(src[idx] == dst[idx]);
         }
     }
