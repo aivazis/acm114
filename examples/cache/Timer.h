@@ -23,6 +23,8 @@ namespace pyre {
 #include <string>
 #if defined(__config_platform_darwin)
 #include "darwin/Clock.h"
+#elif defined(__config_platform_linux)
+#include "linux/Clock.h"
 #endif
 
 // the solution representation
