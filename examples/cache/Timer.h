@@ -22,9 +22,9 @@ namespace pyre {
 // imported types
 #include <string>
 #if defined(__config_platform_darwin)
-#include "darwin/Clock.h"
+#include "mach/Clock.h"
 #elif defined(__config_platform_linux)
-#include "linux/Clock.h"
+#include "posix/Clock.h"
 #endif
 
 // the solution representation

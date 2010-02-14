@@ -21,7 +21,8 @@ PROJ_CLEAN += $(PROGRAMS) $(PROJ_DLL) $(PROJ_SAR)
 PROJ_CXX_FLAGS = -pthread
 
 RECURSE_DIRS = \
-    darwin
+    mach \
+    posix \
 
 PROJ_SRCS = \
     Display.cc \
