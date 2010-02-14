@@ -1,4 +1,5 @@
 # -*- Makefile -*-
+# -*- coding: utf-8 -*-
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
@@ -9,27 +10,25 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 PROJECT = acm114
-PACKAGE = examples
+PACKAGE = libcache
 
-RECURSE_DIRS = \
-    cache \
-    laplace \
+PROJ_SAR = $(BLD_LIBDIR)/$(PACKAGE).$(EXT_SAR)
+PROJ_DLL = $(BLD_LIBDIR)/$(PACKAGE).$(EXT_SO)
+PROJ_TMPDIR = $(BLD_TMPDIR)/$(PROJECT)/$(PACKAGE)
+PROJ_TIDY += *.csv *.dSYM
+PROJ_CLEAN += $(PROGRAMS) $(PROJ_DLL) $(PROJ_SAR)
+PROJ_CXX_FLAGS = -pthread
 
+
+PROJ_SRCS = \
 
 #--------------------------------------------------------------------------
 #
 
-all: tidy 
+all: tidy
 
-tidy::
-	BLD_ACTION="tidy" $(MM) recurse
-
-clean::
-	BLD_ACTION="clean" $(MM) recurse
-
-distclean::
-	BLD_ACTION="distclean" $(MM) recurse
+#--------------------------------------------------------------------------
+#
 
 # end of file 
