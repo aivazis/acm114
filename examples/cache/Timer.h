@@ -26,6 +26,7 @@ namespace pyre {
 #if defined(__config_platform_darwin)
 #include "mach/Clock.h"
 #elif defined(__config_platform_linux)
+#include "BCD.h"
 #include "posix/Clock.h"
 #else
 #include "BCD.h"

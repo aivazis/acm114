@@ -20,18 +20,18 @@ namespace pyre {
 }
 
 // imported symbols
-
+#include <time.h>
 
 // the clock
 class pyre::timers::Clock {
     // typedefs
 public:
-    typedef long tick_t;
+    typedef class BCD<1000*1000*1000> tick_t;
 
     // interface
 public:
     inline tick_t time() const;
-    inline double elapsed(tick_t delta) const;
+    inline double elapsed(const tick_t& delta) const;
 
     // meta methods
 public:

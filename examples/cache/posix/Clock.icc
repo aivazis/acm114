@@ -16,11 +16,13 @@
 
 // interface
 pyre::timers::Clock::tick_t pyre::timers::Clock::time() const {
-    return 0;
+    timespec t;
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
+    return tick_t(t.tv_sec,t.tv_nsec);
 }
 
-double pyre::timers::Clock::elapsed(tick_t delta) const {
-    return 0.0;
+double pyre::timers::Clock::elapsed(const tick_t & delta) const {
+    return delta;
 }
 
 // constructor

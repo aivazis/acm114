@@ -21,6 +21,7 @@ PROJ_CLEAN += $(PROGRAMS) $(PROJ_DLL) $(PROJ_SAR)
 PROJ_CXX_FLAGS = -pthread
 
 RECURSE_DIRS = \
+    epoch \
     mach \
     posix \
 
@@ -54,7 +55,7 @@ distclean::
 #--------------------------------------------------------------------------
 #
 
-LIBRARIES = $(PROJ_SAR) $(EXTERNAL_LIBS)
+LIBRARIES = $(PROJ_SAR) $(EXTERNAL_LIBS) -lrt
 
 abi: abi.cc
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LCXX_FLAGS)
