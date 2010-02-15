@@ -55,7 +55,7 @@ distclean::
 #--------------------------------------------------------------------------
 #
 
-LIBRARIES = $(PROJ_SAR) $(EXTERNAL_LIBS) -lrt
+LIBRARIES = $(PROJ_SAR) $(EXTERNAL_LIBS) #for linux: -lrt
 
 abi: abi.cc
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LCXX_FLAGS)
