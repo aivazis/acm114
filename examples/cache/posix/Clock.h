@@ -22,7 +22,7 @@ namespace pyre {
 // imported symbols
 
 
-// the solution representation
+// the clock
 class pyre::timers::Clock {
     // typedefs
 public:

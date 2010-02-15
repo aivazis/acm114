@@ -1,0 +1,103 @@
+// -*- C++ -*-
+// -*- coding: utf-8 -*-
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//                             michael a.g. aïvázis
+//                      california institute of technology
+//                      (c) 1998-2010  all rights reserved
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+
+#if !defined(pyre_timers_BCD_icc)
+#error This header file contains implementation details of the class BCD
+#else
+
+// interface
+// the friend operators
+template <size_t scale>
+pyre::timers::BCD<scale> operator+ (
+    const pyre::timers::BCD<scale> & first, const pyre::timers::BCD<scale> & second)
+{
+    return pyre::timers::BCD<scale>(first) += second;
+}
+
+template <size_t scale>
+pyre::timers::BCD<scale> operator- (const pyre::timers::BCD<scale> & bcd) 
+{
+    return pyre::timers::BCD<scale>(-bcd._msw, -bcd._lsw);
+}
+
+template <size_t scale>
+pyre::timers::BCD<scale> operator- (
+    const pyre::timers::BCD<scale> & first, const pyre::timers::BCD<scale> & second) 
+{
+    return pyre::timers::BCD<scale>(first) -= second;
+}
+
+// increment operator
+template <size_t scale>
+pyre::timers::BCD<scale> & pyre::timers::BCD<scale>::operator+= (
+    const pyre::timers::BCD<scale> & other) {
+    // do the math
+    size_t hi = _msw + other._msw;
+    size_t low = _lsw + other._lsw;
+    // if there was overflow...
+    if (low/scale) {
+        hi += 1;
+        low %= scale;
+    }
+    // make the assignments
+    _msw = hi;
+    _lsw = low;
+    // and return myself
+    return *this;
+}
+
+// decrement operator
+template <size_t scale>
+pyre::timers::BCD<scale> & pyre::timers::BCD<scale>::operator-= (
+    const pyre::timers::BCD<scale> & other) {
+    return *this += -other;
+}
+
+// conversion to double
+template <size_t scale>
+pyre::timers::BCD<scale>::operator double() const {
+    return _msw + static_cast<double>(_lsw)/scale;
+}
+
+// constructor
+template <size_t scale>
+pyre::timers::BCD<scale>::BCD(size_t msw, size_t lsw) :
+    _msw(msw),
+    _lsw(lsw) {
+}
+
+template <size_t scale>
+pyre::timers::BCD<scale>::BCD(const BCD<scale> & other) {
+    (*this) = other;
+}
+
+template <size_t scale>
+const pyre::timers::BCD<scale> & pyre::timers::BCD<scale>::operator= (
+    const pyre::timers::BCD<scale> & other) {
+    if (this == &other) {
+        return *this;
+    }
+    
+    _msw = other._msw;
+    _lsw = other._lsw;
+
+    return *this;
+}
+                                                                   
+
+// destructor
+template <size_t scale>
+pyre::timers::BCD<scale>::~BCD() {}
+
+#endif
+
+// end of file

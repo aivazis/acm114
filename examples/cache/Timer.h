@@ -21,13 +21,18 @@ namespace pyre {
 
 // imported types
 #include <string>
+
+// get platform specific clock type
 #if defined(__config_platform_darwin)
 #include "mach/Clock.h"
 #elif defined(__config_platform_linux)
 #include "posix/Clock.h"
+#else
+#include "BCD.h"
+#include "epoch/Clock.h"
 #endif
 
-// the solution representation
+// the timer
 class pyre::timers::Timer {
     //typedefs
 public:

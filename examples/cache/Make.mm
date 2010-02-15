@@ -34,7 +34,7 @@ PROJ_TEMPLATES = \
     Registrar.h Registrar.icc \
     Timer.h Timer.icc\
 
-PROGRAMS = abi cache
+PROGRAMS = abi bcd cache
 
 #--------------------------------------------------------------------------
 #
@@ -57,6 +57,9 @@ distclean::
 LIBRARIES = $(PROJ_SAR) $(EXTERNAL_LIBS)
 
 abi: abi.cc
+	$(CXX) $(CXXFLAGS) $< -o $@ $(LCXX_FLAGS)
+
+bcd: bcd.cc
 	$(CXX) $(CXXFLAGS) $< -o $@ $(LCXX_FLAGS)
 
 cache: cache.cc $(PROJ_TEMPLATES) $(PROJ_SAR)
