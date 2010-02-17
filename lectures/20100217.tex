@@ -108,7 +108,8 @@ struct Task {
     Grid & current;
     Grid & next;
     double maxDeviation;
-    pthread_mutex_t lock; // mutex to control access to the convergence criterion
+    // mutex to control access to the convergence criterion
+    pthread_mutex_t lock; 
 
     Task(size_t workers, Grid & current, Grid & next) :
         workers(workers), current(current), next(next), maxDeviation(0.0) {
@@ -278,6 +279,85 @@ void * Jacobi::_update(void * arg) {
     return 0;
 }
   \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% improving the threaded implementation
+\begin{frame}[fragile]
+%
+  \frametitle{Assessing the threaded implementation}
+%
+  \begin{itemize}
+%
+  \item the implemented synchronization scheme is very simple
+    \begin{itemize}
+    \item each grid update step spawns some number of workers to update a subset of the cells
+    \item the workers are harvested after the grid is updated
+    \item the main thread checks for convergence
+    \item if another iteration is required, a new set of workers is spawned
+    \end{itemize}
+%
+  \item the simplicity of this strategy comes at a cost
+    \begin{itemize}
+    \item {\em scalability} suffers when the overhead of creating and harvesting threads is
+      comparable to amount of work done by each thread
+    \item for low thread counts, it is still an overall win, since the time to solution
+      decreases and the machine utilization is better
+    \item but as the number of threads increases, the program becomes {\em slower}
+      \begin{itemize}
+      \item timing a $100\times100$ grid to convergence on a recent MacPro
+%
+        \begin{equation*}
+          \begin{array}{r|ccccc}
+% header
+            {\rm threads } & 1 & 2 & 4 & 8 & 16 \\
+            \hline 
+            {\rm time} (s) & 4.367 & 2.517 & 1.918 & 1.937 & 3.537
+% 
+          \end{array}
+        \end{equation*}
+      \item and 10,000 iterations of a $1000\times1000$ grid
+        \begin{equation*}
+          \begin{array}{r|ccccc}
+% header
+            {\rm threads } & 1 & 2 & 4 & 8 & 16 \\
+            \hline 
+            {\rm time} (s) & 413.306 & 211.050 & 109.509 & 98.279 & 74.087
+% 
+          \end{array}
+        \end{equation*}
+      \end{itemize}
+
+    \end{itemize}
+%
+\end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Improving the update loop}
+%
+  \begin{itemize}
+%
+  \item the plan is to keep the workers alive and updating the grid while either we converge or
+    \identifier{max\_iterations} is reached
+  \item the main thread
+    \begin{itemize}
+    \item spawns all the threads
+    \item enters a loop to count the number of iterations completed
+    \item grabs a job control mutex
+    \item blocks until all the threads have finished updating their sections of the grid
+    \item checks the stopping criteria and sets a flag to indicate whether we are done
+    \item release the job control mutex 
+    \item if done, iterate
+    \item otherwise, exit the loop and harvest the threads
+    \end{itemize}
+%
+  \end{itemize}
 %
 \end{frame}
 
