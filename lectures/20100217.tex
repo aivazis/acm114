@@ -352,17 +352,71 @@ void * Jacobi::_update(void * arg) {
     \identifier{max\_iterations} is reached
   \item the main thread
     \begin{itemize}
-    \item spawns all the threads
-    \item enters a loop to count the number of iterations completed
-    \item grabs a job control mutex
-    \item blocks until all the threads have finished updating their sections of the grid
-    \item checks the stopping criteria and sets a flag to indicate whether we are done
-    \item release the job control mutex 
-    \item if done, iterate
-    \item otherwise, exit the loop and harvest the threads
+    \item loops to spawn all the threads
+    \item and immediately enters a loop to harvest them
+    \end{itemize}
+%
+  \item the workers use a condition variable to synchronize among themselves
+    \begin{itemize}
+    \item they iterate, updating the grid
+    \item grab a mutex, deposit their local maximum deviation from the last iterations, update
+      a counter that records how many workers have completed their update, and release the lock
+    \item enter another critical section with the termination logic
+      \begin{itemize}
+      \item everybody uses a condition variable to wait for the slowest worker
+      \item the slowest worker checks the convergence criterion and updates the termination
+        flag, swaps the grid blocks and signals everybody else
+      \item if the termination flag is set, or if the maximum number of iterations has been
+        reached, all threads exit
+      \end{itemize}
     \end{itemize}
 %
   \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the updated jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: the updated master thread}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:updated-threaded,basicstyle=\tt\bfseries\tiny]
+void Jacobi::_solve(Problem & problem) {
+    Grid & current = problem.solution();
+
+    // create and initialize temporary storage
+    Grid next(current.size());
+    problem.initialize(next);
+
+    // shared thread info
+    Task task(_workers, current, next);
+    // per-thread information
+    Context context[_workers];
+
+    // let's get going
+    std::cout << "jacobi: spawning " << _workers << " threads" << std::endl;
+    for (size_t tid=0; tid < _workers; tid++) {
+        context[tid].id = tid;
+        context[tid].task = &task;
+        
+        int status = pthread_create(&context[tid].descriptor, 0, _update, &context[tid]);
+        if (status) {
+            throw ("error in pthread_create");
+        }
+    }
+    // harvest the threads
+    std::cout << "jacobi: harvesting " << _workers << " threads" << std::endl;
+    for (size_t tid = 0; tid < _workers; tid++) {
+            std::cout << "jacobi: waiting for thread " << tid << " to finish" << std::endl;
+            pthread_join(context[tid].descriptor, 0);
+            std::cout << "jacobi: thread " << tid << " done" << std::endl;
+        }
+    // done
+    std::cout << "jacobi: done." << std::endl;
+    return;
+}
+  \end{lstlisting}
 %
 \end{frame}
 
