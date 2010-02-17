@@ -27,12 +27,22 @@ struct Task {
     size_t workers;
     Grid & current;
     Grid & next;
+    // the convergence criterion
     double maxDeviation;
-    pthread_mutex_t lock; // mutex to control access to the convergence criterion
+    pthread_mutex_t deviationUpdate;
+    // job management
+    bool done;
 
     Task(size_t workers, Grid & current, Grid & next) :
-        workers(workers), current(current), next(next), maxDeviation(0.0) {
-        pthread_mutex_init(&lock, 0);
+        workers(workers), current(current), next(next),
+        maxDeviation(0.0),
+        done(false) {
+        // initialize the convergence criterion lock
+        pthread_mutex_init(&deviationUpdate, 0);
+    }
+
+    ~Task() {
+        pthread_mutex_destroy(&deviationUpdate);
     }
 };
 
@@ -132,7 +142,7 @@ void * Jacobi::_update(void * arg) {
     size_t workers = task->workers;
     Grid & current = task->current;
     Grid & next = task->next;
-    pthread_mutex_t lock = task->lock;
+    pthread_mutex_t deviationUpdate = task->deviationUpdate;
 
     double max_dev = 0.0;
     // do an iteration step
@@ -151,11 +161,11 @@ void * Jacobi::_update(void * arg) {
     }
 
     // grab the lock and update the global maximum deviation
-    pthread_mutex_lock(&lock);
+    pthread_mutex_lock(&deviationUpdate);
     if (task->maxDeviation < max_dev) {
         task->maxDeviation = max_dev;
     }
-    pthread_mutex_unlock(&lock);
+    pthread_mutex_unlock(&deviationUpdate);
 
     return 0;
 }
