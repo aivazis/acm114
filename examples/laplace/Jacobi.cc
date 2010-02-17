@@ -27,22 +27,29 @@ struct Task {
     size_t workers;
     Grid & current;
     Grid & next;
-    // the convergence criterion
-    double maxDeviation;
-    pthread_mutex_t deviationUpdate;
+    // convergence criterion management
+    double maxDeviation; // the value
+    size_t contributions; // the number of threads that have deposited contributions
+    pthread_mutex_t updateDeviation; //the mutex
     // job management
     bool done;
+    pthread_cond_t gridUpdated;
+    pthread_mutex_t gridUpdateLock;
 
     Task(size_t workers, Grid & current, Grid & next) :
         workers(workers), current(current), next(next),
-        maxDeviation(0.0),
-        done(false) {
+        maxDeviation(0.0), contributions(0), updateDeviation(),
+        done(false), gridUpdated(), gridUpdateLock() {
         // initialize the convergence criterion lock
-        pthread_mutex_init(&deviationUpdate, 0);
+        pthread_mutex_init(&updateDeviation, 0);
+        pthread_cond_init(&gridUpdated, 0);
+        pthread_mutex_init(&gridUpdateLock, 0);
     }
 
     ~Task() {
-        pthread_mutex_destroy(&deviationUpdate);
+        pthread_mutex_destroy(&updateDeviation);
+        pthread_cond_destroy(&gridUpdated);
+        pthread_mutex_destroy(&gridUpdateLock);
     }
 };
 
@@ -98,12 +105,14 @@ void Jacobi::_solve(Problem & problem) {
     // put an upper bound on the number of iterations
     const size_t max_iterations = (size_t) 1.0e4;
     for (size_t iterations = 0; iterations<max_iterations; iterations++) {
-        if (iterations % 100 == 0) {
+        if (iterations % 1 == 0) {
             std::cout << "     " << iterations << std::endl;
         }
 
-        // reset the maximium deviation
+        // reset the maximium deviation and associated counter
+        task.contributions = 0;
         task.maxDeviation = 0.0;
+
         // spawn the threads
         for (size_t tid=0; tid < _workers; tid++) {
             context[tid].id = tid;
@@ -114,9 +123,17 @@ void Jacobi::_solve(Problem & problem) {
                 throw ("error in pthread_create");
             }
         }
+        // wait until the update is done
+        pthread_mutex_lock(&task.gridUpdateLock);
+        pthread_cond_wait(&task.gridUpdated, &task.gridUpdateLock);
+        std::cout << "main thread: grid has been updated" << std::endl;
+        pthread_mutex_unlock(&task.gridUpdateLock);
+
         // harvest the threads
         for (size_t tid = 0; tid < _workers; tid++) {
+            std::cout << "waiting for thread " << tid << " to finish" << std::endl;
             pthread_join(context[tid].descriptor, 0);
+            std::cout << "thread " << tid << " done" << std::endl;
         }
 
         // swap the blocks between the two grids
@@ -142,7 +159,7 @@ void * Jacobi::_update(void * arg) {
     size_t workers = task->workers;
     Grid & current = task->current;
     Grid & next = task->next;
-    pthread_mutex_t deviationUpdate = task->deviationUpdate;
+    pthread_mutex_t updateDeviation = task->updateDeviation;
 
     double max_dev = 0.0;
     // do an iteration step
@@ -161,11 +178,18 @@ void * Jacobi::_update(void * arg) {
     }
 
     // grab the lock and update the global maximum deviation
-    pthread_mutex_lock(&deviationUpdate);
+    pthread_mutex_lock(&updateDeviation);
     if (task->maxDeviation < max_dev) {
         task->maxDeviation = max_dev;
     }
-    pthread_mutex_unlock(&deviationUpdate);
+    task->contributions++;
+    if (task->contributions == task->workers) {
+        pthread_mutex_lock(&task->gridUpdateLock);
+        std::cout << "thread " << id << ": last to finish!" << std::endl;
+        pthread_cond_signal(&task->gridUpdated);
+        pthread_mutex_unlock(&task->gridUpdateLock);
+    }
+    pthread_mutex_unlock(&updateDeviation);
 
     return 0;
 }

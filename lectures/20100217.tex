@@ -111,9 +111,14 @@ struct Task {
     // mutex to control access to the convergence criterion
     pthread_mutex_t lock; 
 
+    // constructor
     Task(size_t workers, Grid & current, Grid & next) :
         workers(workers), current(current), next(next), maxDeviation(0.0) {
         pthread_mutex_init(&lock, 0);
+    }
+    // destructor
+    ~Task() {
+        pthread_mutex_destroy(&lock);
     }
 };
 
