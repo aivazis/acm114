@@ -1,0 +1,159 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\lecture{Structured grids - parallelization with threads}{20100217}
+
+% --------------------------------------
+% Improving the update loop
+\begin{frame}[fragile]
+%
+  \frametitle{Improving the update loop}
+%
+  \begin{itemize}
+%
+  \item the plan is to keep the workers alive and updating the grid while either we converge or
+    \identifier{max\_iterations} is reached
+  \item the main thread
+    \begin{itemize}
+    \item loops to spawn all the threads
+    \item and immediately enters a loop to harvest them
+    \end{itemize}
+%
+  \item the workers use a condition variable to synchronize among themselves
+    \begin{itemize}
+    \item they iterate, updating the grid
+    \item grab a mutex, deposit their local maximum deviation from the last iterations, update
+      a counter that records how many workers have completed their update, and release the lock
+    \item enter another critical section with the termination logic
+      \begin{itemize}
+      \item everybody uses a condition variable to wait for the slowest worker
+      \item the slowest worker checks the convergence criterion and updates the termination
+        flag, swaps the grid blocks and signals everybody else
+      \item if the termination flag is set, or if the maximum number of iterations has been
+        reached, all threads exit
+      \end{itemize}
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the updated jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: the updated master thread}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:updated-threaded,basicstyle=\tt\bfseries\tiny]
+void Jacobi::_solve(Problem & problem) {
+    Grid & current = problem.solution();
+
+    // create and initialize temporary storage
+    Grid next(current.size());
+    problem.initialize(next);
+
+    // shared thread info
+    Task task(_workers, current, next);
+    // per-thread information
+    Context context[_workers];
+
+    // let's get going
+    std::cout << "jacobi: spawning " << _workers << " threads" << std::endl;
+    for (size_t tid=0; tid < _workers; tid++) {
+        context[tid].id = tid;
+        context[tid].task = &task;
+        
+        int status = pthread_create(&context[tid].descriptor, 0, _update, &context[tid]);
+        if (status) {
+            throw ("error in pthread_create");
+        }
+    }
+    // harvest the threads
+    std::cout << "jacobi: harvesting " << _workers << " threads" << std::endl;
+    for (size_t tid = 0; tid < _workers; tid++) {
+            std::cout << "jacobi: waiting for thread " << tid << " to finish" << std::endl;
+            pthread_join(context[tid].descriptor, 0);
+            std::cout << "jacobi: thread " << tid << " done" << std::endl;
+        }
+    // done
+    std::cout << "jacobi: done." << std::endl;
+    return;
+}
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: updated thread data}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:updated-threaded,basicstyle=\tt\bfseries\tiny]
+struct Task {
+    // shared information 
+    size_t workers;
+    double tolerance; // the covergence tolerance
+    Grid & current;
+    Grid & next;
+
+    bool done; // is there more work?
+    double maxDeviation; // the value
+    size_t contributions; // the number of threads that have deposited contributions
+    pthread_mutex_t errorUpdate_lock; //the mutex
+    pthread_mutex_t gridUpdate_lock; //the mutex
+    pthread_cond_t gridUpdate_check;
+
+    Task(size_t workers, double tolerance, Grid & current, Grid & next) :
+        workers(workers), tolerance(tolerance), current(current), next(next),
+        done(false), maxDeviation(0.0), contributions(0),
+        gridUpdate_lock(), gridUpdate_check() {
+        // initialize the convergence criterion lock
+        pthread_mutex_init(&errorUpdate_lock, 0);
+        pthread_mutex_init(&gridUpdate_lock, 0);
+        pthread_cond_init(&gridUpdate_check, 0);
+    }
+
+    ~Task() {
+        pthread_mutex_destroy(&errorUpdate_lock);
+        pthread_mutex_destroy(&gridUpdate_lock);
+        pthread_cond_destroy(&gridUpdate_check);
+    }
+};
+
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: updated solve, part 1}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:updated-solve,basicstyle=\tt\bfseries\tiny]
+  \end{lstlisting}
+%
+\end{frame}
+
+% --------------------------------------
+% the jacobi solver 
+\begin{frame}[fragile]
+% 
+  \frametitle{Threaded \class{Jacobi}: updated solve, part 2}
+%
+  \begin{lstlisting}[language=c++,name=Jacobi:updated-solve,basicstyle=\tt\bfseries\tiny]
+  \end{lstlisting}
+%
+\end{frame}
+
+% end of file 
