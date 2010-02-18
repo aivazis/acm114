@@ -1,0 +1,71 @@
+// -*- C++ -*-
+// -*- coding: utf-8 -*-
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//                             michael a.g. aïvázis
+//                      california institute of technology
+//                      (c) 1998-2010  all rights reserved
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+
+#if !defined(pyre_threads_Guard_icc)
+#error This header file contains implementation details of the class Guard
+#else
+
+template <typename Target>
+Target & operator<< (Target & target, pyre::threads::Guard<Target> & guard) {
+    guard.flip();
+    return target;
+}
+
+// state
+template <typename Target>
+bool pyre::threads::Guard<Target>::state() const {
+    return _locked;
+}
+
+// lock
+template <typename Target>
+pyre::threads::Guard<Target> & pyre::threads::Guard<Target>::flip() {
+    if (_locked) {
+        pthread_mutex_unlock(&_mutex);
+        _locked = false;
+    } else {
+        pthread_mutex_lock(&_mutex);
+        _locked = true;
+    }
+
+    return *this;
+}
+
+// constructor
+template <typename Target>
+pyre::threads::Guard<Target>::Guard(pthread_mutex_t & mutex) :
+    _locked(false),
+    _mutex(mutex) {
+}
+
+template <typename Target>
+pyre::threads::Guard<Target>::Guard(const Guard<Target> & other) :
+    _locked(false),
+    _mutex(other._mutex) {
+}
+
+template <typename Target>
+pyre::threads::Guard<Target> & 
+pyre::threads::Guard<Target>::operator=(const Guard<Target> & other) {
+    if (this == &other) {
+        return *this;
+    }
+
+    _locked = other._locked;
+    _mutex = other._mutex;
+
+    return *this;
+}
+
+#endif
+
+// end of file
