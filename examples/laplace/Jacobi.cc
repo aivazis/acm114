@@ -32,22 +32,20 @@ struct Task {
     bool done; // is there more work?
     double maxDeviation; // the value
     size_t contributions; // the number of threads that have deposited contributions
-    pthread_mutex_t errorUpdate_lock; //the mutex
-    pthread_mutex_t gridUpdate_lock; //the mutex
-    pthread_cond_t gridUpdate_check;
+
+    pthread_mutex_t gridUpdate_lock; // the grid update mutex
+    pthread_cond_t gridUpdate_check; // the grid update condition variable
 
     Task(size_t workers, double tolerance, Grid & current, Grid & next) :
         workers(workers), tolerance(tolerance), current(current), next(next),
         done(false), maxDeviation(0.0), contributions(0),
         gridUpdate_lock(), gridUpdate_check() {
         // initialize the convergence criterion lock
-        pthread_mutex_init(&errorUpdate_lock, 0);
         pthread_mutex_init(&gridUpdate_lock, 0);
         pthread_cond_init(&gridUpdate_check, 0);
     }
 
     ~Task() {
-        pthread_mutex_destroy(&errorUpdate_lock);
         pthread_mutex_destroy(&gridUpdate_lock);
         pthread_cond_destroy(&gridUpdate_check);
     }
@@ -98,10 +96,8 @@ void Jacobi::_solve(Problem & problem) {
     Task task(_workers, _tolerance, current, next);
     // per-thread information
     Context context[_workers];
-    // let's get going
-    std::cout << "jacobi: tolerance=" << _tolerance << std::endl;
     // spawn the threads
-    std::cout << "jacobi: spawning " << _workers << " threads" << std::endl;
+    std::cout << "jacobi: spawning " << _workers << " workers" << std::endl;
     for (size_t tid=0; tid < _workers; tid++) {
         context[tid].id = tid;
         context[tid].task = &task;
@@ -112,11 +108,8 @@ void Jacobi::_solve(Problem & problem) {
         }
     }
     // harvest the threads
-    std::cout << "jacobi: harvesting " << _workers << " threads" << std::endl;
     for (size_t tid = 0; tid < _workers; tid++) {
-            std::cout << "jacobi: waiting for thread " << tid << " to finish" << std::endl;
             pthread_join(context[tid].descriptor, 0);
-            std::cout << "jacobi: thread " << tid << " done" << std::endl;
         }
     // done
     std::cout << "jacobi: done." << std::endl;
@@ -134,16 +127,12 @@ void * Jacobi::_update(void * arg) {
     Grid & current = task->current;
     Grid & next = task->next;
 
-    std::cout << "thread " << id << ": hello!" << std::endl;
-
     size_t maxIterations = (size_t) 1e4;
     // iterate, updating the grid until done
-    for (size_t iterations = 0; iterations < maxIterations; iterations++) {
-        //
-        std::cout << "thread " << id << ": updating the grid: iteration " << iterations << std::endl;
+    for (size_t iteration = 0; iteration < maxIterations; iteration++) {
         // thread 0: print an update
-        if (id == 0 && iterations % 100 == 0) {
-            std::cout << "     " << iterations << std::endl;
+        if (id == 0 && iteration % 100 == 0) {
+            std::cout << "    " << iteration << std::endl;
         }
 
         double max_dev = 0.0;
@@ -161,53 +150,42 @@ void * Jacobi::_update(void * arg) {
                 }
             }
         }
-        std::cout << "thread " << id << ": done updating the grid" << std::endl;
         // done with the grid update
         // grab the grid update lock
-        pthread_mutex_lock(&task->errorUpdate_lock);
-        std::cout << "thread " << id << ": tolerance: " << task->tolerance << std::endl;
-        std::cout << "thread " << id << ": maximum deviation: " << max_dev << std::endl;
-        std::cout << "thread " << id << ": global deviation: " << task->maxDeviation << std::endl;
+        pthread_mutex_lock(&task->gridUpdate_lock);
         // update the global maximum deviation 
         if (task->maxDeviation < max_dev) {
             task->maxDeviation = max_dev;
         }
         // leave a mark
         task->contributions++;
-        pthread_mutex_unlock(&task->errorUpdate_lock);
 
-        // synchronize
-        pthread_mutex_lock(&task->gridUpdate_lock);
+        // bookkeeping at the end of the  update
         if (task->contributions == workers) {
             // if i am the slowest worker
-            std::cout << "thread " << id << ": last to finish!" << std::endl;
             // swap the blocks between the two grids
             Grid::swapBlocks(current, next);
             // check covergence
-            std::cout << "thread " << id << ": checking convergence" << std::endl;
             if (task->maxDeviation < task->tolerance) {
-                std::cout << " ### convergence in " << iterations << " iterations!" << std::endl;
+                std::cout
+                    << " +++ thread " << id << ": convergence in " << iteration << " iterations"
+                    <<std::endl;
                 task->done = true;
             }
             // signal everybody else
-            std::cout << "thread " << id << ": signaling the others" << std::endl;
             // reset the update count
             task->contributions = 0;
             task->maxDeviation = 0;
             pthread_cond_broadcast(&task->gridUpdate_check);
         } else {
             // all but the slowest wait here
-            std::cout << "thread " << id << ": waiting for signal" << std::endl;
             pthread_cond_wait(&task->gridUpdate_check, &task->gridUpdate_lock);
-            std::cout << "thread " << id << ": signal received" << std::endl;
         } 
         // release
-        std::cout << "thread " << id << ": releasing the grid update lock" << std::endl;
         pthread_mutex_unlock(&task->gridUpdate_lock);
 
         // check whether we are done
         if (task->done) {
-            std::cout << "thread " << id << ": all done" << std::endl;
             break;
         }
     }

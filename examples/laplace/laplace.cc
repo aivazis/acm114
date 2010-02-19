@@ -25,7 +25,6 @@ int main(int argc, char* argv[]) {
     size_t N = 9;
     size_t threads = 1;
     double tolerance = 1.0e-3;
-    const char* seed = "laplace";
 
     // read the command line
     int command;
@@ -43,9 +42,6 @@ int main(int argc, char* argv[]) {
         case 't':
             threads = (size_t) atoi(optarg);
             break;
-        // get the name of the output file
-        case 'p':
-            seed = optarg;
         }
     }
     // print out the chosen options
