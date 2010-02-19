@@ -1,0 +1,22 @@
+// -*- coding: utf-8 -*-
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//                             michael a.g. aïvázis
+//                      california institute of technology
+//                      (c) 1998-2010  all rights reserved
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+
+
+#if !defined(acm114_laplace_Visualizer_icc)
+#error This header file contains implementation details of the class Visualizer
+#else
+
+// constructor
+acm114::laplace::Visualizer::Visualizer() {}
+
+#endif
+
+// end of file

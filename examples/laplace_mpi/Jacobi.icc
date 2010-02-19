@@ -1,0 +1,25 @@
+// -*- C++ -*-
+// -*- coding: utf-8 -*-
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//                             michael a.g. aïvázis
+//                      california institute of technology
+//                      (c) 1998-2010  all rights reserved
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+
+#if !defined(acm114_laplace_Jacobi_icc)
+#error This header file contains implementation details of the class Jacobi
+#else
+
+// constructor
+acm114::laplace::Jacobi::Jacobi(double tolerance, size_t workers):
+    _tolerance(tolerance),
+    _workers(workers) {
+}
+
+#endif
+
+// end of file

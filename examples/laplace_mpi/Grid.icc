@@ -1,0 +1,38 @@
+// -*- C++ -*-
+// -*- coding: utf-8 -*-
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//                             michael a.g. aïvázis
+//                      california institute of technology
+//                      (c) 1998-2010  all rights reserved
+//
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+
+#if !defined(acm114_laplace_Grid_icc)
+#error This header file contains implementation details of the class Grid
+#else
+
+// interface
+size_t acm114::laplace::Grid::size() const {
+    return _size;
+}
+
+double & acm114::laplace::Grid::operator()(size_t i, size_t j) {
+    return _block[j*_size+i];
+}
+
+double acm114::laplace::Grid::operator()(size_t i, size_t j) const {
+    return _block[j*_size+i];
+}
+
+// constructor
+acm114::laplace::Grid::Grid(size_t size) :
+    _size(size), 
+    _block(new double[size*size]) {
+}
+
+#endif
+
+// end of file
