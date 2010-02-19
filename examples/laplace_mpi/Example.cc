@@ -143,21 +143,4 @@ void Example::applyBoundaryConditions() {
     return;
 }
 
-// implementation detail
-//void initialize(Grid & g) {
-    // apply the dirichlet conditions
-    //for (size_t cell=0; cell < g.size(); cell++) {
-        // evaluate sin(pi x)
-        //double sin = std::sin(cell*_delta*pi);
-        // along the x-axis, at top and bottom
-        //g(cell, 0) = sin;
-        //g(cell, g.size()-1) = sin * std::exp(-pi);
-        // along the y-axis, left and right
-        //g(0, cell) = g(g.size()-1, cell) = 0.0;
-    //}
-
-    //return;
-//}
-
-
 // end of file
