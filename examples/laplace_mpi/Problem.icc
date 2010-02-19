@@ -14,6 +14,14 @@
 #error This header file contains implementation details of the class Problem
 #else
 
+MPI_Comm acm114::laplace::Problem::communicator() const {
+    return _cartesian;
+}
+
+int acm114::laplace::Problem::rank() const {
+    return _rank;
+}
+
 const acm114::laplace::Grid & acm114::laplace::Problem::solution() const {
     return _solution;
 }

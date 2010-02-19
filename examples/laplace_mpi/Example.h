@@ -26,8 +26,7 @@ namespace acm114 {
 class acm114::laplace::Example : public acm114::laplace::Problem {
     // interface
 public:
-    virtual void initialize();
-    virtual void initialize(Grid &) const;
+    virtual void applyBoundaryConditions();
 
     // meta methods
 public:

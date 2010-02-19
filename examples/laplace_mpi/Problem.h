@@ -32,13 +32,15 @@ public:
     // interface
 public:
     string_t name() const;
+    inline MPI_Comm communicator() const;
+    inline int rank() const;
 
+    // access to my grid
     inline Grid & solution();
     inline const Grid & solution() const;
-
-    // abstract
-    virtual void initialize() = 0;
-    virtual void initialize(Grid &) const = 0;
+    // interface used by the solver
+    virtual void initialize();
+    virtual void applyBoundaryConditions() = 0;
 
     // meta methods
 public:
@@ -49,6 +51,7 @@ public:
 protected:
     string_t _name;
     double _delta;
+    double _x0, _y0;
     int _rank, _size;
     int _processors;
     int _place[2];
