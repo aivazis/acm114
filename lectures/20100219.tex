@@ -101,7 +101,7 @@ void Jacobi::_solve(Problem & problem) {
   \begin{lstlisting}[language=c++,name=Jacobi:updated-threaded,basicstyle=\tt\bfseries\tiny]
 struct Task {
     // shared information 
-    size_t workers;
+    size_t workers; // the number of threads
     double tolerance; // the covergence tolerance
     Grid & current;
     Grid & next;
@@ -109,7 +109,6 @@ struct Task {
     bool done; // is there more work?
     double maxDeviation; // the value
     size_t contributions; // the number of threads that have deposited contributions
-    pthread_mutex_t errorUpdate_lock; //the mutex
     pthread_mutex_t gridUpdate_lock; //the mutex
     pthread_cond_t gridUpdate_check;
 
@@ -117,14 +116,12 @@ struct Task {
         workers(workers), tolerance(tolerance), current(current), next(next),
         done(false), maxDeviation(0.0), contributions(0),
         gridUpdate_lock(), gridUpdate_check() {
-        // initialize the convergence criterion lock
-        pthread_mutex_init(&errorUpdate_lock, 0);
+        // initialize the grid update lock
         pthread_mutex_init(&gridUpdate_lock, 0);
         pthread_cond_init(&gridUpdate_check, 0);
     }
 
     ~Task() {
-        pthread_mutex_destroy(&errorUpdate_lock);
         pthread_mutex_destroy(&gridUpdate_lock);
         pthread_cond_destroy(&gridUpdate_check);
     }
