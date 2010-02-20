@@ -48,12 +48,12 @@
 \end{frame}
 
 % --------------------------------------
-% the updated jacobi solver 
+% the jacobi solver 
 \begin{frame}[fragile]
 % 
-  \frametitle{Threaded \class{Jacobi}: the updated master thread}
+  \frametitle{Threaded \class{Jacobi}: the main thread}
 %
-  \begin{lstlisting}[language=c++,name=Jacobi:updated-threaded,basicstyle=\tt\bfseries\tiny]
+  \begin{lstlisting}[language=c++,name=Jacobi:updated-solve,basicstyle=\tt\bfseries\tiny]
 void Jacobi::_solve(Problem & problem) {
     Grid & current = problem.solution();
 
@@ -62,12 +62,11 @@ void Jacobi::_solve(Problem & problem) {
     problem.initialize(next);
 
     // shared thread info
-    Task task(_workers, current, next);
+    Task task(_workers, _tolerance, current, next);
     // per-thread information
     Context context[_workers];
-
-    // let's get going
-    std::cout << "jacobi: spawning " << _workers << " threads" << std::endl;
+    // spawn the threads
+    std::cout << "jacobi: spawning " << _workers << " workers" << std::endl;
     for (size_t tid=0; tid < _workers; tid++) {
         context[tid].id = tid;
         context[tid].task = &task;
@@ -78,11 +77,8 @@ void Jacobi::_solve(Problem & problem) {
         }
     }
     // harvest the threads
-    std::cout << "jacobi: harvesting " << _workers << " threads" << std::endl;
     for (size_t tid = 0; tid < _workers; tid++) {
-            std::cout << "jacobi: waiting for thread " << tid << " to finish" << std::endl;
             pthread_join(context[tid].descriptor, 0);
-            std::cout << "jacobi: thread " << tid << " done" << std::endl;
         }
     // done
     std::cout << "jacobi: done." << std::endl;
@@ -127,47 +123,6 @@ struct Task {
     }
 };
 
-  \end{lstlisting}
-%
-\end{frame}
-
-% --------------------------------------
-% the jacobi solver 
-\begin{frame}[fragile]
-% 
-  \frametitle{Threaded \class{Jacobi}: the main thread}
-%
-  \begin{lstlisting}[language=c++,name=Jacobi:updated-solve,basicstyle=\tt\bfseries\tiny]
-void Jacobi::_solve(Problem & problem) {
-    Grid & current = problem.solution();
-
-    // create and initialize temporary storage
-    Grid next(current.size());
-    problem.initialize(next);
-
-    // shared thread info
-    Task task(_workers, _tolerance, current, next);
-    // per-thread information
-    Context context[_workers];
-    // spawn the threads
-    std::cout << "jacobi: spawning " << _workers << " workers" << std::endl;
-    for (size_t tid=0; tid < _workers; tid++) {
-        context[tid].id = tid;
-        context[tid].task = &task;
-        
-        int status = pthread_create(&context[tid].descriptor, 0, _update, &context[tid]);
-        if (status) {
-            throw ("error in pthread_create");
-        }
-    }
-    // harvest the threads
-    for (size_t tid = 0; tid < _workers; tid++) {
-            pthread_join(context[tid].descriptor, 0);
-        }
-    // done
-    std::cout << "jacobi: done." << std::endl;
-    return;
-}
   \end{lstlisting}
 %
 \end{frame}
@@ -351,8 +306,8 @@ void * Jacobi::_update(void * arg) {
 %
   \item to create a Cartesian communicator
     \begin{C}
-int MPI_Cart_create(MPI_Comm old,
-        int ndims, int* layout, int* periods, MPI_Comm* new);
+int MPI_Cart_create(MPI_Comm oldcomm,
+        int ndims, int* layout, int* periods, int reorder, MPI_Comm* newcomm);
     \end{C}
 %
   \item to find out the coordinates of a process in the virtual grid given its rank
