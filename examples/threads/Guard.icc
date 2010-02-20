@@ -14,57 +14,49 @@
 #error This header file contains implementation details of the class Guard
 #else
 
-template <typename Target>
-Target & operator<< (Target & target, pyre::threads::Guard<Target> & guard) {
-    guard.flip();
-    return target;
+// locking
+pyre::threads::Guard::ostream_t & pyre::threads::Guard::lock(
+    pyre::threads::Guard::ostream_t & stream, pyre::threads::Guard::mutex_t & mutex)
+{
+    pthread_mutex_lock(&mutex);
+    return stream;
 }
 
-// state
-template <typename Target>
-bool pyre::threads::Guard<Target>::state() const {
-    return _locked;
+// unlocking
+pyre::threads::Guard::ostream_t & pyre::threads::Guard::unlock(
+    pyre::threads::Guard::ostream_t & stream, pyre::threads::Guard::mutex_t & mutex) 
+{
+    pthread_mutex_unlock(&mutex);
+    return stream;
 }
 
-// lock
-template <typename Target>
-pyre::threads::Guard<Target> & pyre::threads::Guard<Target>::flip() {
-    if (_locked) {
-        pthread_mutex_unlock(&_mutex);
-        _locked = false;
-    } else {
-        pthread_mutex_lock(&_mutex);
-        _locked = true;
-    }
-
-    return *this;
-}
-
-// constructor
-template <typename Target>
-pyre::threads::Guard<Target>::Guard(pthread_mutex_t & mutex) :
-    _locked(false),
-    _mutex(mutex) {
-}
-
-template <typename Target>
-pyre::threads::Guard<Target>::Guard(const Guard<Target> & other) :
-    _locked(false),
-    _mutex(other._mutex) {
-}
-
-template <typename Target>
-pyre::threads::Guard<Target> & 
-pyre::threads::Guard<Target>::operator=(const Guard<Target> & other) {
-    if (this == &other) {
+// meta methods
+pyre::threads::Guard::Guard(manip_t f, mutex_t & m) : _f(f), _m(m) {}
+pyre::threads::Guard::Guard(const Guard & g) : _f(g._f), _m(g._m) {}
+pyre::threads::Guard & pyre::threads::Guard::operator= (const pyre::threads::Guard & g) {
+    if (this == &g) {
         return *this;
     }
-
-    _locked = other._locked;
-    _mutex = other._mutex;
-
+    _f = g._f;
+    _m = g._m;
     return *this;
 }
+
+// the injection operator
+std::ostream & operator<< (std::ostream & str, pyre::threads::Guard g) {
+    return g._f(str, g._m);
+}
+
+// the locking manipulator
+pyre::threads::Guard lock(pthread_mutex_t & mutex) {
+    return pyre::threads::Guard(pyre::threads::Guard::lock, mutex);
+}
+
+// the unlocking manipulator
+pyre::threads::Guard unlock(pthread_mutex_t & mutex) {
+    return pyre::threads::Guard(pyre::threads::Guard::unlock, mutex);
+}
+
 
 #endif
 

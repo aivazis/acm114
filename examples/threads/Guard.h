@@ -10,44 +10,49 @@
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
 
-#if !defined(pyre_threads_BCD_h)
+#if !defined(pyre_threads_Guard_h)
 #define pyre_threads_Guard_h
 
 namespace pyre {
     namespace threads {
-        template <typename target> class Guard;
+        class Guard;
     }
 }
 
 #include <pthread.h>
 
-// the injection operator
-template <typename Target>
-Target & operator<< (Target &, pyre::threads::Guard<Target> &);
-
-// the Guard class
-template <typename Target>
 class pyre::threads::Guard {
-    // typedefs
 public:
-    typedef Target target_t;
+    typedef pthread_mutex_t mutex_t;
+    typedef std::ostream ostream_t;
+    typedef ostream_t & (*manip_t)(ostream_t &, mutex_t & mutex);
 
-    // interface
 public:
-    inline bool state() const;
-    inline Guard<target_t> & flip();
+    friend ostream_t & operator<< (ostream_t &, Guard &);
 
-    // meta-methods
 public:
-    inline Guard(pthread_mutex_t & mutex);
-    inline Guard(const Guard<target_t> & other);
-    inline Guard<target_t> & operator=(const Guard<target_t> & other);
+    inline static ostream_t & lock(ostream_t & stream, mutex_t & mutex);
+    inline static ostream_t & unlock(ostream_t & stream, mutex_t & mutex);
+
+    // meta methods
+public:
+    inline Guard(manip_t f, mutex_t & m);
+
+    inline Guard(const Guard & g);
+    Guard & operator= (const Guard & g);
 
     // data members
-private:
-    bool _locked;
-    pthread_mutex_t & _mutex;
+public:
+    manip_t _f;
+    mutex_t & _m;
 };
+
+// the injection operator
+inline std::ostream & operator<< (std::ostream & str, pyre::threads::Guard g);
+
+// the two manipulators
+inline pyre::threads::Guard lock(pthread_mutex_t & mutex);
+inline pyre::threads::Guard unlock(pthread_mutex_t & mutex);
 
 // get the inline definitions
 #define pyre_threads_Guard_icc

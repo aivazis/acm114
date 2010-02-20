@@ -15,33 +15,40 @@
 
 #include "Guard.h"
 
+// shared info
+struct TaskData {
+    size_t workers;
+    size_t iterations;
+    pthread_mutex_t mutex;
+};
+
 using namespace pyre::threads;
 
 // thread management
 struct Context {
     // thread info
     size_t id;
-    size_t workers;
-    size_t iterations;
-    Guard<std::ostream> * guard;
+    TaskData * data;
     pthread_t descriptor;
 };
 
 void * _boast(void * dummy) {
     Context * info = static_cast<Context *>(dummy);
+    TaskData & data = *(info->data);
 
     // iterate
-    for (size_t iteration = 0; iteration < info->iterations; iteration++) {
+    for (size_t iteration = 0; iteration < data.iterations; iteration++) {
         std::cout
-            << *(info->guard)
+            << lock(data.mutex)
             << "thread " << info->id << ": iteration " << iteration
+            << unlock(data.mutex)
             << std::endl
-            << *(info->guard)
             ;
     }
 
     return 0;
 }
+
 
 // main program
 int main(int argc, char* argv[]) {
@@ -74,20 +81,15 @@ int main(int argc, char* argv[]) {
 
     // set up the thread context
     Context context[threads];
-
-    // set up a mutex
-    pthread_mutex_t mutex;
-    pthread_mutex_init(&mutex, 0);
-
-    // build the iostream lock
-    Guard<std::ostream> guard(mutex);
+    TaskData data;
+    data.workers = threads;
+    data.iterations = iterations;
+    pthread_mutex_init(&data.mutex, 0);
 
     // spawn some threads
     for (size_t id = 0; id < threads; id++) {
         context[id].id = id;
-        context[id].workers = threads;
-        context[id].iterations = iterations;
-        context[id].guard = &guard;
+        context[id].data = &data;
 
         int status = pthread_create(&context[id].descriptor, 0, _boast, &context[id]);
         if (status) {
@@ -102,7 +104,7 @@ int main(int argc, char* argv[]) {
     }
 
     // destroy the mutex
-    pthread_mutex_destroy(&mutex);
+    pthread_mutex_destroy(&data.mutex);
 
     // all done
     return 0;
