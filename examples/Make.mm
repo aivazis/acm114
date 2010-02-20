@@ -16,6 +16,7 @@ PACKAGE = examples
 RECURSE_DIRS = \
     cache \
     laplace \
+    threads \
 
 
 #--------------------------------------------------------------------------
