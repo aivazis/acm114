@@ -25,7 +25,7 @@ class pyre::threads::Guard {
 public:
     typedef pthread_mutex_t mutex_t;
     typedef std::ostream ostream_t;
-    typedef ostream_t & (*manip_t)(ostream_t &, mutex_t & mutex);
+    typedef ostream_t & (*behavior_t)(ostream_t &, mutex_t & mutex);
 
 public:
     friend ostream_t & operator<< (ostream_t &, Guard &);
@@ -36,14 +36,14 @@ public:
 
     // meta methods
 public:
-    inline Guard(manip_t f, mutex_t & m);
+    inline Guard(behavior_t f, mutex_t & m);
 
     inline Guard(const Guard & g);
     Guard & operator= (const Guard & g);
 
     // data members
 public:
-    manip_t _f;
+    behavior_t _f;
     mutex_t & _m;
 };
 

@@ -31,7 +31,7 @@ pyre::threads::Guard::ostream_t & pyre::threads::Guard::unlock(
 }
 
 // meta methods
-pyre::threads::Guard::Guard(manip_t f, mutex_t & m) : _f(f), _m(m) {}
+pyre::threads::Guard::Guard(behavior_t f, mutex_t & m) : _f(f), _m(m) {}
 pyre::threads::Guard::Guard(const Guard & g) : _f(g._f), _m(g._m) {}
 pyre::threads::Guard & pyre::threads::Guard::operator= (const pyre::threads::Guard & g) {
     if (this == &g) {
