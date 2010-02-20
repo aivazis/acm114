@@ -13,13 +13,21 @@
 #if !defined(pyre_threads_Guard_h)
 #define pyre_threads_Guard_h
 
+#include <pthread.h>
+
+
 namespace pyre {
     namespace threads {
+        typedef pthread_mutex_t mutex_t;
+
         class Guard;
+
+        // the two manipulators
+        inline Guard lock(mutex_t & mutex);
+        inline Guard unlock(mutex_t & mutex);
     }
 }
 
-#include <pthread.h>
 
 class pyre::threads::Guard {
 public:
@@ -51,8 +59,8 @@ public:
 inline std::ostream & operator<< (std::ostream & str, pyre::threads::Guard g);
 
 // the two manipulators
-inline pyre::threads::Guard lock(pthread_mutex_t & mutex);
-inline pyre::threads::Guard unlock(pthread_mutex_t & mutex);
+// inline pyre::threads::Guard lock(pthread_mutex_t & mutex);
+// inline pyre::threads::Guard unlock(pthread_mutex_t & mutex);
 
 // get the inline definitions
 #define pyre_threads_Guard_icc

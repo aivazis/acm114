@@ -14,26 +14,47 @@
 #error This header file contains implementation details of the class Guard
 #else
 
+// the injection operator
+std::ostream & operator<< (std::ostream & str, pyre::threads::Guard g) {
+    return g._f(str, g._m);
+}
+
+// the locking manipulator
+pyre::threads::Guard pyre::threads::lock(pyre::threads::mutex_t & mutex) {
+    return pyre::threads::Guard(pyre::threads::Guard::lock, mutex);
+}
+
+// the unlocking manipulator
+pyre::threads::Guard pyre::threads::unlock(pyre::threads::mutex_t & mutex) {
+    return pyre::threads::Guard(pyre::threads::Guard::unlock, mutex);
+}
+
+// implementation details
 // locking
-pyre::threads::Guard::ostream_t & pyre::threads::Guard::lock(
-    pyre::threads::Guard::ostream_t & stream, pyre::threads::Guard::mutex_t & mutex)
-{
+pyre::threads::Guard::ostream_t & 
+pyre::threads::Guard::lock(
+                           pyre::threads::Guard::ostream_t & stream,
+                           pyre::threads::Guard::mutex_t & mutex) {
     pthread_mutex_lock(&mutex);
     return stream;
 }
 
 // unlocking
-pyre::threads::Guard::ostream_t & pyre::threads::Guard::unlock(
-    pyre::threads::Guard::ostream_t & stream, pyre::threads::Guard::mutex_t & mutex) 
-{
+pyre::threads::Guard::ostream_t &
+pyre::threads::Guard::unlock(
+                             pyre::threads::Guard::ostream_t & stream,
+                             pyre::threads::Guard::mutex_t & mutex) {
     pthread_mutex_unlock(&mutex);
     return stream;
 }
 
 // meta methods
 pyre::threads::Guard::Guard(behavior_t f, mutex_t & m) : _f(f), _m(m) {}
+
 pyre::threads::Guard::Guard(const Guard & g) : _f(g._f), _m(g._m) {}
-pyre::threads::Guard & pyre::threads::Guard::operator= (const pyre::threads::Guard & g) {
+
+pyre::threads::Guard & 
+pyre::threads::Guard::operator= (const pyre::threads::Guard & g) {
     if (this == &g) {
         return *this;
     }
@@ -41,22 +62,6 @@ pyre::threads::Guard & pyre::threads::Guard::operator= (const pyre::threads::Gua
     _m = g._m;
     return *this;
 }
-
-// the injection operator
-std::ostream & operator<< (std::ostream & str, pyre::threads::Guard g) {
-    return g._f(str, g._m);
-}
-
-// the locking manipulator
-pyre::threads::Guard lock(pthread_mutex_t & mutex) {
-    return pyre::threads::Guard(pyre::threads::Guard::lock, mutex);
-}
-
-// the unlocking manipulator
-pyre::threads::Guard unlock(pthread_mutex_t & mutex) {
-    return pyre::threads::Guard(pyre::threads::Guard::unlock, mutex);
-}
-
 
 #endif
 
