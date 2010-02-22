@@ -20,39 +20,27 @@
 %
   \begin{itemize}
 %
-  \item solving differential equations using structured grids
+  \item when solving differential equations using structured grids
     \begin{itemize}
-    \item finite differences
-    \item finite volumes
+    \item the grid itself is stationary
+    \item finite differences use the grid nodes as sampling points for a field
+    \item finite volumes consider the grid as a collection of matter containers and formulate
+      problems in terms of fluxes across their boundaries
     \end{itemize}
 %
   \item finite elements take a different approach
     \begin{itemize}
     \item subdivide the domain into elements
-    \item construct basis functions over each element
-    \item 
+    \item construct basis functions over each element to approximate the solution
+    \item allow the mesh nodes to move along with the object
+    \item use the elements to compute the material response to the induced deformations
+    \item apply this response to nodal fields in a linear manner
     \end{itemize}
 %
-  \item a {\em simplicial mesh}
+  \item a {\em simplicial mesh} is a decomposition of a region of space in terms of simplices
 %
   \item what follows is an overview of very common but surprisingly hard problems that occur in
     simulations of physical systems
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% overview of unstructured grids
-\begin{frame}[fragile]
-%
-  \frametitle{Finite elements}
-%
-  \begin{itemize}
-%
-  \item 
-%
-  \item 
-%
   \end{itemize}
 %
 \end{frame}
@@ -398,6 +386,10 @@
     \item eventually cause the simulation to fail
     \end{itemize}
 %
+  \begin{figure}
+    \includegraphics[scale=0.8]{figures/mesh-pathologies.pdf}
+  \end{figure}
+%
   \item a strategy in wide use is to {\em erode} badly distorted elements
     \begin{itemize}
     \item using physically motivated erosion criteria that model fracture mechanics
@@ -405,7 +397,7 @@
     \item less so in parallel, as it involves geometrical and topological changes to the mesh
     \end{itemize}
 %
-  \item candidates are selected based on a geometric criterion of the element quality
+  \item candidates are selected based on some element quality metric
   \item erosion takes place when the deformation energy in a suitable neighborhood exceeds the
     fracture energy
 %
