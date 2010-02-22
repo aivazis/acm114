@@ -14,7 +14,7 @@
 	<key>BackgroundGraphic</key>
 	<dict>
 		<key>Bounds</key>
-		<string>{{0, 0}, {504, 180}}</string>
+		<string>{{0, 0}, {522, 108}}</string>
 		<key>Class</key>
 		<string>SolidGraphic</string>
 		<key>ID</key>
@@ -36,24 +36,54 @@
 	<key>CanvasOrigin</key>
 	<string>{0, 0}</string>
 	<key>CanvasSize</key>
-	<string>{504, 180}</string>
+	<string>{522, 108}</string>
 	<key>ColumnAlign</key>
 	<integer>1</integer>
 	<key>ColumnSpacing</key>
 	<real>36</real>
 	<key>CreationDate</key>
-	<string>2010-02-21 20:49:31 -0800</string>
+	<string>2010-02-22 08:12:59 -0800</string>
 	<key>Creator</key>
 	<string>Michael Aivazis</string>
 	<key>DisplayScale</key>
-	<string>1 0/72 in = 1.0000 in</string>
+	<string>1 0/72 in = 1 0/72 in</string>
 	<key>GraphDocumentVersion</key>
 	<integer>6</integer>
 	<key>GraphicsList</key>
 	<array>
 		<dict>
 			<key>Bounds</key>
-			<string>{{363.212, 4}, {140.861, 167}}</string>
+			<string>{{418.897, 4.1097}, {104.049, 103.094}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>ID</key>
+			<integer>7</integer>
+			<key>ImageID</key>
+			<integer>5</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{312.376, 4.1097}, {106.52, 103.89}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -83,7 +113,37 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{185, 20}, {190.236, 151}}</string>
+			<string>{{208.177, 2.5}, {104.049, 104.699}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>ID</key>
+			<integer>5</integer>
+			<key>ImageID</key>
+			<integer>3</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{104.049, 5}, {104.049, 102.74}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -113,7 +173,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{1.24409, 20}, {203.413, 151}}</string>
+			<string>{{0, 0}, {104.049, 108}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -151,16 +211,20 @@
 	<key>HPages</key>
 	<integer>1</integer>
 	<key>ImageCounter</key>
-	<integer>5</integer>
+	<integer>6</integer>
 	<key>ImageLinkBack</key>
 	<array>
+		<dict/>
+		<dict/>
 		<dict/>
 		<dict/>
 		<dict/>
 	</array>
 	<key>ImageList</key>
 	<array>
+		<string>image5.pdf</string>
 		<string>image4.pdf</string>
+		<string>image3.pdf</string>
 		<string>image2.pdf</string>
 		<string>image1.pdf</string>
 	</array>
@@ -201,7 +265,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2010-02-22 06:44:44 -0800</string>
+	<string>2010-02-22 08:24:07 -0800</string>
 	<key>Modifier</key>
 	<string>Michael Aivazis</string>
 	<key>NotesVisible</key>
@@ -272,7 +336,7 @@
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{390, 160}, {857, 884}}</string>
+		<string>{{149, 232}, {1387, 912}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
@@ -286,14 +350,14 @@
 		<key>SidebarWidth</key>
 		<integer>120</integer>
 		<key>VisibleRegion</key>
-		<string>{{-109, -275}, {722, 730}}</string>
+		<string>{{-51, -135}, {626, 379}}</string>
 		<key>Zoom</key>
-		<real>1</real>
+		<real>2</real>
 		<key>ZoomValues</key>
 		<array>
 			<array>
 				<string>Canvas 1</string>
-				<real>1</real>
+				<real>2</real>
 				<real>1</real>
 			</array>
 		</array>

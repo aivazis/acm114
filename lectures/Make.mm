@@ -62,7 +62,9 @@ FIGURES = \
     figures/cuda-blocks.pdf \
     figures/distributed-memory.pdf \
     figures/generic-parallel-architecture.pdf \
+    figures/mesh-cpt.pdf \
     figures/mesh-dogbone.pdf \
+    figures/mesh-drag.pdf \
     figures/mesh-penetration.pdf \
     figures/mesh-subdivision.pdf \
     figures/mesh-tetsubdivision.pdf \
