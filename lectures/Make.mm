@@ -50,6 +50,7 @@ SECTIONS = \
     20100212.tex \
     20100217.tex \
     20100219.tex \
+    20100222.tex \
     sandbox.tex \
 
 FIGURES = \
@@ -61,6 +62,11 @@ FIGURES = \
     figures/cuda-blocks.pdf \
     figures/distributed-memory.pdf \
     figures/generic-parallel-architecture.pdf \
+    figures/mesh-dogbone.pdf \
+    figures/mesh-penetration.pdf \
+    figures/mesh-subdivision.pdf \
+    figures/mesh-tetsubdivision.pdf \
+    figures/mesh-volumecontact.pdf \
     figures/mpi-alltoall-pattern.pdf \
     figures/mpi-bcast-pattern.pdf \
     figures/mpi-data-patterns.pdf \
