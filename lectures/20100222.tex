@@ -68,8 +68,33 @@
   \item creating simplicial meshes is a surprisingly hard problem
 %
   \item in two dimensions
+    \begin{itemize}
+    \item there is a well posed mathematical problem with some guarantees that a triangulation
+      can be generated for sufficiently well defined domains
+      \begin{itemize}
+      \item given a set of vertices, one can always find a {\em Delaunay} triangulation where
+        no vertex falls in the interior of the circumcircle of any triangle
+      \item the quality of the triangulation can be improved by adding extra vertices
+      \end{itemize}
+    \item for practical purposes, this is sufficient to handle most cases
+    \item the problem is rather challenging numerically, with high incidence of round-off
+      errors, overflows and underflows
+      \begin{itemize}
+      \item certain geometrical tests are so sensitive that robust packages employ exact
+        arithmetic
+      \end{itemize}
+
+    \end{itemize}
 %
-  \item in three dimensions
+  \item similar guarantees exist when triangulating surfaces embedded in three dimensional
+    space
+%
+  \item in three dimensions the problem is theoretically intractable at this point
+    \begin{itemize}
+    \item meshing packages are full of heuristics to avoid the known pathological cases
+    \end{itemize}
+%
+  \item no known parallel implementations 
 %
   \end{itemize}
 %
@@ -133,7 +158,36 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item mesh domain decomposition is mathematically identical to graph partitioning
+    \begin{itemize}
+    \item a {\em hard} computational problem
+    \item with wide applicability to many practical problems
+    \item hence, there are many excellent algorithms -- and software packages -- that solve
+      most problems of practical interest
+    \end{itemize}
+%
+  \item algorithms fall into two broad categories
+    \begin{itemize}
+    \item those that use geometrical information, such as nodal co\"ordinates
+    \item those that rely only on graph connectivity
+      \begin{itemize}
+      \item breadth first search, spectral bisection, Kernighan/Lin
+      \end{itemize}
+    \end{itemize}
+%
+  \item comparison metrics
+    \begin{itemize}
+    \item speed of partitioning: important since meshes tend to be large
+    \item number of cut edges
+    \item for finite elements: important to minimize the number of nodes on partition
+      boundaries, since it is directly linked to the communication cost of the calculation
+    \end{itemize}
+%
+  \item METIS from George Karypis' lab at the University of Minnesota
+    \begin{itemize}
+    \item multi-level Kernighan/Lin algorithms, other heuristics
+    \item ParMETIS is the parallel implementation
+    \end{itemize}
 %
   \end{itemize}
 %
