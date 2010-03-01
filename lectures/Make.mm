@@ -93,6 +93,7 @@ FIGURES = \
     figures/reduction-tree-sum.pdf \
     figures/shared-memory.pdf \
     figures/simd.pdf \
+    figures/spatial-points.pdf \
     figures/structured.pdf \
     figures/structured-1d-centered.pdf \
     figures/structured-1d-left.pdf \

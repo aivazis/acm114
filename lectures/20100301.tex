@@ -408,8 +408,6 @@
 %
   \item the process of putting the points in the container is known as a {\em cell sort}
 %
-  \item cell arrays can be {\em dense} or {\em sparse}, trading computational complexity for
-    storage
   \item they are optimal when properly tuned
       \begin{equation*}
         \begin{array}{lll}
@@ -478,7 +476,131 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item the sequential scan algorithm has trivial generalizations
+    \begin{itemize}
+    \item its performance is only acceptable for very small numbers of points
+    \item frequently used by the other algorithms to manage small size point sets
+    \end{itemize}
+%
+  \item binary search generalizes to the {\em projection} method in $d$ dimensions
+    \begin{itemize}
+    \item sort the points according to their \th{k} co\"ordinate and build a reference set for
+      this ordering
+    \item for example, one can number the points, sort them according to each co\"ordinate, and
+      build arrays of the point indices, or arrays of pointers to the actual data
+    \item a range query along any dimension yields all the points that lie within a slice of
+      the domain
+    \item to perform an orthogonal range query
+      \begin{itemize}
+      \item perform a range query along each dimension using binary searches
+      \item identify the co\"ordinate slice with the fewest records
+      \item perform a sequential scan
+      \end{itemize}
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% kd tree
+% s
+\begin{frame}[fragile]
+%
+  \frametitle{$kd$ trees}
+%
+  \begin{itemize}
+%
+  \item in $d$ dimensions, there is a median point for each co\"ordinate
+    \begin{itemize}
+    \item split the tree using the co\"ordinate with the largest spread
+    \item repeat this process at each level of the tree until the number of points to insert
+      into the tree drops below some threshold
+    \item every internal node of the tree has to record at least
+      \begin{itemize}
+      \item the direction that was chosen for the split
+      \item the value of the discriminant
+      \item references to the left and right branches of the node
+      \end{itemize}
+    \item leaf nodes are just point containers
+    \end{itemize}
+%
+  \item the orthogonal range query is defined recursively
+    \begin{itemize}
+    \item at each internal node, check whether the left and right subdomains intersect the
+      query interval by examining the discriminator
+    \item recurse into the branches that intersect the range
+    \item leaf nodes are examined using a sequential search
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% orthotrees
+\begin{frame}[fragile]
+%
+  \frametitle{Orthotrees}
+%
+  \begin{itemize}
+%
+  \item orthotrees are the generalization of interval trees in $d$ dimensions
+    \begin{itemize}
+    \item commonly known as {\em quadtrees} in two dimensions, and {\em octrees} in three
+    \item recursively split the $d$-dimensional domain into $2^{d}$ equal size hyperboxes
+    \item each internal node has $2^{d}$ branches
+    \item some of the branches lead to leaf nodes that contain the actual data
+    \end{itemize}
+%
+  \item the depth of the tree depends on the actual distribution of points in the input set
+    \begin{itemize}
+    \item points that are very close to each other could lead to some very deep trees
+    \end{itemize}
+%
+  \item orthogonal range queries are implemented similarly to $kd$ trees
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% cells
+\begin{frame}[fragile]
+%
+  \frametitle{Binning in higher dimensions}
+%
+  \begin{itemize}
+%
+  \item cell sort extends naturally to $d$ dimensions
+    \begin{itemize}
+    \item form a regular grid of spacing $\delta_{i}$ along the \th{i} dimension
+    \item convert the point coordinates into cell indices along each dimension using the same
+      formula as in one dimension
+    \end{itemize}
+%
+    \item the orthogonal range query consists of accessing cells that
+      \begin{itemize}
+      \item entirely interior to the query box
+      \item partially overlap the boundary of the query box
+      \item the former are unconditionally included in the candidate list, while point in the
+        latter must be checked individually
+      \end{itemize}
+%
+    \item tuning is crucial to the performance of this method
+      \begin{itemize}
+      \item cells that are too large can lead to many false positives
+      \item cells that are too small have higher access times
+      \item it is best to know the size of the query boxes so that the cell spacing can be
+        optimized
+      \end{itemize}
+%
+    \item can be easily combined with any of the other methods to speed up access to the points
+      in each cell
+      \begin{itemize}
+      \item most combinations do not offer significant advantages
+      \item but using binary searches is an exception
+      \end{itemize}
 %
   \end{itemize}
 %
