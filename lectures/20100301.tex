@@ -40,9 +40,7 @@
     \item predict the location of the nodes at a later time $t+\Delta t$ by integrating the
       equations of motion
     \item search for potential contact events among nodes, edges and faces to identify the
-      contact candidates \label{item:contact-crude}
-    \item perform a detailed search to isolate the entities that come in actual
-      contact \label{item:contact-detailed}
+      entities that come in contact \label{item:contact-search}
     \item correct the future location of the nodes by applying forces that tend to remove the
       overlap
     \end{enumerate}
@@ -59,8 +57,8 @@
 %
   \begin{itemize}
 %
-  \item the contact candidate identification in Step~\ref{item:contact-crude} and
-    Step~\ref{item:contact-detailed} above have the potential to dominate the calculation
+  \item the contact event identification in Step~\ref{item:contact-search} above has the
+    potential to dominate the calculation
     \begin{itemize}
     \item given a candidate pair, the intersection logic involves very expensive geometrical
       calculations
@@ -68,52 +66,24 @@
       boundary, prohibitively expensive even for moderate size calculations
     \end{itemize}
 %
-  \item hence, a more sensible strategy is to break the contact search up into two separate steps
+  \item hence, a more sensible strategy is to break up the contact search into two separate steps
     \begin{itemize}
-    \item find a relatively fast algorithm to narrow down the candidates to a small number
+    \item use a specialized data structure that encodes the location of mesh nodes and build a
+      relatively fast algorithm to narrow down the candidates to a small number
     \item perform the detailed calculations on the reduced set
     \end{itemize}
 %
-  \item the search in Step~\ref{item:contact-crude} requires a specialized data structure that
-    can encode the locations of the mesh nodes to support fast queries
+  \item typically, the fast searches are implemented using {\em orthogonal range queries} that
+    identify points whose co\"ordinates fall within a given box
     \begin{itemize}
     \item build a bounding box that contains the initial and final position of a given surface
       element, perhaps in some reduced form 
-    \item enlarge this box to account for the motion of the nodes
+    \item form the {\em capture box} by enlarging the bounding box to account for the motion of
+      the nodes
+    \item query the data structure for nodes that fall within the capture box
     \end{itemize}
 %
   \end{itemize}
-%
-\end{frame}
-
-
-
-% --------------------------------------
-% volume-based contact detection
-\begin{frame}[fragile]
-%
-  \frametitle{Volume based contact detection}
-%
-  \begin{itemize}
-%
-  \item volume based approaches replace the elements on the boundary with equivalent spheres
-  \item a variety of geometrical criteria can be used: 
-    \begin{itemize}
-      \item equivalent volume
-      \item diameter determined by the longest edge
-    \end{itemize}
-% 
-  \item contact detection can take place very efficiently using ORQ algorithms
-  \item simple spring models resolve the contact forces
-    \begin{itemize}
-    \item based on simple potentials that take into account the sphere inter-penetration
-    \end{itemize}
-%
-  \end{itemize}
-%
-  \begin{figure}
-    \includegraphics[scale=0.5]{figures/mesh-volumecontact.pdf}
-  \end{figure}
 %
 \end{frame}
 
@@ -121,15 +91,397 @@
 % overview of contact
 \begin{frame}[fragile]
 %
-  \frametitle{Who knows?}
+  \frametitle{Orthogonal range queries}
+%
+  \begin{minipage}{.70\linewidth}
 %
   \begin{itemize}
 %
-  \item
+  \item an orthogonal range query is a generalization of the interval test to higher dimensions
+    \begin{itemize}
+    \item given a number $p$ and an interval $[a,b)$, return \keyword{true} if the number falls
+    within the interval, otherwise return \keyword{false}
+    \item extend by performing a test for each co\"ordinate: does the point $p$ fall within a
+      given box?
+    \end{itemize}
+%
+  \item there is a variety of data structures that are {\em a priori} well suited to this
+    problem
+    \begin{itemize}
+    \item however, the problem context establishes some crucial constraints
+    \end{itemize}
+%
+  \end{itemize}
+%
+  \end{minipage}
+%
+  \hfill
+  \begin{minipage}{.27\linewidth}
+    \includegraphics[scale=0.7]{figures/orq.pdf}
+  \end{minipage} 
+%
+  \begin{itemize}
+%
+  \item we will classify algorithms according to the following metrics
+    \begin{itemize}
+    \item $b(N)$: the time it takes to initially populate the data structure with $N$ points
+    \item $r(N)$: the complexity of rebuilding or update the data structure
+    \item $s(N)$: the amount of storage required
+    \item $q(N,n)$ and $\bar{q}(N,n)$: the (average) time required to perform a query if
+      there are $n$ points in the given range
+    \end{itemize}
+%
+  \item also, we'll start out in one dimension and generalize
 %
   \end{itemize}
 %
 \end{frame}
 
+% --------------------------------------
+% simple algorithms
+\begin{frame}[fragile]
+%
+  \frametitle{Sequential scan}
+%
+  \begin{itemize}
+%
+  \item the simplest approach is to look at each record and determine whether it falls in the
+    range
+    \begin{itemize}
+    \item this algorithm is trivial to implement and requires no extra storage
+    \item the performance is acceptable for sufficiently small $N$, or if most of the records
+      fall in the query interval
+      \begin{equation*}
+        \begin{array}{rclcrcl}
+          b_{{\tt SCAN}} & = & \order{N} &, &
+          r_{{\tt SCAN}} & = & 0  \\
+          s_{{\tt SCAN}} & = & \order{N} &, &
+          q_{{\tt SCAN}} & = & \order{N}
+        \end{array}
+      \end{equation*}
+    \end{itemize}
+%
+  \end{itemize}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:rq-scan}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\rqscan(points, interval)}
+%
+        $candidates \leftarrow \emptyset$ \;
+        \For{$point$ \In $points$}{
+          \If {$point \in interval$} {
+            $candidates.insert(point)$
+          }
+        }
+        \Return{$candidates$}
+%
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+\end{frame}
+
+% --------------------------------------
+% simple algorithms
+\begin{frame}[fragile]
+%
+  \frametitle{Binary search}
+%
+  \begin{itemize}
+%
+  \item if the records are sorted, a binary search can locate any record with cost $\order{\log
+      N}$, so in order to find all $p \in [a,b)$
+    \begin{itemize}
+    \item find the first point that satisfies $p >= a$
+    \item and collect points in sequence while $p < b$
+    \item simple analysis yields
+      \begin{equation*}
+        \begin{array}{rclcrcl}
+          b_{{\tt BS}} & = & \order{N \log N} &, &
+          r_{{\tt BS}} & = & \order{N} \\
+          s_{{\tt BS}} & = & \order{N} &, &
+          q_{{\tt BS}} & = & \order{\log N + n}
+        \end{array}
+      \end{equation*}
+      since the records must be sorted initially, while rebuilding the data structure can be
+      done in linear time since it is almost sorted
+    \end{itemize}
+% 
+  \end{itemize}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:rq-bs}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\rqbs(points, interval=(a,b))}
+        \vspace{.5em}
+%
+        $candidates \leftarrow \emptyset$ \;
+        $iterator \leftarrow \bslb(points, a)$ \;
+        \While{$\star iterator \leq b$}{
+          \If {$point \in interval$} {
+            $candidates.insert(point)$
+          }
+        }
+        \Return{$candidates$}
+%
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+\end{frame}
+
+% --------------------------------------
+% using trees
+\begin{frame}[fragile]
+%
+  \frametitle{Tricks with trees}
+%
+  \begin{itemize}
+%
+  \item alternatively, we can store the points at the leaves of a binary tree data structure
+    \begin{itemize}
+    \item each internal tree node acts has a {\em discriminator} that splits the data set into
+      two subsets
+    \item numbers less than the discriminator go to the left branch, the rest to the right
+    \item once the population drops below some threshold, create a leaf node to hold the points
+    \end{itemize}
+%
+%
+  \item two sensible choices for the discriminator are
+    \begin{itemize}
+    \item the midpoint of the interval: yields a recursive subdivision of the interval
+      \begin{itemize}
+      \item also known as interval trees or {\em orthotrees}
+      \item quadtrees in two dimensions, octrees in three
+      \end{itemize}
+    \item the median of the data set: partitions the data in subsets of equal size
+      \begin{itemize}
+      \item $kd$ trees
+      \end{itemize}
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% creating a binary tree
+\begin{frame}[fragile]
+%
+  \frametitle{Creating a binary tree}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:binary-tree}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\treemake(points)}
+        \vspace{.5em}
+%
+        \If{$length[points] < tree.leafSize$}{
+          $leaf \leftarrow tree.newLeaf()$ \;
+          $leaf.insert(points)$ \;
+          \Return{$leaf$}
+        }\Else{
+          $branch \leftarrow tree.newBranch()$ \;
+          select branch $discriminator$ \;
+          $left \leftarrow \left\{ x \in points : x < discriminator \right\}$ \;
+          $branch.left \leftarrow tree.make(left)$ \;
+          $right \leftarrow \left\{ x \in points : x >= discriminator \right\}$ \;
+          $branch.right \leftarrow tree.make(right)$ \;
+          \Return{branch}
+        }
+%
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+\end{frame}
+
+% --------------------------------------
+% range query in a binary tree
+\begin{frame}[fragile]
+%
+  \frametitle{Querying a binary tree}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:rq-tree}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\rqtree(tree, interval=(a,b))}
+        \vspace{.5em}
+%
+        \If{$tree$ \Is $leaf$}{
+          \Return{$\rqscan(tree.points, interval)$}
+        }\Else{
+          $candidates \leftarrow \emptyset$ \;
+          \If {$tree.discriminator \geq a$} {
+            $candidates \leftarrow candidates + \rqtree(tree.left, interval)$ \;
+          }
+          \If {$tree.discriminator < b$} {
+            $candidates \leftarrow candidates + \rqtree(tree.right, interval)$ \;
+          }
+          \Return{$candidates$}
+        }
+%
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+\end{frame}
+
+% --------------------------------------
+% binary tree performance
+\begin{frame}[fragile]
+%
+  \frametitle{Performance of binary trees}
+%
+  \begin{itemize}
+%
+  \item for midpoint splitting, the depth $D$ of the tree depends on the point distribution
+    \begin{equation*}
+      \begin{array}{lll}
+        b_{{\tt ORTHO}} = \order{(D+1)N} &
+        r_{{\tt ORTHO}} = \order{(D+1)N}  \\
+        s_{{\tt ORTHO}} = \order{(D+1)N} &
+        q_{{\tt ORTHO}} = \order{N} &
+        \bar{q}_{{\tt ORTHO}} = \order{D+n}
+      \end{array}
+    \end{equation*}
+%
+  \item for median splitting the depth of the tree depends only on the number of records
+    \begin{equation*}
+      \begin{array}{ll}
+        b_{{\tt KD}} = \order{N \log N} &
+        r_{{\tt KD}} = \order{N}  \\
+        s_{{\tt KD}} = \order{N} &
+        q_{{\tt KD}} = \order{n + \log N}
+      \end{array}
+    \end{equation*}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% binning in buckets
+\begin{frame}[fragile]
+%
+  \frametitle{Binning}
+%
+  \begin{itemize}
+%
+  \item another strategy is to partition the interval $[a,b)$ into $M$ cells of width
+    \[
+    \delta \bydef x_{m+1} - x_{m} = \frac{b-a}{M}
+    \]
+    \begin{itemize}
+    \item the \th{m} cell $C_{m}$ holds points in the interval $[x_{m}, x_{m+1})$
+    \item the point container then becomes an array of $M$ point containers
+    \item and the array index for a point $p$ is obtained through
+      \[
+      i = \lfloor \frac{p-a}{\delta} \rfloor
+      \]
+    \end{itemize}
+%
+  \item the process of putting the points in the container is known as a {\em cell sort}
+%
+  \item cell arrays can be {\em dense} or {\em sparse}, trading computational complexity for
+    storage
+  \item they are optimal when properly tuned
+      \begin{equation*}
+        \begin{array}{lll}
+          b_{{\tt CELL}} = \order{N + M} &
+          r_{{\tt CELL}} = \order{N + M} \\
+          s_{{\tt CELL}} = \order{N + M} &
+          q_{{\tt CELL}} = \order{J + n} &
+          \bar{q}_{{\tt CELL}} = \order{n}
+        \end{array}
+      \end{equation*}
+      where $J$ is the number of cells that overlap the query interval
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% range query in a cell array tree
+\begin{frame}[fragile]
+%
+  \frametitle{Querying a cell array}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:rq-cell}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\rqcell(cells, interval=(a,b))}
+        \vspace{.5em}
+%
+        $candidates \leftarrow \emptyset$ \;
+        $i \leftarrow index(cells, a)$ \;
+        $j \leftarrow index(cells, b)$ \;
+        \For{$point$ \In $cells[i]$}{
+          \If{$point \geq a$}{
+            $candidates.insert(point)$ \;
+          }
+        }
+        \For{$k$ \In $[i+1 .. j-1]$}{
+          \If{$point$ \In $cells[k]$}{
+            $candidates.insert(point)$ \;
+          }
+        }
+        \For{$point$ \In $cells[j]$}{
+          \If{$point < b$}{
+            $candidates.insert(point)$ \;
+          }
+        }
+        \Return{$candidates$}
+%
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+\end{frame}
+
+% --------------------------------------
+% higher dimensions
+\begin{frame}[fragile]
+%
+  \frametitle{Generalizing to higher dimensions}
+%
+  \begin{itemize}
+%
+  \item 
+%
+  \end{itemize}
+%
+\end{frame}
 
 % end of file 

@@ -77,6 +77,7 @@ FIGURES = \
     figures/mpi-gather-pattern.pdf \
     figures/mpi-scatter.pdf \
     figures/mpi-scatter-pattern.pdf \
+    figures/orq.pdf \
     figures/parallelization-steps.pdf \
     figures/reduction-comsync-redundancy.pdf \
     figures/reduction-comsync-replication.pdf \
