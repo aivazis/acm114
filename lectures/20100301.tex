@@ -626,4 +626,46 @@
 %
 \end{frame}
 
+% --------------------------------------
+% parallelization
+\begin{frame}[fragile]
+%
+  \frametitle{Parallelization}
+%
+  \begin{itemize}
+%
+  \item minimization of the communication cost
+    \begin{itemize}
+    \item best to avoid communication altogether if possible
+    \item any type of globally distributed data structure would eventually dominate the
+      calculation
+    \item so would global data exchanges to maintain locally consistent information
+    \end{itemize}
+  \item load balancing
+    \begin{itemize}
+    \item the parallel characteristics of contact are different from the solver update
+    \item it is probably unavoidable that a few processors will be responsible for detecting and
+      resolving the bulk of contact
+    \end{itemize}
+%
+  \item utilize point-to-point communications as much as possible
+    \begin{itemize}
+    \item build/exchange bounding boxes for the geometry kept by each processor
+    \item use it to build point-to-point communication maps
+    \item exchange boundary elements so contact resolution can happen locally
+    \item exchange the resulting forces
+    \end{itemize}
+%
+  \item a research problem
+    \begin{itemize}
+    \item we know that processing multiple queries has better parallel characteristics than a
+      single one
+    \item we need a self-balancing, dynamically repartitioning data structure
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+
 % end of file 
