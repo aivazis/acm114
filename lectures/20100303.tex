@@ -211,7 +211,46 @@
     \item with components of $x$ distributed either across one task row, or along the diagonal,
       $n/p$ components per task
     \end{itemize}
-s
+%
+  \item the algorithm combines the features of row/column coarsening
+    \begin{itemize}
+    \item components of $x$ are broadcast along task columns
+    \item each task performs $n^{2}/p$ multiplications locally and sums $n/\sqrt{p}$ sets of
+      products
+      \item sum reductions along task rows produce the components of $y$ by combining the
+        component products
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% matrix-matrix multiply
+\begin{frame}[fragile]
+%
+  \frametitle{Matrix multiplication}
+%
+  \begin{itemize}
+%
+  \item the product of two $n \times n$ matrices $A$ and $B$ is an $n \times n$ matrix $C$
+    given by
+    \begin{equation*}
+      C_{ij} = \sum_{k=1}^{n} A_{ik} B_{kj}
+    \end{equation*}
+    where each one of $n^{2}$ entries requires $n$ multiply-adds for a total of $n^{3}$
+    operations
+%
+  \item matrix multiplication can be viewed as
+    \begin{itemize}
+    \item $n^{2}$ inner products
+    \item the sum of $n$ outer products
+    \item $n$ matrix vector products
+    \end{itemize}
+%
+  \item each one produces a parallel algorithm for matrix multiplication
+%
+
 %
   \end{itemize}
 %
