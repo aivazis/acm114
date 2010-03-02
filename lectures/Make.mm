@@ -52,6 +52,7 @@ SECTIONS = \
     20100219.tex \
     20100222.tex \
     20100301.tex \
+    20100303.tex \
     sandbox.tex \
 
 FIGURES = \
