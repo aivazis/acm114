@@ -16,15 +16,205 @@
 % contact detection
 \begin{frame}[fragile]
 %
-  \frametitle{}
+  \frametitle{Dense matrix problems}
 %
   \begin{itemize}
 %
-  \item
+  \item we'll take a look at
+    \begin{itemize}
+    \item inner and outer products of two vector
+    \item matrix-vector and matrix-matrix multiplication
+    \item LU and Cholesky decompositions
+    \item QR factorizations
+    \item computing eigenvalues and eigenvectors
+    \item fast Fourier transforms
+    \end{itemize}
+%
+  \item when solving a problem of size $n$ on $p$ processors, we will assume
+    \begin{itemize}
+    \item that $p$, and occasionally $\sqrt{p}$ divides $n$
+    \item that $p$ is a perfect square, when forming two-dimensional process grids
+    \item matrices are $n\times n$ -- square, not rectangular
+    \item we are memory constrained and data replication must be minimized
+    \end{itemize}
+%
+    \item these problems have been studied extensively and form the core of scientific
+      computing on parallel machines
+      \begin{itemize}
+      \item excellent implementations available 
+      \item interest has been revived due to the expected disruption by multi-core
+        architectures
+      \end{itemize}
 %
   \end{itemize}
 %
 \end{frame}
 
+% --------------------------------------
+% vector inner product
+\begin{frame}[fragile]
+%
+  \frametitle{Vector inner product}
+%
+  \begin{itemize}
+%
+  \item the inner product of two $n$-vectors $x$, $y$ is given by
+    \begin{equation*}
+    x^{T}y = \sum_{i=1}^{n} x_{i}y_{i}
+    \end{equation*}
+    which requires $n$ multiplications and $n-1$ additions
+%
+  \item parallelization strategy:
+    \begin{itemize}
+    \item $n$ fine grain tasks, numbered $i = 1, \ldots, n$, that store $x_{i}$ and $y_{i}$,
+      and compute $x_{i} y_{i}$
+    \item communication is a sum reduction over $n$ fine grain tasks
+    \item coarsening is achieved by coalescing $n/p$ tasks together, assuming that each process
+      can accommodate the data storage requirements
+    \item and mapping each coarse grain task to a process
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% vector outer product
+\begin{frame}[fragile]
+%
+  \frametitle{Vector outer product}
+%
+  \begin{itemize}
+%
+  \item the outer product of two $n$-vectors $x$ and $y$ is the $n \times n$ matrix $A$ given
+    by
+    \begin{equation*}
+      A_{ij} = x_{i} y_{j}
+    \end{equation*}
+    which requires $n^{2}$ multiplications
+%
+  \item parallelization strategies are determined by the storage requirements
+    \begin{itemize}
+    \item build a two-dimensional grid of $n^{2}$ fine grain tasks numbered $(i,j)$, with $i,j
+      = 1, \ldots, n$; each one computes $x_{i}y_{j}$
+    \item assuming no data replication is allowed
+      \begin{itemize}
+      \item let task $(i,1)$ store $x_{i}$ and task $(1,i)$ store $y_{i}$
+      \item or, let task $(i,i)$ store both $x_{i}$ and $y_{i}$
+      \end{itemize}
+    \item either way, the task that owns each element must broadcast it to the other tasks:
+      $x_{i}$ along the \th{i} task row, $y_{j}$ along the \th{j} task column
+    \item coarsening to $p$ tasks can be accomplished by
+      \begin{itemize}
+      \item combining $n/p$ rows or columns
+      \item forming $(n/\sqrt{p}) \times (n/\sqrt{p})$ grid of fine grain tasks
+      \end{itemize}
+    \item and each coarse grain task can be assigned to a process
+    \end{itemize}
+%
+  \item either way, na\"ive broadcasting of the components of $x$ and $y$ would require as much
+    total memory as replication
+    \begin{itemize}
+    \item storage can be reduced by circulating portions of $x$ and $y$ through the tasks, with
+      each task using the available portion and passing it on
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% matrix vector product
+\begin{frame}[fragile]
+%
+  \frametitle{The product of a matrix with a vector}
+%
+  \begin{itemize}
+%
+  \item given an $n \times n$ matrix $A$ and an $n$-vector $x$, the matrix vector product
+    yields an $n$-vector $y$ whose components are given by
+    \begin{equation*}
+      y_{i} = \sum_{j=1}^{n} A_{ij} x_{j}
+    \end{equation*}
+    requiring a total of $n^{2}$ multiply-add operations
+%
+  \item once again, the parallelization strategy is determined by how the data is distributed
+    among fine grain tasks
+    \begin{itemize}
+    \item build a two-dimensional grid of $n^{2}$ fine grain tasks numbered $(i,j)$, with $i,j
+      = 1, \ldots, n$; each one computes $A_{ij}x_{j}$
+    \item task $(i,j)$ has $a_{i,j}$, but if no data replication is allowed
+      \begin{itemize}
+      \item let task $(i,1)$ store $x_{i}$ and task $(1,i)$ store $y_{i}$
+      \item or, let task $(i,i)$ store both $x_{i}$ and $y_{i}$
+      \end{itemize}
+    \item the task that owns $x_{j}$ must broadcast it along the \th{j} task row, and $y_{i}$
+      is formed by sum reduction along the \th{i} task column
+    \item coarsening into $p$ tasks can be accomplished by combining $n/p$ rows/columns, or by
+      forming $(n/\sqrt{p}) \times (n/\sqrt{p})$ blocks
+    \item and each coarse grain task can be assigned to a process
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% coarsening matrix vector product
+\begin{frame}[fragile]
+%
+  \frametitle{Coarsening along rows or columns}
+%
+  \begin{itemize}
+%
+  \item for one-dimensional coarsening into $n/p$ task rows
+    \begin{itemize}
+    \item if $x$ is stored in one task, it must be broadcast to all others
+    \item if $x$ is distributed among tasks, with $n/p$ components per task, then multiple
+      broadcasts are required
+    \item each task computes the inner product of its $n/p$ rows of $A$ with the entire $x$ to
+      produce $n/p$ components of $y$
+    \end{itemize}
+%
+  \item for one-dimensional coarsening into $n/p$ task columns
+    \begin{itemize}
+    \item $n/p$ components of $x$ are distributed among the tasks
+    \item each task computes the linear combination of its $n/p$ columns with coefficients
+      from its copy of $x$
+    \item since the right parts of $x$ are already available, no communication is required
+    \item $y$ is generated by a sum reduction across tasks
+    \end{itemize}
+%
+  \item these two are {\em duals} of each other
+    \begin{itemize}
+    \item row coarsening begins with broadcast, followed by communication-free inner products
+    \item column coarsening begins with communication-free linear combinations, follows by a
+      reduction
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% 2d coarsening
+\begin{frame}[fragile]
+%
+  \frametitle{Two dimensional coarsening}
+%
+  \begin{itemize}
+%
+  \item for two dimensional coarsening, we form $(n/\sqrt{p}) \times (n/\sqrt{p})$ blocks of
+    fine grain task
+    \begin{itemize}
+    \item each one holding a $(n/\sqrt{p}) \times (n/\sqrt{p})$ block of $A$
+    \item with components of $x$ distributed either across one task row, or along the diagonal,
+      $n/p$ components per task
+    \end{itemize}
+s
+%
+  \end{itemize}
+%
+\end{frame}
 
 % end of file 
