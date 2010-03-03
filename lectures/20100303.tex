@@ -24,8 +24,8 @@
     \begin{itemize}
     \item inner and outer products of two vector
     \item matrix-vector and matrix-matrix multiplication
-    \item LU and Cholesky decompositions
-    \item QR factorizations
+    \item LU factorization and Cholesky decomposition
+    \item QR factorization
     \item computing eigenvalues and eigenvectors
     \item fast Fourier transforms
     \end{itemize}
@@ -250,7 +250,122 @@
 %
   \item each one produces a parallel algorithm for matrix multiplication
 %
+  \item but we'll explore a direct solution instead
+%
+  \end{itemize}
+%
+\end{frame}
 
+% --------------------------------------
+% matrix-matrix multiply: partitioning and communication
+\begin{frame}[fragile]
+%
+  \frametitle{Partitioning and communication patterns}
+%
+  \begin{itemize}
+%
+  \item we build a three dimensional array of $n^{3}$ fine grain tasks
+    \begin{itemize}
+    \item with $i,j,k = 1,\ldots,n$, let task $(i,j,k)$ be responsible for computing the
+      product $A_{ij}B_{jk}$
+    \item assuming no data replication, we have to distribute the data for $A$ and $B$ among
+      $2n^{2}$ tasks
+    \item suppose that task $(i,j,j)$ holds $A_{i,j}$ and task $(i,j,i)$ holds $B_{i,j}$
+    \item we will refer to tasks along $i$ and $j$ as task rows and columns
+    \item and tasks along $k$ as {\em layers}
+    \end{itemize}
+%
+  \item the communication requirements among tasks are satisfied if we
+    \begin{itemize}
+    \item broadcast the entries of the \th{k} column of $A$ from task $(i,j,j)$ to each task
+      row in the \th{k} layer
+    \item broadcast the entries of the \th{k} row of $B$ from task $(i,j,i)$ to each task column of
+      the \th{k} layer
+    \item form the result $C_{ij}$ by the sum reduction of the values held by all the
+      tasks layers $k$
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% coarsening
+\begin{frame}[fragile]
+%
+  \frametitle{Coarsening}
+%
+  \begin{itemize}
+%
+  \item there are four natural ways to coarsen our $n \times n \times n$ fine grain tasks into
+    $p$ coarse grain tasks
+    \begin{itemize}
+    \item by task rows: combine the $(n/p) \times n \times n$ tasks along a given task row
+    \item by task columns: combine the $n \times (n/p) \times n$ tasks along a given task
+      column
+    \item partition the layers in a two dimensional grid by combining $(n/\sqrt{p}) \times
+      (n/\sqrt{p}) \times n$ fine grain tasks
+    \item using three dimensional blocks by combining $(n/\sqrt[3]{p}) \times (n/\sqrt[3]{p})
+      \times (n/\sqrt[3]{p})$ tasks
+    \end{itemize}
+%
+    \item the two one dimensional coarsening strategies are similar
+      \begin{itemize}
+      \item for row coarsening
+        \begin{itemize}
+        \item each task needs only the part of $A$ it already has, but needs all $B$ entries
+        \item so global communication is required to broadcast the $n^{2}/p$ entries of $B$ held
+          by each task
+        \end{itemize}
+      \item conversely, for column coarsening
+        \begin{itemize}
+        \item each task needs only the parts of $B$ that it already has, but it needs all of $A$
+        \item so global communication is required to broadcast the $n^{2}/p$ entries of $A$ held
+          by each task
+        \end{itemize}
+      \item if accumulating $A$ or $B$ on each processor is not feasible, tasks can circulate
+        portions of the array in a ring
+%
+      \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% 2d coarsening
+\begin{frame}[fragile]
+%
+  \frametitle{Coarsening using a two dimensional grid}
+%
+  \begin{itemize}
+%
+  \item block matrix multiplication has the same overall form as actual product, with scalar
+    operations replaced by the matrix product of blocks!
+%
+  \item you should verify that
+    \begin{equation*}
+      C_{ij} = \sum_{k=1}^{\sqrt{p}} A_{ik} B_{kj}
+    \end{equation*}
+    for $i,j = 1, \ldots, \sqrt{p}$
+%
+  \item assume that task $(i,j$) has local access to block $A_{ij}$ and $B_{ij}$ and computes
+    block $C_{ij}$ of the result
+%
+  \item this requires all blocks $A_{ik}$ and $B_{kj}$ for $k=1,\ldots,\sqrt{p}$ to be
+    communicated
+    \begin{itemize}
+    \item first, a global broadcast of $A$ blocks across each task row 
+    \item followed by a global broadcast of $B$ blocks across each task column 
+    \end{itemize}
+%
+  \item memory requirements can be addressed by either of the following:
+    \begin{itemize}
+    \item broadcast blocks of $A$ across rows while circulating blocks of $B$ across columns in
+      lock step, so that they arrive at a given task at the same time
+    \item circulate blocks of $A$ horizontally and blocks of $B$ vertically, after an initial
+      circular shift, so that blocks meet at a given task at the right time
+    \end{itemize}
 %
   \end{itemize}
 %
