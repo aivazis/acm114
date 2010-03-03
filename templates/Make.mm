@@ -11,32 +11,13 @@
 
 
 PROJECT = acm114
-PACKAGE = 
+PACKAGE = templates
 
-RECURSE_DIRS = \
-    bin \
-    www \
-    lectures \
-    assignments \
-    examples \
-    templates \
 
 #--------------------------------------------------------------------------
 #
 
-all: tidy export
-
-tidy::
-	BLD_ACTION="tidy" $(MM) recurse
-
-clean::
-	BLD_ACTION="clean" $(MM) recurse
-
-distclean::
-	BLD_ACTION="distclean" $(MM) recurse
-
-export::
-	BLD_ACTION="export" $(MM) recurse
+all: tidy
 
 
 # end of file 
