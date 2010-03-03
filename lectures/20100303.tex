@@ -24,7 +24,7 @@
     \begin{itemize}
     \item inner and outer products of two vector
     \item matrix-vector and matrix-matrix multiplication
-    \item LU factorization and Cholesky decomposition
+    \item $LU$ factorization and Cholesky decomposition
     \item QR factorization
     \item computing eigenvalues and eigenvectors
     \item fast Fourier transforms
@@ -59,9 +59,9 @@
   \begin{itemize}
 %
   \item the inner product of two $n$-vectors $x$, $y$ is given by
-    \begin{equation*}
+    \begin{equation}
     x^{T}y = \sum_{i=1}^{n} x_{i}y_{i}
-    \end{equation*}
+    \end{equation}
     which requires $n$ multiplications and $n-1$ additions
 %
   \item parallelization strategy:
@@ -88,9 +88,9 @@
 %
   \item the outer product of two $n$-vectors $x$ and $y$ is the $n \times n$ matrix $A$ given
     by
-    \begin{equation*}
+    \begin{equation}
       A_{ij} = x_{i} y_{j}
-    \end{equation*}
+    \end{equation}
     which requires $n^{2}$ multiplications
 %
   \item parallelization strategies are determined by the storage requirements
@@ -133,9 +133,9 @@
 %
   \item given an $n \times n$ matrix $A$ and an $n$-vector $x$, the matrix vector product
     yields an $n$-vector $y$ whose components are given by
-    \begin{equation*}
+    \begin{equation}
       y_{i} = \sum_{j=1}^{n} A_{ij} x_{j}
-    \end{equation*}
+    \end{equation}
     requiring a total of $n^{2}$ multiply-add operations
 %
   \item once again, the parallelization strategy is determined by how the data is distributed
@@ -235,9 +235,9 @@
 %
   \item the product of two $n \times n$ matrices $A$ and $B$ is an $n \times n$ matrix $C$
     given by
-    \begin{equation*}
+    \begin{equation}
       C_{ij} = \sum_{k=1}^{n} A_{ik} B_{kj}
-    \end{equation*}
+    \end{equation}
     where each one of $n^{2}$ entries requires $n$ multiply-adds for a total of $n^{3}$
     operations
 %
@@ -344,9 +344,9 @@
     operations replaced by the matrix product of blocks!
 %
   \item you should verify that
-    \begin{equation*}
+    \begin{equation}
       C_{ij} = \sum_{k=1}^{\sqrt{p}} A_{ik} B_{kj}
-    \end{equation*}
+    \end{equation}
     for $i,j = 1, \ldots, \sqrt{p}$
 %
   \item assume that task $(i,j$) has local access to block $A_{ij}$ and $B_{ij}$ and computes
@@ -365,6 +365,376 @@
       lock step, so that they arrive at a given task at the same time
     \item circulate blocks of $A$ horizontally and blocks of $B$ vertically, after an initial
       circular shift, so that blocks meet at a given task at the right time
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% LU factorization
+\begin{frame}[fragile]
+%
+  \frametitle{$LU$ factorization}
+%
+  \begin{itemize}
+%
+  \item systems of linear equations are ubiquitous in numerical analysis
+  \item let $A$ be an $n \times n$ matrix, $b$ a known $n$-vector; we are looking for $x$ such
+    that
+    \begin{equation}
+      A x = b \label{eq:linear-system}
+    \end{equation}
+  \item a commonly used direct method for solving this system is to convert $A$ into the
+    product of a lower triangular matrix $L$ with an upper triangular matrix $U$
+    \begin{equation}
+      A = L U \label{eq:LU-factorization}
+    \end{equation}
+    known as $LU$ factorization
+  \item \eqref{linear-system} becomes
+    \begin{equation}
+      L U x = b
+    \end{equation}
+    which we can now solve in two simpler steps
+    \begin{eqnarray}
+        L y & = & b \\
+        U x & = & y
+    \end{eqnarray}
+    where we first solve the lower triangular system by forward substitution, followed by
+    solving the upper triangular system by back substitution to obtain $x$
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% LU by Gaussian elimination
+\begin{frame}[fragile]
+%
+  \frametitle{$LU$ by Gaussian elimination}
+%
+  \begin{itemize}
+%
+  \item we can compute the $LU$ factorization of $A$ using Gaussian elimination
+    \begin{center}
+      \begin{minipage}{.85\linewidth}
+        \begin{algorithm}[H]
+          \label{alg:LU-gaussian}
+%
+          \dontprintsemicolon
+          % \nocaptionofalgo
+          \setalcaphskip{0ex}
+%
+          \caption{\lu(A)}
+%
+          \For{$k=1$ \KwTo $n-1$}{
+            \For{$i=k+1$ \KwTo $n$}{
+              $L_{ik} = A_{ik} / A_{kk}$
+            }
+            \For{$j=k+1$ \KwTo $n$}{
+              \For{$i=k+1$ \KwTo $n$}{
+                $A_{ij} = A_{ij} - L_{ik}A_{kj}$
+              }
+            }
+          }
+%
+        \end{algorithm}
+      \end{minipage}
+    \end{center}
+%
+    which encodes $L$ and $U$ in place by overwriting $A$
+%
+  \item \algref{LU-gaussian} requires roughly $n^{3}/3$ multiply-adds and $n^{2}/2$ divisions
+%
+  \item we may also need {\em pivoting} to ensure numerical stability (and existence)
+%
+  \item \algref{LU-gaussian} is one of many algorithms expressed essentially as a triply nested loop
+    \begin{itemize}
+    \item the three indices can be ordered in any of $3!$ ways, with totally different memory
+      access patterns
+    \item in parallel, the $kij$ and $kji$ forms may be the most efficient
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+%
+
+% --------------------------------------
+% parallelization strategy
+\begin{frame}[fragile]
+%
+  \frametitle{Parallel $LU$ decomposition}
+%
+  \begin{itemize}
+%
+  \item number fine grain tasks as $(i,j)$ with $i,j = 1, \ldots, n$; each task
+    \begin{itemize}
+    \item stores $A_{ij}$
+    \item computes and stores $U_{ij}$, if $i \leq j$
+    \item computes and stores $L_{ij}$, if $i > j$
+    \end{itemize}
+    yielding a two dimensional array of $n^{2}$ tasks
+%
+  \item no need to compute and store
+    \begin{itemize}
+    \item the zeroes in the lower triangle of $U$
+    \item the unit diagonal and the zeroes in the upper triangle of $L$
+    \end{itemize}
+%
+  \item in order to create $p$ coarse grain tasks we could combine
+    \begin{itemize}
+    \item $n/p$ rows or columns of fine grain tasks
+    \item $(n/\sqrt{p}) \times (n/\sqrt{p})$ blocks of tasks
+    \end{itemize}
+    and map each one to a process
+%
+  \end{itemize}
+% 
+\end{frame}
+
+% --------------------------------------
+% parallelization LU
+\begin{frame}[fragile]
+%
+  \frametitle{Communication patterns for parallel $LU$ decomposition}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:pLU-ij}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\lu($A$, task=$(i,j)$)}
+%
+        \For{$k=1$ \KwTo $\min(i,j) - 1$}{
+          \KwRecv $A_{kj}$ \;
+          \KwRecv $L_{ik}$ \;
+          $A_{ij} = A_{ij}- L_{ik}A_{kj}$
+        }
+        \If{ $i \leq j$}{
+          \KwBcast $A_{ij}$ \KwTo $(k,j)$, $k=i+1,\ldots,n$
+        } \Else {
+          \KwRecv $A_{jj}$ \;
+          $L_{ij} = A_{ij}/A_{jj}$ \;
+          \KwBcast $L_{ij}$ \KwTo $(i,k)$, $k=i+1,\ldots,n$
+        }
+% 
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+\end{frame}
+
+% --------------------------------------
+% row coarsening
+\begin{frame}[fragile]
+%
+  \frametitle{Row coarsening}
+%
+  \begin{itemize}
+%
+  \item with one dimensional row coarsening
+    \begin{itemize}
+    \item we forgo parallelism in updating rows
+    \item there is no need to broadcast the multipliers $L_{ij}$ since each row is contained
+      entirely within a task
+    \item we still need the vertical broadcasts of matrix rows to the tasks below
+    \end{itemize}
+%
+  \end{itemize}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:pLU-ij-rows}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\lu($A$, task=$(i,j)$) by rows}
+%
+        \For{$k=1$ \KwTo $n - 1$}{
+          \If{ $k \in myrows$}{
+            \KwBcast $\left\{A_{kj} : k\leq j  \leq n\right\}$
+          } \Else {
+            \KwRecv $\left\{A_{kj} : k\leq j  \leq n\right\}$
+          }
+          \For{$i \in myrows$, $i > k$} {
+            $L_{ik} = A_{ik}/ A_{kk}$
+          }
+          \For{$j=k+1$ \KwTo $n$}{
+            \For{ $i \in myrows$, $i>k$}{
+              $A_{ij} = A_{ij} - L_{ik} A_{kj}$
+            }
+          }
+        }
+% 
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+% 
+\end{frame}
+
+% --------------------------------------
+% observations
+\begin{frame}[fragile]
+%
+  \frametitle{Observations on row coarsening}
+%
+  \begin{itemize}
+%
+  \item each task becomes idle as soon as it last row is completed
+    \begin{itemize}
+    \item if rows are contiguous, a task may finish long before the overall computation is done
+    \item even worse, updating rows requires progressively less work with increasing row number
+    \end{itemize}
+%
+  \item we may improve concurrency and load balance 
+    \begin{itemize}
+    \item by assigning rows to tasks in a cyclic manner where row $i$ is updated by task $i
+      \mod p$
+    \item other mappings may be useful
+    \end{itemize}
+%
+  \item other improvements involve overlapping computation with communication
+    \begin{itemize}
+    \item at step $k$, each task completes updating its portion of the remaining unreduced
+      matrix before moving on to step $k+1$
+    \item however, the task that owns the $k+1$ row could broadcast it as soon as it becomes
+      available, before moving on to the step $k$ update
+    \item this {\em send ahead} strategy may grant other tasks earlier access to the data
+      necessary to start working on the next step
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% column coarsening
+\begin{frame}[fragile]
+%
+  \frametitle{Column coarsening}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:pLU-ij-columns}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\lu($A$, task=$(i,j)$) by columns}
+%
+        \For{$k=1$ \KwTo $n - 1$}{
+          \If{ $k \in mycolumns$}{
+            \For{ $i=k+1$ \KwTo $n$}{
+              $L_{ik} = A_{ik}/ A_{kk}$
+            }
+            \KwBcast $\left\{L_{ik} : k < i  \leq n\right\}$
+          } \Else {
+            \KwRecv $\left\{L_{ik} : k < i  \leq n\right\}$
+          }
+          \For{$i \in mycolumns$, $j > k$} {
+            \For{$i=k+1$ \KwTo $n$}{
+              $A_{ij} = A_{ij} - L_{ik} A_{kj}$
+            }
+          }
+        }
+% 
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+  \begin{itemize}
+  \item observations similar to row coarsening apply
+  \end{itemize}
+% 
+\end{frame}
+
+% --------------------------------------
+% column coarsening
+\begin{frame}[fragile]
+%
+  \frametitle{Block coarsening}
+%
+  \begin{center}
+      \begin{algorithm}[H]
+        \label{alg:pLU-ij-blocks}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\lu($A$, task=$(i,j)$) by blocks}
+%
+        \For{$k=1$ \KwTo $n - 1$}{
+          \If{$k \in myrows$}{
+            \KwBcast $\left\{A_{kj} : j \in mycolumns, j>k\right\}$ \KwTo 
+            all tasks in my task column
+          } \Else {
+            \KwRecv $\left\{A_{kj} : j \in mycolumns, j>k\right\}$
+          }
+          \If{$k \in mycolumns$}{
+            \For{$i \in myrows$, $i>k$}{
+              $L_{ik} = A_{ik} / A_{kk}$
+            }
+            \KwBcast $\left\{L_{ik} : i \in myrows, i>k\right\}$ \KwTo 
+            all tasks in my task row
+          } \Else {
+            \KwRecv $\left\{L_{ik} : i \in myrows, i>k\right\}$
+          }
+          \For{$j \in mycolumns$, $j>k$}{
+            \For{$i \in myrows$, $i>k$} {
+              $A+{ij} = A_{ij} - L_{ik}A_{kj}$
+            }
+          }
+        }
+% 
+      \end{algorithm}
+  \end{center}
+%
+\end{frame}
+
+% --------------------------------------
+% observations
+\begin{frame}[fragile]
+%
+  \frametitle{Observations on block coarsening}
+%
+  \begin{itemize}
+%
+  \item each task becomes idle as soon as it last row and column are completed
+    \begin{itemize}
+    \item if rows and columns are in contiguous blocks, a task may finish long before the
+      overall computation is done
+    \item even worse, computing multipliers and updating blocks requires progressively less
+      work with increasing row and column numbers
+    \end{itemize}
+%
+  \item we may improve concurrency and load balance 
+    \begin{itemize}
+    \item by assigning rows and columns to tasks in a cyclic manner where $A_{ij}$ is assigned
+      to task $(i \mod \sqrt{p}, j \mod \sqrt{p}$
+    \item other mappings may be useful
+    \end{itemize}
+%
+  \item other improvements involve overlapping computation with communication
+    \begin{itemize}
+    \item at step $k$, each task completes updating its portion of the remaining unreduced
+      submatrix before moving on to step $k+1$
+    \item the broadcast of each segment of row $k+1$, and the computation and broadcast of each
+      segment of multipliers for step $k+1$, can be initiated as soon as the relevant segments
+      of row $k+1$ and column $k+1$ have been updated by their owners, before moving to
+      competing the update for step $k$
+    \item this {\em send ahead} strategy may grant other tasks earlier access to the data
+      necessary to start working on the next step
     \end{itemize}
 %
   \end{itemize}
