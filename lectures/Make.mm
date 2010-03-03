@@ -60,6 +60,7 @@ FIGURES = \
     figures/asymptotic-o.pdf \
     figures/asymptotic-omega.pdf \
     figures/asymptotic-theta.pdf \
+    figures/cholesky-memory.pdf \
     figures/cuda-architecture.pdf \
     figures/cuda-blocks.pdf \
     figures/distributed-memory.pdf \

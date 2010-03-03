@@ -143,7 +143,7 @@
     \begin{itemize}
     \item build a two-dimensional grid of $n^{2}$ fine grain tasks numbered $(i,j)$, with $i,j
       = 1, \ldots, n$; each one computes $A_{ij}x_{j}$
-    \item task $(i,j)$ has $a_{i,j}$, but if no data replication is allowed
+    \item task $(i,j)$ has $A_{i,j}$, but if no data replication is allowed
       \begin{itemize}
       \item let task $(i,1)$ store $x_{i}$ and task $(1,i)$ store $y_{i}$
       \item or, let task $(i,i)$ store both $x_{i}$ and $y_{i}$
@@ -738,6 +738,316 @@
     \end{itemize}
 %
   \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% pivoting
+\begin{frame}[fragile]
+%
+  \frametitle{Pivoting}
+%
+  \begin{itemize}
+%
+  \item the order of rows of $A$ does not affect the solution to the system of equations
+    \begin{itemize}
+    \item {\em partial pivoting} sorts the rows by the largest absolute value of the leading
+      column of the remaining unreduced matrix
+    \item this choice ensures that the magnitude of the multipliers do not exceed 1, which
+      \begin{itemize}
+      \item reduces amplification of round-off errors
+      \item ensures existence
+      \item improves numerical stability
+      \end{itemize}
+    \end{itemize}
+%
+  \item partial pivoting introduces a permutation matrix $P$, which leads to the factorization
+    \begin{equation}
+      P A = L U
+    \end{equation}
+    which implies that the solution $x$ is obtained through
+    \begin{eqnarray}
+      L y & = & P b \\
+      U x & = & y
+    \end{eqnarray}
+    with forward substitution in the lower triangular system, followed by back substitution in
+    the upper triangular system
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% parallel pivoting
+\begin{frame}[fragile]
+%
+  \frametitle{Pivoting in parallel}
+%
+  \begin{itemize}
+%
+  \item increased numerical stability costs increased parallel complexity and significant
+    performance implications
+  \item for one dimensional coarsening by column, the search for the pivot element requires no
+    extra communication, but it is purely serial
+    \begin{itemize}
+    \item once the pivot is found, the index of the pivot row must be communicated to the other
+      tasks, and rows must be explicitly or implicitly interchanged in each task
+    \end{itemize}
+  \item for coarsening by rows, the search for the pivot is parallel, but it requires
+    communication among tasks and inhibits the overlapping of successive steps
+    \begin{itemize}
+    \item if rows are explicitly interchanged, then only two tasks are involved
+    \item if rows are implicitly interchanged, changes to the assignment of rows to tasks are
+      required, which has effects on concurrency and load balance
+    \end{itemize}
+  \item in the presence of partial pivoting, column and row coarsening trade off on the
+    relative speeds of computation versus communication
+%
+  \item with two dimensional coarsening, pivot search is parallel but requires communication
+    among tasks along columns and destroys the possibility of overlapping successive steps
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% pivoting alternatives
+\begin{frame}[fragile]
+%
+  \frametitle{Alternatives to pivoting}
+%
+  \begin{itemize}
+%
+  \item various alternatives have been proposed
+    \begin{itemize}
+    \item constraining pivoting to blocks of rows
+    \item pivoting when the multiplier exceeds a given threshold
+    \item pairwise pivoting 
+    \end{itemize}
+%
+  \item these strategies are not foolproof, and trade off some stability and accuracy for speed
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% cholesky
+\begin{frame}[fragile]
+%
+  \frametitle{Cholesky factorization}
+%
+  \begin{itemize}
+%
+  \item when $A$ is a positive definite symmetric matrix is has a Cholesky factorization
+    \begin{equation}
+      A = L L^{T}
+    \end{equation}
+    with $L$ a lower triangular matrix with positive entries along the diagonal
+%
+  \item so the linear system $Ax=b$ can be solved through
+    \begin{eqnarray}
+      L y & = & b \\
+      L^{T} x & = & y 
+    \end{eqnarray}
+%
+  \item the factorization is derived by equating corresponding entries of $A$ with those of $L
+    L^{T}$ and generating them in the correct order
+    \begin{itemize}
+    \item for example, in the $2 \times 2$ case
+      \begin{equation}
+        \left[
+          \begin{array}{cc}
+            A_{11} & A_{21} \\
+            A_{21} & A_{22}
+          \end{array}
+        \right]
+        =
+        \left[
+          \begin{array}{cc}
+            L_{11} & 0 \\
+            L_{21} & L_{22}
+          \end{array}
+        \right]
+        \left[
+          \begin{array}{cc}
+            L_{11} & L_{21} \\
+            0 & L_{22}
+          \end{array}
+        \right]
+      \end{equation}
+      yields
+      \begin{eqnarray}
+        L_{11} = \sqrt{A_{11}} & 
+        L_{21} = A_{21}/L_{11} & 
+        L_{22} = \sqrt{A_{22} - L_{21}^{2}}
+      \end{eqnarray}
+      
+
+    \end{itemize}
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% implementation of cholesky
+\begin{frame}[fragile]
+%
+  \frametitle{Computing the Cholesky factorization}
+%
+    \begin{center}
+      \begin{minipage}{.85\linewidth}
+        \begin{algorithm}[H]
+          \label{alg:cholesky}
+%
+          \dontprintsemicolon
+          % \nocaptionofalgo
+          \setalcaphskip{0ex}
+%
+          \caption{\cholesky(A)}
+%
+          \For{$k=1$ \KwTo $n$}{
+            $A_{kk} = \sqrt{A_{kk}}$ \;
+            \For{$i=k+1$ \KwTo $n$}{
+              $A_{ik} = A_{ik} / A_{kk}$
+            }
+            \For{$j=k+1$ \KwTo $n$}{
+              \For{$i=j$ \KwTo $n$}{
+                $A_{ij} = A_{ij} - A_{ik}A_{jk}$
+              }
+            }
+          }
+%
+        \end{algorithm}
+      \end{minipage}
+    \end{center}
+%
+  \begin{itemize}
+%
+  \item note that
+    \begin{itemize}
+    \item $n$ square roots are required, all of positive numbers 
+    \item only lower triangle of $A$ is accessed, so the strict upper triangular part need not
+      be stored
+    \item $A$ becomes $L$ in place
+    \item the algorithm is stable so no pivoting is required
+    \end{itemize}
+%
+  \item it takes roughly half the number of $LU$ operations: approximately $n^{3}/6$
+    multiply-adds
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% parallel cholesky
+\begin{frame}[fragile]
+%
+  \frametitle{Parallelizing Cholesky}
+%
+  \begin{itemize}
+%
+  \item number fine grain tasks as $(i,j)$ with $i,j = 1, \ldots, n$; each task
+    \begin{itemize}
+    \item stores $A_{ij}$
+    \item computes and stores $L_{ij}$, if $i \geq j$
+    \item computes and stores $L_{ji}$, if $i < j$
+    \end{itemize}
+    yielding a two dimensional array of $n^{2}$ tasks
+%
+  \item no need to compute and store the zero entries in the upper triangle
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% communication patterns for parallel cholesky
+\begin{frame}[fragile]
+%
+  \frametitle{Communication patterns for parallel Cholesky}
+%
+  \begin{center}
+    \small
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:pCholesky}
+%
+        \dontprintsemicolon
+        % \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \caption{\cholesky($A$, task=$(i,j)$)}
+%
+        \For{$k=1$ \KwTo $\min(i,j) - 1$}{
+          \KwRecv $A_{kj}$ \;
+          \KwRecv $A_{ik}$ \;
+          $A_{ij} = A_{ij}- A_{ik}A_{kj}$
+        }
+        \If{$i = j$}{
+          $A_{ii} = \sqrt{A_{ii}}$ \;
+          \KwBcast $A_{il}$ \KwTo tasks $(k,i)$ and $(i,k)$, $k=i+1,\ldots,n$
+        } 
+        \If {$i < j$}{
+          \KwRecv $A_{ii}$ \;
+          $A_{ij} = A_{ij}/A_{ii}$ \;
+          \KwBcast $A_{ij}$ \KwTo $(k,j)$, $k=i+1,\ldots,n$
+        }
+        \If {$i > j$} {
+          \KwRecv $A_{jj}$ \;
+          $A_{ij} = A_{ij}/A_{jj}$ \;
+          \KwBcast $A_{ij}$ \KwTo $(i,k)$, $k=j+1,\ldots,n$
+        }
+% 
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+\end{frame}
+
+% --------------------------------------
+% coarsening
+\begin{frame}[fragile]
+%
+  \frametitle{Coarsening}
+%
+  \begin{itemize}
+%
+  \item strategies very similar to $LU$ factorization
+    \begin{itemize}
+    \item one dimensional by row or column
+    \item two dimensional blocks
+    \end{itemize}
+    with column coarsening used most often in practice
+%
+  \item each choice of index in the outer loop yields different algorithm, named after the
+    portion of the matrix that is updated by the basic operation in the inner loops
+%
+    \begin{itemize}
+    \item submatrix Cholesky: with $k$ as the outer loop index, the inner loops perform a rank
+      1 update of the remaining unreduced submatrix, using the current column
+    \item column Cholesky: with $j$ in the outer loop, inner loops compute the current column,
+      using matrix-vector multiplies that accumulates the effects of previous columns
+    \item row Cholesky: with $i$ in the outer loop, inner loops compute current row by solving
+      a triangular system involving the previous rows
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+
+% --------------------------------------
+% memory access patterns
+\begin{frame}[fragile]
+%
+  \frametitle{Cholesky memory access patterns}
+%
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.7]{figures/cholesky-memory.pdf}
+  \end{figure}
 %
 \end{frame}
 
