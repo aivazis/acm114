@@ -13,14 +13,104 @@
 \lecture{Matrices}{20100308}
 
 % --------------------------------------
-% template
+% triangular systems
 \begin{frame}[fragile]
 %
-  \frametitle{Blank}
+  \frametitle{Triangular systems}
 %
   \begin{itemize}
 %
-  \item 
+  \item a matrix $L$ is lower triangular if all entries above the main diagonal are zero: $L_{ij} =
+    0$ for $i < j$.
+  \item a matrix $U$ is upper triangular if all entries below the main diagonal are zero: $U_{ij} =
+    0$ for $i > j$.
+  \item triangular systems appear frequently
+    \begin{itemize}
+    \item most direct methods of solving linear systems of equation start with a reduction of
+      the matrix of coefficients into triangular form
+    \item they are also used as preconditioners in iterative methods
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% forward substitution
+\begin{frame}[fragile]
+%
+  \frametitle{Forward substitution}
+%
+  \begin{itemize}
+%
+  \item the lower triangular system $Lx = b$ can be solved by {\em forward substitution}
+    \begin{equation}
+      x_{i} = \left( b_{i} - \sum_{j=1}^{i-1} L_{ij}x_{j} \right) / L_{ii}
+    \end{equation}
+%
+  \item that can be implemented as
+    \begin{center}
+      \begin{minipage}{.85\linewidth}
+        \begin{algorithm}[H]
+          \label{alg:forward-substitution}
+%
+          \dontprintsemicolon
+          % \nocaptionofalgo
+          \setalcaphskip{0ex}
+%
+          \caption{\forwsub(L, b)}
+%
+          \For{$j=1$ \KwTo $n$}{
+            $x_{j} = b_{j} / L_{jj}$ \;
+            \For{$i=j+1$ \KwTo $n$}{
+              $b_{i} = b_{i} - L_{ij} x_{j}$
+            }
+          }
+%
+        \end{algorithm}
+      \end{minipage}
+    \end{center}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% backward substitution
+\begin{frame}[fragile]
+%
+  \frametitle{Backward substitution}
+%
+  \begin{itemize}
+%
+%
+  \item the upper triangular system $Ux = b$ can be solved by {\em backward substitution}
+    \begin{equation}
+      x_{i} = \left( b_{i} - \sum_{j=i+1}^{n} U_{ij}x_{j} \right) / U_{ii}
+    \end{equation}
+%
+  \item that can be implemented as
+    \begin{center}
+      \begin{minipage}{.85\linewidth}
+        \begin{algorithm}[H]
+          \label{alg:backward-substitution}
+%
+          \dontprintsemicolon
+          % \nocaptionofalgo
+          \setalcaphskip{0ex}
+%
+          \caption{\backsub(L, b)}
+%
+          \For{$j=n$ \KwTo $1$}{
+            $x_{j} = b_{j} / U_{jj}$ \;
+            \For{$i=1$ \KwTo $j-1$}{
+              $b_{i} = b_{i} - U_{ij} x_{j}$
+            }
+          }
+%
+        \end{algorithm}
+      \end{minipage}
+    \end{center}
 %
   \end{itemize}
 %
