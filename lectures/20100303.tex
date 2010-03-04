@@ -143,7 +143,7 @@
     \begin{itemize}
     \item build a two-dimensional grid of $n^{2}$ fine grain tasks numbered $(i,j)$, with $i,j
       = 1, \ldots, n$; each one computes $A_{ij}x_{j}$
-    \item task $(i,j)$ has $A_{i,j}$, but if no data replication is allowed
+    \item task $(i,j)$ has $A_{ij}$, but if no data replication is allowed
       \begin{itemize}
       \item let task $(i,1)$ store $x_{i}$ and task $(1,i)$ store $y_{i}$
       \item or, let task $(i,i)$ store both $x_{i}$ and $y_{i}$
@@ -270,7 +270,7 @@
       product $A_{ij}B_{jk}$
     \item assuming no data replication, we have to distribute the data for $A$ and $B$ among
       $2n^{2}$ tasks
-    \item suppose that task $(i,j,j)$ holds $A_{i,j}$ and task $(i,j,i)$ holds $B_{i,j}$
+    \item suppose that task $(i,j,j)$ holds $A_{ij}$ and task $(i,j,i)$ holds $B_{ij}$
     \item we will refer to tasks along $i$ and $j$ as task rows and columns
     \item and tasks along $k$ as {\em layers}
     \end{itemize}
