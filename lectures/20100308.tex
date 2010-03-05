@@ -71,6 +71,8 @@
       \end{minipage}
     \end{center}
 %
+  \item with roughly $n^{2}$ multiply-adds
+%
   \end{itemize}
 %
 \end{frame}
@@ -111,6 +113,195 @@
         \end{algorithm}
       \end{minipage}
     \end{center}
+%
+  \item with roughly $n^{2}$ multiply-adds
+%
+  \item the two algorithms are very similar, so focus on lower triangular systems
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% sequential implementations
+\begin{frame}[fragile]
+%
+  \frametitle{Sequential implementations}
+%
+  \begin{itemize}
+  \item there are two possible way to arrange the forward substitution loops 
+  \end{itemize}
+%
+  \begin{minipage}{.45\linewidth}
+    \small
+    \begin{algorithm}[H]
+%
+      \dontprintsemicolon
+      \nocaptionofalgo
+%
+      \For{$j=1$ \KwTo $n$}{
+        $x_{j} = b_{j} / L_{jj}$ \;
+        \For{$i=j+1$ \KwTo $n$}{
+          $b_{i} = b_{i} - L_{ij} x_{j}$
+        }
+      }
+%
+    \end{algorithm}
+%
+    \begin{itemize}
+    \item immediate update
+    \item data driven
+    \item fan out
+    \end{itemize}
+%
+  \end{minipage}
+%
+  \hfill
+%
+  \begin{minipage}{.45\linewidth}
+    \small
+    \begin{algorithm}[H]
+%
+      \dontprintsemicolon
+      \nocaptionofalgo
+%
+      \For{$i=1$ \KwTo $n$}{
+        \For{$j=1$ \KwTo $i-1$}{
+          $b_{i} = b_{i} - L_{ij} x_{j}$
+        }
+        $x_{i} = b_{i} / L_{ii}$ \;
+      }
+%
+    \end{algorithm}
+%
+    \begin{itemize}
+    \item delayed update
+    \item demand driven
+    \item fan in
+    \end{itemize}
+%
+  \end{minipage}
+%
+\end{frame}
+
+% --------------------------------------
+% parallelization
+\begin{frame}[fragile]
+%
+  \frametitle{Parallelization}
+%
+  \begin{itemize}
+%
+  \item label the fine grain tasks as $(i,j)$ with $i,j = 1,\ldots,n$
+    \begin{itemize}
+    \item for $i=2,\ldots,n$ and $j=1,\ldots,i-1$, task $(i,j)$
+      \begin{itemize}
+      \item stores $L_{ij}$ 
+      \item computes $L_{ij} x_{j}$
+      \end{itemize}
+    \item for $i=1,\ldots,n$, task $(i,i)$
+      \begin{itemize}
+      \item stores $L_{ii}$ and $b_{i}$
+      \item collects the sum $t_{i} = \sum_{j=1}^{i-1} L_{ij}x_{j}$
+        \item computes and stores $x+{i} = (b_{i} - t_{i})/ L_{ii}$
+      \end{itemize}
+    \end{itemize}
+%
+    \item this arrangement yields a two dimensional triangular grid of $n(n+1)/2$ fine grain tasks
+%
+    \item with the following communication patterns
+      \begin{itemize}
+      \item for $j=1,\ldots,n-1$, task $(j,j)$ broadcasts $x_{j}$ to tasks $(i,j)$,
+        $i=j+1,\ldots,n$ 
+      \item for $i=1,\ldots,n$, task $(i,i)$ collects the sum reduction of $L_{ij} x_{j}$ from
+        tasks $(i,j)$, $j=1,\ldots,i-1$
+      \end{itemize}
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% parallel implementation
+\begin{frame}[fragile]
+%
+  \frametitle{Parallel implementation}
+%
+  \begin{itemize}
+  \item here is the program for task $(i,j)$ with $i \geq j$
+%
+  \begin{center}
+    \footnotesize
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+%
+        \dontprintsemicolon
+        \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \If{$i = j$}{
+          \If{$i > 1$}{
+            \KwRecv sum reduction $t$ \;
+          } \Else {
+            $t = 0$
+          }
+          \KwBcast $x_{i}$ \KwTo tasks $(k,i)$ and $(i,k)$, $k=i+1,\ldots,n$
+        } \Else {
+          \KwRecv $x_{j}$ \;
+          $t = L_{ij} x_{j}$ \;
+          \KwSend $t$ for reduction across tasks $(i,k)$, $k=1,\ldots,i-1$ to task $(i,i)$\;
+        }
+% 
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+  \item for properly pipelined communication, this algorithm can be implemented in $\order{n}$,
+    but it requires $\order{n^{2}}$ tasks
+  \item if there are many $b$ to solve for, the tasks can be working on multiple systems at
+    the same time
+  \item coarsening strategies can manage the number of tasks and improve the balance between
+    computation and communication
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% coarsening
+\begin{frame}[fragile]
+%
+  \frametitle{Coarsening by rows}
+%
+  \begin{itemize}
+%
+  \item for one dimensional coarsening into $n/p$ rows
+    \begin{itemize}
+    \item there is no need to communicate to perform the reductions, but also no parallelism
+    \item vertical broadcasts are still needed to move the components of $x$
+    \end{itemize}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+%
+        \dontprintsemicolon
+        \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \For{$j=1$ \KwTo $n$}{
+          \If{ $j \in myrows$}{
+            $x_{j} = b_{j} / L_{jj}$ \;
+            \KwBcast $x_{j}$ to other tasks \;
+          } \Else {
+            \KwRecv $x_{j}$
+          }
+          \For{$i \in myrows$, $i > j$} {
+            $b_{i} = b_{i} - L_{ij}/ x_{j}$
+          }
+        }
+% 
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
 %
   \end{itemize}
 %
