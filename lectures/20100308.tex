@@ -537,6 +537,190 @@
 %
 \end{frame}
 
+% --------------------------------------
+% iterative methods
+\begin{frame}[fragile]
+%
+  \frametitle{Iterative methods}
+%
+  \begin{itemize}
+%
+  \item iterative methods start with an initial guess for the vector $x$ and improve until some
+    desired accuracy is achieved
+    \begin{itemize}
+    \item no upper bound on the number of iterations to the exact solution
+    \item in practice, establish an error measure such as $||b - Ax|| < \epsilon$
+    \item particularly good with sparse matrices because sparsity is preserved
+    \end{itemize}
+  \item we will take a quick look at
+    \begin{itemize}
+    \item Jacobi
+    \item Gauss-Seidel
+    \item successive over-relaxation (SOR)
+    \item conjugate gradient
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
 
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{The Jacobi method}
+%
+  \begin{itemize}
+%
+  \item given an initial guess $x^{(0)}$, the Jacobi method iterates by
+    \begin{equation}
+      x_{i}^{(k+1)} = \left( b_{i} - \sum_{j\neq i} A_{ij}x_{j}^{(k)} \right) / A_{ii}
+    \end{equation}
+    which can be expressed as
+    \begin{equation}
+      x^{(k+1)} = D^{-1} \left( b - (L+U)x^{(k)} \right)
+    \end{equation}
+    for $D$, $L$, and $U$ respectively diagonal, upper and lower triangular matrices
+%
+    \item the method requires
+      \begin{itemize}
+      \item non-zero diagonal entries, usually achievable by permuting rows
+      \item extra storage for the $x$ iterates
+      \end{itemize}
+%
+    \item convergence is neither guaranteed nor fast, but the components of $x^{(k)}$ are
+      decoupled form each other so they can be computed in parallel
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% gauss seidel
+\begin{frame}[fragile]
+%
+  \frametitle{The Gauss-Seidel method}
+%
+  \begin{itemize}
+%
+  \item the convergence rate can be improved by using the components of $x^{(k+1)}$ as soon as
+    they become available
+    \begin{equation}
+      x_{i}^{(k+1)} =
+      \left(
+        b_{i} - \sum_{j < i} A_{ij}x_{j}^{(k+1)} - \sum_{j > i} A_{ij}x_{j}^{(k)}
+      \right) / A_{ii}
+    \end{equation}
+    or
+    \begin{equation}
+      x^{(k+1)} = (D+L)^{-1} \left( b - Ux^{(k)} \right)
+    \end{equation}
+%
+  \item this  method also requires non-zero diagonal entries, but no extra storage for $x$
+    since the values can be written in place
+    \begin{itemize}
+    \item but this coupling reduces the parallelism opportunities
+    \end{itemize}
+%
+  \item convergence is about twice as fast as Jacobi, and guaranteed to converge under weaker
+    conditions
+    \begin{itemize}
+    \item e.g.~positive definite symmetric $A$
+    \item but may still be too slow for practical purposes
+    \end{itemize}
+% 
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% successive over-relaxation
+\begin{frame}[fragile]
+%
+  \frametitle{Successive over-relaxation}
+%
+  \begin{itemize}
+%
+  \item SOR uses the weighted average of the current iterate and the next Gauss-Seidel iterate
+    \begin{equation}
+      x^{(k+1)} = (1-\omega) x^{(k)} + \omega x^{(k+1)}_{GS}
+    \end{equation}
+%
+    where $\omega$ is relaxation parameter chosen to accelerate convergence
+    \begin{itemize}
+    \item $\omega > 1$ gives over-relaxation, $\omega < 1$ gives under-relaxation
+    \item $\omega = 1$ is pure Gauss-Seidel
+    \item the method diverges unless $0 < \omega < 2$
+    \end{itemize}
+%
+  \item with  optimal value of $\omega$, the convergence rate is an order of magnitude faster
+    than Gauss-Seidel
+    \begin{itemize}
+    \item but the optimal $\omega$ is difficult to find in general
+    \end{itemize}
+%
+  \item this method suffers from reduced parallelism as well
+    \begin{itemize}
+    \item but allowing each process to use its most current value, rather than waiting for the
+      latest update, leads to {\em asynchronous} over-relaxation
+    \item but the stochastic nature complicates the convergence analysis
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% conjugate gradients
+\begin{frame}[fragile]
+%
+  \frametitle{Conjugate gradients}
+%
+  \begin{itemize}
+%
+  \item another approach is to observe that, if $A$ is a positive definite matrix, the
+    quadratic form
+    \begin{equation}
+      \phi(x) = \frac{1}{2} x^{T} A x - x^{T} b \label{eq:cg-qform}
+    \end{equation}
+    is minimized by the solution to the linear system $Ax = b$
+  \item this optimization problem is solved by iterates 
+    \begin{equation}
+      x^{(k+1)} = x^{(k)} + \omega s^{(k)}
+    \end{equation}
+    where $\omega$ is a search parameter chosen to minimize the {\em objective function}
+    $\phi(x^{(k)} + \omega s^{(k)})$ along the direction $s^{(k)}$
+  \item {\em steepest descent} if obtained when $s^{(k)} = - \nabla \phi(x)$
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% implementation
+\begin{frame}[fragile]
+%
+  \frametitle{Conjugate gradients for linear systems}
+%
+  \begin{itemize}
+%
+  \item for the special case of the quadratic problem in \eqref{cg-qform}
+    \begin{itemize}
+    \item the residual vector is the negative gradient
+      \begin{equation}
+        r = b - Ax = - \nabla \phi
+      \end{equation}
+    \item the optimal line search parameter is given by
+      \begin{equation}
+        \omega = \frac{r^{T} s}{s^{T} A s}
+      \end{equation}
+    \item successive search directions can be made orthogonal to $A$ by a simple three-term
+      recurrence relation
+    \end{itemize}
+  \item leading to the following conjugate gradient algorithm for linear systems
+%
+  \end{itemize}
+%
+\end{frame}
 
 % end of file 
