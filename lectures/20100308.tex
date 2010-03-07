@@ -129,7 +129,7 @@
   \frametitle{Sequential implementations}
 %
   \begin{itemize}
-  \item there are two possible way to arrange the forward substitution loops 
+  \item there are two possible ways to arrange the forward substitution loops 
   \end{itemize}
 %
   \begin{minipage}{.45\linewidth}
@@ -306,5 +306,237 @@
   \end{itemize}
 %
 \end{frame}
+
+% --------------------------------------
+% coarsening by columns
+\begin{frame}[fragile]
+%
+  \frametitle{Observations on coarsening by rows}
+%
+  \begin{itemize}
+%
+  \item load balance:
+%
+    \begin{itemize}
+    \item tasks become idle after the solution components corresponding to their last row are
+      computed, and there is progressively more work as row number increases
+    \item if a task holds a contiguous block of rows, it may become idle before mush of the
+      calculation is finished
+    \end{itemize}
+%
+  \item both concurrency and load balance may be improved by assigning rows to tasks in more
+    creative ways
+    \begin{itemize}
+    \item cyclically: assign row $j$ to task $j \mod p$
+    \item block cyclically
+    \item reflectively
+    \end{itemize}
+%
+  \item overall execution speed depends on the ability to overlap communication with the
+    computation of successive steps
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% coarsening by columns
+\begin{frame}[fragile]
+%
+  \frametitle{Coarsening by columns}
+%
+  \begin{itemize}
+%
+  \item for one dimensional coarsening into $n/p$ rows
+    \begin{itemize}
+    \item there is no need to broadcast the components of $x$ vertically, but also no
+      parallelism in computing the products
+    \item horizontal exchanges are still required for the sum reductions that accumulate the
+      inner products
+    \end{itemize}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+%
+        \dontprintsemicolon
+        \nocaptionofalgo
+        \setalcaphskip{0ex}
+%
+        \For{$i=1$ \KwTo $n$}{
+          t = 0 \;
+          \For{ $j \in mycolumns$, $j < i$}{
+            $t = t + L_{ij} x_{j}$
+          }
+          \If{ $i \in mycolumns$} {
+            \KwRecv reduction of $t$ \;
+            $x_{i} = (b_{i} -t)/ L_{ii}$
+          } \Else {
+            \KwSend $t$ for reduction across all tasks
+          }
+        }
+% 
+      \end{algorithm}
+    \end{minipage}
+  \end{center}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% observations on coarsening by columns
+\begin{frame}[fragile]
+%
+  \frametitle{Observations on coarsening by columns}
+%
+  \begin{itemize}
+%
+%
+  \item load balance:
+    \begin{itemize}
+    \item tasks are idle until solution component corresponding to their first column is
+      computed, and there is progressively less work as column number increases
+    \item if a task holds a contiguous block of columns, it may remain idle for most of the
+      calculation
+    \end{itemize}
+%
+  \item both concurrency and load balance may be improved by assigning columns to tasks in more
+    creative ways
+    \begin{itemize}
+    \item cyclically: assign column $j$ to task $j \mod p$
+    \item block cyclically
+    \item reflectively
+    \end{itemize}
+%
+  \item overall execution speed depends on the ability to overlap communication with the
+    computation of successive steps
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% wavefront algorithms
+\begin{frame}[fragile]
+%
+  \frametitle{Wavefront algorithms}
+%
+  \begin{itemize}
+%
+  \item fan out and fan in algorithm share many characteristics
+    \begin{itemize}
+    \item parallelism comes from partitioning and distributing the work of the inner loop
+    \item while the outer loop is serial
+    \item they work on one component of the solution at a time, although one can partially
+      pipeline successive steps
+    \end{itemize}
+%
+    \item {\em wavefront} algorithms exploit parallelism in the outer loops by explicitly
+      working on multiple components of the solution at the same time
+%
+    \item consider the one dimensional fan out algorithm
+      \begin{itemize}
+      \item it appears there is no opportunity for parallelism: after the owner of column $j$
+        computes $x_{j}$, the updated components of $b$ cannot shared with other tasks because
+        they have no access to column $j$
+      \item however, the task that owns column $j$ could finish only a fraction of the work,
+        say the first $s$ components, and pass them on to the task that owns column $j+1$,
+        before continuing on to the next $s$ components
+      \item the task that owns column $j+1$ receives the first $s$ components of $b$, it can
+        compute $x_{j+1}$, begin a fraction of the remaining updates and forward its
+        contributions to the next task
+      \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% wavefront implementation
+\begin{frame}[fragile]
+%
+  \frametitle{Wavefront implementation}
+%
+  \begin{itemize}
+%
+  \item we need two new features
+    \begin{itemize}
+    \item a vector $z$ that accumulates the updates to $b$
+    \item the notion of a {\em segment} that contains no more than $s$ consecutive components of $z$
+    \end{itemize}
+%
+  \end{itemize}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+%
+          \dontprintsemicolon
+          \nocaptionofalgo
+          \setalcaphskip{0ex}
+%
+          \For{$j \in mycolumns$}{
+            \For{$k=1$ \KwTo number of segments}{
+              \KwRecv $segment$\;
+              \If {$k=1$} {
+                $x_{j} = (b_{j} - z_{j})/ L_{jj}$ \;
+                $segment = segment - \{z_{j}\}$ \;
+              }
+              \For{$z_{i} \in segment$} {
+                $z_{i} = z_{i} + L_{ij}x_{j}$ \;
+              }
+              \If{$length(segment) > 0$}{
+                \KwSend $segment$ \KwTo task owning column $j+1$
+              }
+            }
+          }
+%
+        \end{algorithm}
+      \end{minipage}
+    \end{center}
+%
+\end{frame}
+
+
+
+% --------------------------------------
+% two dimensional coarsening
+\begin{frame}[fragile]
+%
+  \frametitle{Block coarsening}
+%
+  \begin{itemize}
+%
+  \item coalesce $(n/\sqrt{p}) \times (n/\sqrt{p})$ fine grain tasks in to a coarse grain block
+%
+  \item resulting in an algorithm with features from both column and row coarsening
+    \begin{itemize}
+    \item both vertical broadcasts and horizontal reductions are required to communicate
+      solution components and accumulate inner products
+    \end{itemize}
+%
+  \item the na\"ive implementation assigns contiguous blocks of rows and columns to coarse
+    tasks
+    \begin{itemize}
+    \item poor concurrency and efficiency 
+    \item almost half the tasks are idle
+    \end{itemize}
+%
+  \item cyclic assignment, with $L_{ij}$ assigned to task $(i \mod \sqrt{p}, j \mod \sqrt{p})$,
+    yields $p$ non-null tasks so the full grid of tasks is active
+    \begin{itemize}
+    \item again, the obvious implementation where we loop over successive solution components
+      to perform horizontal reductions and vertical broadcasts has limited concurrency, since
+      computation of each component involves only one task row and one task column
+    \item improve by computing solution components in groups of $\sqrt{p}$, which enables all
+      tasks to perform the updates concurrently
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+
 
 % end of file 
