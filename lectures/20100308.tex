@@ -723,4 +723,111 @@
 %
 \end{frame}
 
+% --------------------------------------
+% conjugate gradient algorithm
+\begin{frame}[fragile]
+%
+  \frametitle{Conjugate gradient method}
+%
+  \begin{center}
+    \begin{minipage}{.85\linewidth}
+      \begin{algorithm}[H]
+        \label{alg:conjugate-gradient}
+%
+          \dontprintsemicolon
+          % \nocaptionofalgo
+          \setalcaphskip{0ex}
+%
+          \caption{\CGM(A, b)}
+%
+          $x_{0} = {\rm initial\ guess}$\;
+          $r_{0} = b - A x_{o}$\;
+          $s_{0} = r_{0}$ \;
+          \For{ $k \in \{0,1,2,\ldots\}$ } {
+            $\omega_{k} = \frac{r^{T}_{k} r_{k}}{s_{k}^{T}As_{k}}$ \;
+            $x_{k+1}  = x_{k} + \omega_{k} s_{k}$ \;
+            $r_{k+1} = r_{k} = \omega_{k} A s_{k}$ \;
+            $\beta_{k+1}  = \frac{r^{T}_{k+1} r_{k+1}}{r^{T}_{k} r_{k}}$ \;
+            $s_{k+1}   = r_{k+1} + \beta_{k+1} s_{k}$
+          }
+%
+        \end{algorithm}
+      \end{minipage}
+    \end{center}
+%
+\end{frame}
+
+% --------------------------------------
+% observations
+\begin{frame}[fragile]
+%
+  \frametitle{Observations on conjugate gradient}
+%
+  \begin{itemize}
+%
+  \item the conjugate gradient method is widely used because
+    \begin{itemize}
+    \item determination of the orthogonal search directions is accomplished using a simple
+      three step recurrence relation
+    \item at any given iteration, the accumulated error is {\em minimal} over the space spanned
+      by the search vectors
+    \item which implies that the method will produce the exact solution after a finite number
+      of steps
+    \item in practice, roundoff error spoils orthogonality, so the method is used iteratively
+    \end{itemize}
+%
+  \item at each iteration the error is reduced on average by a factor of
+    \begin{equation}
+      (\sqrt{\kappa} - 1)/(\sqrt{\kappa} + 1)
+    \end{equation}
+    where 
+    \begin{equation}
+      \kappa
+      = {\rm cond}(A)
+      = ||A|| \cdot ||A^{-1}||
+      = \frac{\lambda_{\rm max}}{\lambda_{\rm min}}
+    \end{equation}
+%
+  \item convergence is rapid if $A$ is well-conditioned, but arbitrarily slow for
+    ill-conditioned matrices
+  \item also depends on the clustering of the eigenvalues of $A$
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% parallelizing linear solves
+\begin{frame}[fragile]
+%
+  \frametitle{Parallelization of iterative methods}
+%
+  \begin{itemize}
+%
+  \item all these methods are composed of basic operations
+    \begin{itemize}
+    \item vector updates
+    \item inner products
+    \item matrix-vector multiplications
+    \item solutions to triangular systems
+    \end{itemize}
+%
+  \item in parallel, both data and operations are partitioned among multiple tasks
+%
+  \item additional communication is required to compute the convergence criterion
+%
+  \item these methods require additional storage for a variety of vectors
+    \begin{itemize}
+    \item they are dense, even if $A$ is sparse
+    \item they are typically partitioned uniformly among processes
+    \item so vector updates require no communication, but their inner products require
+      reductions
+    \end{itemize}
+%
+  \item as we have seen, there are many strategies for partitioning the matrix $A$ 
+%
+  \end{itemize}
+%
+\end{frame}
+
 % end of file 
