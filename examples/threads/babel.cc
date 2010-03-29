@@ -41,8 +41,8 @@ void * _boast(void * dummy) {
         std::cout
             << lock(data.mutex)
             << "thread " << info->id << ": iteration " << iteration
-            << unlock(data.mutex)
             << std::endl
+            << unlock(data.mutex)
             ;
     }
 
