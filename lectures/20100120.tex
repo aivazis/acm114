@@ -144,7 +144,7 @@
       \end{tabular}
     \end{table}
 %
-  \item the standard specifies the API for \CC\ only; \fortran\ support varies
+  \item the standard specifies the API for \cc\ only; \fortran\ support varies
     \begin{itemize}
     \item must include \srcfile{pthread.h}
     \end{itemize}
@@ -175,7 +175,7 @@ int pthread_create(
   \begin{itemize}
   \item \identifier{id}: the location where a unique thread identifier will be stored
   \item \identifier{attr}: an opaque attribute object with thread initialization options
-  \item \function{startup}: a pointer to a \CC\ function that will be executed by the thread
+  \item \function{startup}: a pointer to a \cc\ function that will be executed by the thread
     once it gets scheduled
   \item \identifier{arg}: user defined data to be passed to \function{startup}; may be \NULL
   \end{itemize}
