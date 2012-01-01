@@ -15,9 +15,7 @@ PACKAGE =
 
 RECURSE_DIRS = \
     bin \
-    www \
-    lectures \
-    assignments \
+    2010-winter \
     examples \
     templates \
 
