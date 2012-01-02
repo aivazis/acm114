@@ -1,0 +1,13 @@
+/*  -*- CSS -*-  */
+/*
+ * michael a.g. aïvázis
+ * california institute of technology
+ * (c) 1998-2012 all rights reserved
+ */
+
+#thumbnails {
+    height: 9em;
+    background: url(../images/thumbnails.png) repeat;
+}
+
+/* end of file  */

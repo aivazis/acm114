@@ -1,0 +1,177 @@
+/*  -*- CSS -*-  */
+/*
+ * michael a.g. aïvázis
+ * california institute of technology
+ * (c) 1998-2012 all rights reserved
+ */
+
+#content {
+    width: 34.5em;
+    min-height: 12em;
+    padding: 1.0em 3.0em 2.0em 22.5em;
+
+    font-family: georgia, serif;
+    line-height: 130%;
+    color: #2f2f2a;
+
+    background: url(../images/content.png) repeat;
+}
+
+#content h1 {
+    margin: 1.5em 0 0.5em 0;
+    font-size: 100%;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #7b7b46;
+}
+
+#content h4 {
+    margin: 1.5em 0 0.5em 0;
+
+    font-family: futura, verdana, arial, sans-serif;
+    font-size: 80%;
+    font-weight: normal;
+    letter-spacing: 0.3em;
+    line-height: 150%;
+    text-transform: uppercase;
+    color: #7b7b46;
+}
+
+#content h5 {
+    margin: 1.5em 0 0.5em 0;
+
+    font-family: futura, verdana, arial, sans-serif;
+    font-size: 70%;
+    font-weight: normal;
+    letter-spacing: 0.3em;
+    line-height: 150%;
+    text-transform: uppercase;
+    color: #7b7b46;
+}
+
+#content p {
+    margin: 0.5em 0 1.2em 0;
+    font-size: 84%;
+    }
+
+#content a:link {
+    font-style: italic;
+    color: #7b7b46;
+}
+
+#content a:visited {
+    font-style: italic;
+    color: #7b7b46;
+}
+
+#content a:active {
+    font-style: italic;
+    color: #7b7b46;
+}
+
+#content a:hover {
+    font-style: italic;
+    color: #7b7b46;
+}
+
+#content p.course-description {
+    margin: 1.2em 0;
+    line-height: 180%;
+}
+
+#content.resume ul {
+    margin: 0 0 0 1.3em;
+    font-size: 90%;
+    line-height: 140%;
+}
+
+#content div.course-outline ul {
+    margin: 0 0 0 1.3em;
+    font-size: 90%;
+    line-height: 140%;
+}
+
+#content div.course-outline ol {
+    margin: 0 0 0 1.2em;
+    font-size: 90%;
+    line-height: 140%;
+}
+
+#content div.references ol {
+    margin: 0 0 0 1.2em;
+    font-size: 90%;
+    line-height: 140%;
+}
+
+#content div.references li {
+    margin: 0.5em 0 0.5em 0;
+}
+
+#content div.references .title {
+    display: block;
+    font-style: italic;
+}
+
+#content div.references .author {
+    font-size: 90%;
+    font-weight: bold;
+}
+
+#content div.references .publisher {
+    margin-left: 1em;
+    font-size: 80%;
+}
+
+#content div.references .date {
+    font-size: 80%;
+}
+
+#old-news {
+    display: none;
+}
+
+#news {
+    width: 34.5em;
+    padding: 1.0em 3.0em 2.0em 22.5em;
+
+    font-family: georgia, serif;
+}
+
+#news a {
+    cursor: pointer;
+    color: #8d8b75;
+}
+
+#news a:hover {
+    color: #dddbc5;
+}
+
+#news h4 {
+    font-family: futura, verdana, arial, sans-serif;
+    font-size: 70%;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    margin: 2em 0em 1em 0em;
+    color: #8a8781;
+}
+
+#news div.news-item {
+    margin: 1em 0em;
+    font-size: 70%;
+    color: #575a51;
+}
+
+#news div.author {
+    display: inline;
+    font-weight: bold;
+}
+
+#news div.date {
+    display: inline;
+    margin-left: .5em;
+    color: #8a8781;
+}
+
+/* end of file  */
