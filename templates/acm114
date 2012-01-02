@@ -1,0 +1,55 @@
+<VirtualHost *:80>
+    ServerName acm114.caltech.edu
+    ServerAlias acm114.cacr.caltech.edu
+    ServerAdmin aivazis@caltech.edu
+
+    DocumentRoot /home/projects/acm114/web/www/2012-winter
+
+    <Directory />
+        Order Deny,Allow
+        Deny from All
+        Options FollowSymLinks
+        AllowOverride None
+    </Directory>
+
+    Alias /2012-winter /home/projects/acm114/web/www/2012-winter
+    <Directory "/home/projects/acm114/web/www/2012-winter">
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+    Alias /2010-winter /home/projects/acm114/web/www/2010-winter
+    <Directory "/home/projects/acm114/web/www/2010-winter">
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+    ScriptAlias /bin/ /home/projects/acm114/web/bin/
+    <Directory "/home/projects/acm114/web/bin">
+        AllowOverride None
+        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+    Alias /repository/ "/home/projects/acm114/web/repository/"
+    <Directory "/home/projects/acm114/web/repository/">
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+    ErrorLog /var/log/apache2/error-acm114.log
+
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+
+    CustomLog /var/log/apache2/access-acm114.log combined
+
+</VirtualHost>
