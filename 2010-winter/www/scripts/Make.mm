@@ -11,7 +11,8 @@
 
 
 PROJECT = acm114
-PACKAGE = www/scripts
+PACKAGE = 2010-winter/www/scripts
+WEB = acm114@pyre.caltech.edu:web/$(PACKAGE)
 
 
 #--------------------------------------------------------------------------
@@ -19,5 +20,7 @@ PACKAGE = www/scripts
 
 all: tidy
 
+export::
+	/usr/bin/rsync --delete -ruavz . $(WEB)
 
 # end of file 

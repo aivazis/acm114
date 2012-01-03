@@ -12,7 +12,7 @@
 
 PROJECT = acm114
 PACKAGE = 2012-winter/www
-WEB = acm114@pyre.caltech.edu:web/www/2012-winter
+WEB = acm114@pyre.caltech.edu:web/$(PACKAGE)
 
 RECURSE_DIRS = \
     content \

@@ -11,7 +11,8 @@
 
 
 PROJECT = acm114
-PACKAGE = www/2012-winter/images
+PACKAGE = 2012-winter/www/images
+WEB = acm114@pyre.caltech.edu:web/$(PACKAGE)
 
 
 #--------------------------------------------------------------------------
@@ -20,6 +21,6 @@ PACKAGE = www/2012-winter/images
 all: tidy
 
 export::
-	/usr/bin/rsync --delete -ruavz . acm114@pyre.caltech.edu:web/$(PACKAGE)
+	/usr/bin/rsync --delete -ruavz . $(WEB)
 
 # end of file 

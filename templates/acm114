@@ -3,7 +3,7 @@
     ServerAlias acm114.cacr.caltech.edu
     ServerAdmin aivazis@caltech.edu
 
-    DocumentRoot /home/projects/acm114/web/www/2012-winter
+    DocumentRoot /home/projects/acm114/web/2012-winter/www
 
     <Directory />
         Order Deny,Allow
@@ -12,16 +12,16 @@
         AllowOverride None
     </Directory>
 
-    Alias /2012-winter /home/projects/acm114/web/www/2012-winter
-    <Directory "/home/projects/acm114/web/www/2012-winter">
+    Alias /2012-winter /home/projects/acm114/web/2012-winter/www
+    <Directory "/home/projects/acm114/web/2012-winter/www">
         Options Indexes FollowSymLinks MultiViews
         AllowOverride None
         Order allow,deny
         Allow from all
     </Directory>
 
-    Alias /2010-winter /home/projects/acm114/web/www/2010-winter
-    <Directory "/home/projects/acm114/web/www/2010-winter">
+    Alias /2010-winter /home/projects/acm114/web/2010-winter/www
+    <Directory "/home/projects/acm114/web/2010-winter/www">
         Options Indexes FollowSymLinks MultiViews
         AllowOverride None
         Order allow,deny

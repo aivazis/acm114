@@ -11,7 +11,8 @@
 
 
 PROJECT = acm114
-PACKAGE = www
+PACKAGE = 2010-winter/www
+WEB = acm114@pyre.caltech.edu:web/$(PACKAGE)
 
 RECURSE_DIRS = \
     content \
@@ -35,9 +36,9 @@ distclean::
 	BLD_ACTION="distclean" $(MM) recurse
 
 export::
-	/usr/bin/rsync --delete -ruavz . acm114@pyre.caltech.edu:web/www
+	/usr/bin/rsync --delete -ruavz . $(WEB)
 
 try-export:
-	/usr/bin/rsync -n --delete -ruavz . acm114@pyre.caltech.edu:web/www
+	/usr/bin/rsync -n --delete -ruavz . $(WEB)
 
 # end of file 
