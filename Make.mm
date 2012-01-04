@@ -16,6 +16,7 @@ PACKAGE =
 RECURSE_DIRS = \
     bin \
     2010-winter \
+    2012-winter \
     examples \
     templates \
 
