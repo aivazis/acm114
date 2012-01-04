@@ -27,6 +27,7 @@ INCLUDES = \
     references.bib
 
 SECTIONS = \
+    20120104.tex \
 
 FIGURES = \
 
@@ -60,7 +61,7 @@ xpdf: $(DOCUMENT).pdf
 $(DOCUMENT).pdf: $(DOCUMENT).tex $(PACKAGES) $(INCLUDES) $(SECTIONS) $(FIGURES)
 
 # housekeeping
-PROJ_CLEAN = $(CLEAN_LATEX) *.snm *.nav *.vrb 
-PROJ_DISTCLEAN = *.ps *.pdf $(PROJ_CLEAN)
+PROJ_CLEAN += $(CLEAN_LATEX) *.snm *.nav *.vrb 
+PROJ_DISTCLEAN += *.ps *.pdf $(PROJ_CLEAN)
 
 # end of file
