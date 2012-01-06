@@ -28,6 +28,7 @@ INCLUDES = \
 
 SECTIONS = \
     20120104.tex \
+    20120106.tex \
 
 FIGURES = \
 
@@ -52,7 +53,7 @@ distclean::
 
 # preview types
 osx: $(DOCUMENT).pdf
-	open $(DOCUMENT).pdf
+	open -g $(DOCUMENT).pdf
 
 xpdf: $(DOCUMENT).pdf
 	xpdf -remote $(DOCUMENT) $(DOCUMENT).pdf
