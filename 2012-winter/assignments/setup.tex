@@ -1,0 +1,190 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+
+% language
+\usepackage[english]{babel}
+
+% color
+\usepackage{xcolor}
+
+% fonts
+\usepackage{amsfonts}
+\usepackage{times}
+%\usepackage[iso-8859-7]{inputenc}
+
+% figures
+\usepackage{graphicx}
+
+% listings and their configurations
+\usepackage[slide,algoruled,linesnumbered,noend]{algorithm2e}
+\SetKwComment{tnm}{\#}{}
+\SetKw{KwAnd}{and}
+\SetKw{KwSend}{send}
+\SetKw{KwRecv}{recv}
+\SetKw{KwFrom}{from}
+
+\usepackage{textcomp}
+\usepackage{listings}
+\definecolor{keywordcolor}{rgb}{.0,.0,1.0}
+\definecolor{commentcolor}{gray}{.3}
+\definecolor{stringcolor}{gray}{.0}
+\definecolor{linenumbercolor}{gray}{.3}
+\definecolor{listingbgcolor}{gray}{.97}
+
+\definecolor{acm114@sand}{HTML}{dddbc5}
+\definecolor{acm114@olive}{HTML}{474a41}
+\definecolor{acm114@lava}{HTML}{413b38}
+
+\lstnewenvironment{python}[2][]{
+  \lstset{
+    language=python,
+    morekeywords={self,yield,False,True,None},
+    %
+    columns=flexible,
+    upquote=true,
+    %
+    aboveskip=\bigskipamount,
+    belowskip=\bigskipamount,
+    %
+    numbers=left,
+    numberstyle=\color{linenumbercolor}\tiny,
+    stepnumber=1,
+    numbersep=5pt,
+    numberblanklines=true,
+    %
+    basicstyle=\tt\small\bfseries,
+    keywordstyle=\color{keywordcolor},
+    commentstyle=\color{commentcolor}\slshape,
+    stringstyle=\color{stringcolor}\slshape,
+    showstringspaces=false,
+    %
+    frame=,
+    captionpos=t,
+    backgroundcolor=\color{white},
+    xleftmargin=0.0in,
+    xrightmargin=0.0in,
+    %
+    escapeinside={\#@}{@},
+    %
+    #1
+  }}{#2}
+
+\lstnewenvironment{C}[1][]{
+  \lstset{
+    language=c,
+    columns=flexible,
+    upquote=true,
+    %
+    aboveskip=\bigskipamount,
+    belowskip=\bigskipamount,
+    %
+    numbers=left,
+    numberstyle=\color{linenumbercolor}\tiny,
+    stepnumber=1,
+    numbersep=5pt,
+    numberblanklines=true,
+    %
+    basicstyle=\tt\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{commentcolor}\slshape,
+    showstringspaces=false,
+    %
+    frame=,
+    captionpos=t,
+    backgroundcolor=\color{listingbgcolor},
+    xleftmargin=0.0in,
+    xrightmargin=0.0in,
+    %
+    escapeinside={//@}{@},
+    %
+    #1
+  }}{}
+
+% references
+\usepackage[numbers]{natbib}
+\bibliographystyle{unsrtnat}
+\renewcommand\bibsection{\section{\refname}}
+\def\newblock{\small}
+
+% misc
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+\usepackage{url}
+\usepackage{hyperref}
+
+
+% shortcuts
+\def\algref#1{{Alg.~\ref{alg:#1}}}
+\def\alglineref#1{{line~\ref{line:#1}}}
+\def\eqref#1{{Eq.~\ref{eq:#1}}}
+\def\figref#1{{Fig.~\ref{fig:#1}}}
+\def\secref#1{{Sec.~\ref{sec:#1}}}
+\def\tabref#1{{Table~\ref{tab:#1}}}
+\def\probref#1{{Prob.~\ref{prob:#1}}}
+\def\lstref#1{{Listing~\ref{lst:#1}}}
+\def\lstlineref#1{{line~\ref{line:#1}}}
+
+% macros
+\def\bydef{\mathrel{\mathop:}=}
+\def\GNU{\mbox{\tt GNU}}
+\def\GSL{\mbox{\tt GSL}}
+\def\RANLUX{\mbox{\tt RANLUX}}
+
+\def\cc{\mbox{\tt C}}
+\def\cpp{\mbox{\tt C++}}
+%\def\cpp{\mbox{\tt C\raise.4ex\hbox{++}}}
+\def\fortran{{\tt FORTRAN}}
+\def\f90{{\tt FORTRAN90}}
+\def\mpi{{\tt MPI}}
+
+\def\pyre{{\tt pyre}}
+
+\def\order#1{\mbox{$\mathcal{O}(#1)$}}
+\def\class#1{\mbox{\tt #1}}
+\def\component#1{\mbox{\tt #1}}
+\def\function#1{\mbox{\tt #1}}
+\def\method#1{\mbox{\tt #1}}
+\def\identifier#1{\mbox{\tt #1}}
+\def\keyword#1{\mbox{\tt #1}}
+\def\srcfile#1{\mbox{\tt #1}}
+
+\def\insertionsort{\mbox{\sc Insertion-Sort}}
+\def\mergesort{\mbox{\sc Merge-Sort}}
+\def\merge{\mbox{\sc Merge}}
+
+\def\TODO#1{{%
+\subsubsection*{Still to do}%
+\scriptsize\tt%
+\begin{list}{\leftpointright}{} #1 \end{list}}}
+
+% set up the PDF options
+\hypersetup{
+    pdftitle={ACM/CS 114: Winter 2010},
+    pdfauthor={Michael A.G. A\"iv\'azis},
+    pdfsubject={Lecture notes},
+    pdfkeywords=,           % list of keywords
+%
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat's bookmarks
+    pdftoolbar=true,        % show Acrobat's toolbar?
+    pdfmenubar=true,        % show Acrobat's menu?
+    pdffitwindow=true,      % page fit to window when opened
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=acm114@olive, % color of internal links
+    citecolor=acm114@olive, % color of links to bibliography
+    filecolor=acm114@olive, % color of file links
+    urlcolor=acm114@olive   % color of external links
+}
+% end of file 
