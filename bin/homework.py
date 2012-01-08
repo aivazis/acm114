@@ -18,7 +18,7 @@ if __name__ == "__main__":
     import sys
     import syllabus
     # build the app
-    app = syllabus.homework()
+    app = syllabus.homework(globalAliases=True)
     # invoke it
     status = app.main()
     # pass the status along
