@@ -21,6 +21,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
     ACM114.py \
+    Access.py \
     Bazaar.py \
     Homework.py \
     interfaces.py \

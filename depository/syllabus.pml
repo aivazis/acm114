@@ -9,11 +9,17 @@
 
 <config>
 
-  <!-- the application that grants access to student's homework -->
+  <!-- the application that serves the student's homework repositories -->
   <component name="homework">
     <bind property="course">acm114</bind>
     <bind property="repository">bzr#bzr-acm114</bind>
   </component>
+
+  <!-- the application that grants access to student's homework -->
+  <component name="access">
+    <bind property="course">acm114</bind>
+  </component>
+
 
   <!-- the class -->
   <component family="syllabus.courses.acm114">

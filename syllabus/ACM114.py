@@ -42,6 +42,17 @@ class ACM114(pyre.component, family='syllabus.courses.acm114'):
         return path
 
 
+    @pyre.export
+    def roll(self):
+        """
+        Return the location of the directory with the roll sheet and other student information
+        """
+        # build he path
+        path = os.path.join(self.home, self.term, 'roll')
+        # and return it
+        return path
+
+
     # meta methods
     def __init__(self, name='acm114', **kwds):
         super().__init__(name=name, **kwds)

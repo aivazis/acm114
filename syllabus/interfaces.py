@@ -65,6 +65,11 @@ class Course(pyre.interface, family='syllabus.courses'):
         Return the location of the {student}'s homework directory
         """
 
+    @pyre.provides
+    def roll(self):
+        """
+        Return the location of the roll sheet and other student information
+        """
 
 # users
 class User(pyre.interface, family='syllabus.users'):
