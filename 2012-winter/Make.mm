@@ -1,12 +1,8 @@
 # -*- Makefile -*-
 #
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#                             michael a.g. aïvázis
-#                      california institute of technology
-#                      (c) 1998-2010  all rights reserved
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# michael a.g. aïvázis
+# california institute of technology
+# (c) 1998-2012 all rights reserved
 #
 
 
@@ -14,6 +10,7 @@ PROJECT = acm114
 PACKAGE = 2012-winter
 
 RECURSE_DIRS = \
+    roll \
     lectures \
     assignments \
     www \

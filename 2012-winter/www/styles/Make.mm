@@ -1,12 +1,8 @@
 # -*- Makefile -*-
 #
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#                             michael a.g. aïvázis
-#                      california institute of technology
-#                      (c) 1998-2012  all rights reserved
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# michael a.g. aïvázis
+# california institute of technology
+# (c) 1998-2012  all rights reserved
 #
 
 
