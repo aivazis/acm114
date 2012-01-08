@@ -6,4 +6,10 @@
 #
 
 
+# component factories
+from .ACM114 import ACM114 as acm114
+from .Bazaar import Bazaar as bzr
+from .Homework import Homework as homework
+
+
 # end of file 

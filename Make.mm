@@ -14,7 +14,10 @@ PROJECT = acm114
 PACKAGE = 
 
 RECURSE_DIRS = \
+    syllabus \
+    depository \
     bin \
+    tests \
     2010-winter \
     2012-winter \
     examples \
