@@ -1,12 +1,8 @@
 # -*- Makefile -*-
 #
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#                             michael a.g. aïvázis
-#                      california institute of technology
-#                      (c) 1998-2010  all rights reserved
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# michael a.g. aïvázis
+# california institute of technology
+# (c) 1998-2012 all rights reserved
 #
 
 
@@ -17,7 +13,16 @@ PACKAGE = bin
 #--------------------------------------------------------------------------
 #
 
-all: tidy
+all: export
+
+#--------------------------------------------------------------------------
+# export
+
+EXPORT_BINS = \
+    homework.py \
+    ssh-keys.py \
+
+export:: export-binaries
 
 
 # end of file 
