@@ -8,6 +8,7 @@
 # application factories
 from .Access import Access as access
 from .Homework import Homework as homework
+from .RepositoryInitializer import RepositoryInitializer as repositoryInitializer
 
 
 # component factories

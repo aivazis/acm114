@@ -35,10 +35,25 @@ class Bazaar(pyre.component, family="syllabus.repositories.bzr", implements=repo
     
 
     # interface
-    @property
-    def command(self):
+    @pyre.export
+    def initialize(self, repository):
         """
-        Assemble the parts of the server command line
+        Invoke the repository server to initialize a repository
+        """
+        # build the command line
+        commands = [
+            self.executable,
+            'init',
+            repository
+            ]
+        # invoke the server
+        return subprocess.call(commands)
+
+
+    @pyre.export
+    def serve(self):
+        """
+        Invoke the repository server to satisfy the client request
         """
         # build the command line
         commands = [
@@ -49,17 +64,8 @@ class Bazaar(pyre.component, family="syllabus.repositories.bzr", implements=repo
             ]
         # should we grant write access?
         if self.write: commands.append('--allow-writes')
-        # return it
-        return commands
-
-
-    @pyre.export
-    def serve(self):
-        """
-        Invoke the repository server to satisfy the client request
-        """
         # invoke the server
-        return subprocess.call(self.command)
+        return subprocess.call(commands)
     
 
 # end of file 

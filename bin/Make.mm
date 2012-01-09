@@ -20,6 +20,7 @@ all: export
 
 EXPORT_BINS = \
     homework.py \
+    init-hw-repos.py \
     ssh-keys.py \
 
 export:: export-binaries

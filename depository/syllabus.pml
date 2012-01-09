@@ -9,15 +9,21 @@
 
 <config>
 
-  <!-- the application that serves the student's homework repositories -->
-  <component name="homework">
+  <!-- the application that grants access to student's homework -->
+  <component name="access">
+    <bind property="course">acm114</bind>
+  </component>
+
+  <!-- the application that initializes the homewrok repositories -->
+  <component name="init-repo">
     <bind property="course">acm114</bind>
     <bind property="repository">bzr#bzr-acm114</bind>
   </component>
 
-  <!-- the application that grants access to student's homework -->
-  <component name="access">
+  <!-- the application that serves the student's homework repositories -->
+  <component name="homework">
     <bind property="course">acm114</bind>
+    <bind property="repository">bzr#bzr-acm114</bind>
   </component>
 
 
@@ -30,6 +36,12 @@
   <!-- bzr on acm114.caltech.edu, an ubuntu 11.10 virtual machine -->
   <component name="bzr-acm114" family="syllabus.repositories.bzr">
     <bind property="executable">/usr/bin/bzr</bind>
+    <bind property="write">yes</bind>
+  </component>
+
+  <!-- bzr on my macs -->
+  <component name="bzr-macports" family="syllabus.repositories.bzr">
+    <bind property="executable">/opt/local/bin/bzr</bind>
     <bind property="write">yes</bind>
   </component>
 
