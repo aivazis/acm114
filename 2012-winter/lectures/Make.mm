@@ -29,6 +29,7 @@ INCLUDES = \
 SECTIONS = \
     20120104.tex \
     20120106.tex \
+    20120109.tex \
 
 FIGURES = \
 
