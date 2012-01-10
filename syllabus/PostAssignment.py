@@ -95,23 +95,29 @@ class PostAssignment(pyre.application):
         """
         Generate the list of affected students
         """
+        # if we were asked to process all students
+        if self.students == ('all',):
+            # otherwise, get the path to the student roll
+            roll = self.course.roll()
+            # each file corresponds to a student
+            for filename in os.listdir(roll):
+                # separate the name from the extension
+                student, ext = os.path.splitext(filename)
+                # skip files that are not public keys
+                if ext != '.pub': continue
+                # yield the student name
+                yield student
+            # all done
+            return
+
         # if we were given an explicit list
         if self.students:
             # iterate over it
             for student in self.students: yield student
             # and no more
             return
-        # otherwise, get the path to the student roll
-        roll = self.course.roll()
-        # each file corresponds to a student
-        for filename in os.listdir(roll):
-            # separate the name from the extension
-            student, ext = os.path.splitext(filename)
-            # skip files that are not public keys
-            if ext != '.pub': continue
-            # yield the student name
-            yield student
-        # all done
+
+        # otherwise, do nothing
         return
 
 
