@@ -43,8 +43,10 @@ class MissingRepositories(pyre.application):
         repos = set(self.repositories())
         # compute the difference
         missing = enrolled - repos
-        # print it is a comma separated list
-        print(','.join(missing))
+        # if any were missing
+        if missing:
+            # print the names as a comma separated list
+            print(','.join(missing))
         # all done
         return 0
 
