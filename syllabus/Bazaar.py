@@ -66,6 +66,37 @@ class Bazaar(pyre.component, family="syllabus.repositories.bzr", implements=repo
         if self.write: commands.append('--allow-writes')
         # invoke the server
         return subprocess.call(commands)
+
+
+    @pyre.export
+    def add(self, path):
+        """
+        Add {path} to the repository
+        """
+        # build the command line
+        commands = [
+            self.executable,
+            'add',
+            path
+            ]
+        # invoke the server
+        return subprocess.call(commands)
+    
+
+    @pyre.export
+    def commit(self, path, message):
+        """
+        Add {path} to the repository
+        """
+        # build the command line
+        commands = [
+            self.executable,
+            'commit',
+            '-m', message,
+            path
+            ]
+        # invoke the server
+        return subprocess.call(commands)
     
 
 # end of file 

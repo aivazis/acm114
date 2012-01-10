@@ -1,0 +1,118 @@
+#!/usr/bin/env python3.2
+# -*- coding: utf-8 -*-
+#
+# michael a.g. aïvázis
+# california institute of technology
+# (c) 1998-2012 all rights reserved
+#
+
+
+"""
+Post an assignment to the student homework repositories
+"""
+
+# externals
+import os
+import pyre
+import shutil
+import subprocess
+
+
+# declaration
+class PostAssignment(pyre.application):
+    """
+    Grant repository access to the student's homework repositories
+    """
+
+    # types
+    from .interfaces import Course, Repository
+    
+
+    # public state
+    course = pyre.facility(interface=Course)
+    course.doc = 'the course whose materials are being served'
+
+    repository = pyre.facility(interface=Repository)
+    repository.doc = 'the repository server'
+
+    students = pyre.properties.tuple()
+    students.doc = 'the names of the students whose repository is being modified'
+
+    assignment = pyre.properties.str()
+    assignment.doc = 'the name of the assignment'
+
+    due = pyre.properties.str()
+    due.doc = 'the due date of the assignment'
+
+
+    # interface
+    @pyre.export
+    def main(self, *args, **kwds):
+        """
+        Post the assignment
+        """
+        # locate the assignment pdf file
+        pdf = os.path.join(
+            self.course.webContent(),
+            '{}-hw-{}.pdf'.format(self.course.name, self.due))
+        print("pdf: {!r}".format(pdf))
+
+
+        # iterate over the selected students
+        for student in self.selectedStudents():
+            # get the root of the student homework repository
+            root = self.course.homework(student)
+            # if the repository doesn't exist
+            if not os.path.isdir(root):
+                # initialize it
+                self.repository.initialize(root)
+            # construct the name of the assignment directory
+            directory = os.path.join(root, 'assignment-{}'.format(self.assignment))
+            # if it doesn't exist
+            if not os.path.isdir(directory):
+                # create it
+                os.mkdir(directory)
+            # copy the assignment pdf here
+            shutil.copy(pdf, directory)
+            # ask the server to add this directory to the repository
+            self.repository.add(directory)
+            # and to commit it
+            self.repository.commit(
+                path=directory,
+                message='initial post of assignment {}'.format(self.assignment))
+
+        return 0
+
+
+    # meta methods
+    def __init__(self, name='hw-post', **kwds):
+        super().__init__(name=name, **kwds)
+        return
+
+
+    # implementation details
+    def selectedStudents(self):
+        """
+        Generate the list of affected students
+        """
+        # if we were given an explicit list
+        if self.students:
+            # iterate over it
+            for student in self.students: yield student
+            # and no more
+            return
+        # otherwise, get the path to the student roll
+        roll = self.course.roll()
+        # each file corresponds to a student
+        for filename in os.listdir(roll):
+            # separate the name from the extension
+            student, ext = os.path.splitext(filename)
+            # skip files that are not public keys
+            if ext != '.pub': continue
+            # yield the student name
+            yield student
+        # all done
+        return
+
+
+# end of file 

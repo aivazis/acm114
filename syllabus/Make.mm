@@ -24,6 +24,7 @@ EXPORT_PYTHON_MODULES = \
     Access.py \
     Bazaar.py \
     Homework.py \
+    PostAssignment.py \
     RepositoryInitializer.py \
     interfaces.py \
     __init__.py

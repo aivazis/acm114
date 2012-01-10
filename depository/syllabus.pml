@@ -14,7 +14,13 @@
     <bind property="course">acm114</bind>
   </component>
 
-  <!-- the application that initializes the homewrok repositories -->
+  <!-- the application that initializes the homework repositories -->
+  <component name="hw-post">
+    <bind property="course">acm114</bind>
+    <bind property="repository">bzr#bzr-acm114</bind>
+  </component>
+
+  <!-- the application that initializes the homework repositories -->
   <component name="init-repo">
     <bind property="course">acm114</bind>
     <bind property="repository">bzr#bzr-acm114</bind>

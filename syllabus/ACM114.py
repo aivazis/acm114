@@ -32,6 +32,17 @@ class ACM114(pyre.component, family='syllabus.courses.acm114'):
 
     # interface
     @pyre.export
+    def webContent(self, student=None):
+        """
+        Return the location of the {student}'s homework directory
+        """
+        # build the path
+        path = os.path.join(*filter(None, (self.home, self.term, 'www', 'content')))
+        # and return it
+        return path
+
+
+    @pyre.export
     def homework(self, student=None):
         """
         Return the location of the {student}'s homework directory
