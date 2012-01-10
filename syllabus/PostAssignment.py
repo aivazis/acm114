@@ -79,7 +79,7 @@ class PostAssignment(pyre.application):
             # and to commit it
             self.repository.commit(
                 path=directory,
-                message='initial post of assignment {}'.format(self.assignment))
+                message='posted assignment {}'.format(self.assignment))
 
         return 0
 
