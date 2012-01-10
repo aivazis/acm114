@@ -14,7 +14,12 @@
     <bind property="course">acm114</bind>
   </component>
 
-  <!-- the application that initializes the homework repositories -->
+  <!-- the application that identifies students with missing homework repositories -->
+  <component name="hw-missing">
+    <bind property="course">acm114</bind>
+  </component>
+
+  <!-- the application that posts homework assignments -->
   <component name="hw-post">
     <bind property="course">acm114</bind>
     <bind property="repository">bzr#bzr-acm114</bind>

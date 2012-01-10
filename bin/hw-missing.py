@@ -8,7 +8,7 @@
 
 
 """
-Post a homework assignment to the students' homework repositories
+Identify which students don't have a homework repository
 """
 
 
@@ -18,7 +18,7 @@ if __name__ == "__main__":
     import sys
     import syllabus
     # post the assignment
-    status = syllabus.postHomeworkAssignment()
+    status = syllabus.identifyMissingRepositories()
     # and pass the status back to the shell
     sys.exit(status)
 

@@ -12,6 +12,18 @@ from .RepositoryInitializer import RepositoryInitializer as repositoryInitialize
 
 
 # interface
+def identifyMissingRepositories():
+    """
+    Build a list of students that don't have homework repositories
+    """
+    # access the app
+    from .MissingRepositories import MissingRepositories
+    # build one
+    app = MissingRepositories(globalAliases=True)
+    # all done
+    return app.main()
+
+
 def postHomeworkAssignment():
     """
     Populate the student homework repositories with a new assignment
