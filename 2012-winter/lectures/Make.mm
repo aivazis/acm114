@@ -32,8 +32,11 @@ SECTIONS = \
     20120109.tex \
     20120111.tex \
     20120113.tex \
+    20120118.tex \
+    20120120.tex \
 
 FIGURES = \
+    figures/amdahl.pdf \
     figures/asymptotic-o.pdf \
     figures/asymptotic-omega.pdf \
     figures/asymptotic-theta.pdf \
@@ -56,6 +59,9 @@ FIGURES = \
     figures/reduction-tree-sum.pdf \
     figures/shared-memory.pdf \
     figures/simd.pdf \
+    figures/threads.pdf \
+    figures/threads-memory.pdf \
+    figures/threads-reduction.pdf \
 
 #--------------------------------------------------------------------------
 #
