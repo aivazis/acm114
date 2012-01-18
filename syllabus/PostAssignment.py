@@ -58,16 +58,22 @@ class PostAssignment(pyre.application):
         print("pdf: {!r}".format(pdf))
 
         # locate the source of the assignment
-        assignmentSource = self.course.assignments(assignment=self.assignment)
+        assignmentSource = self.course.assignmentSource(assignment=self.assignment)
+        print("assignment source: {!r}".format(assignmentSource))
 
         # iterate over the selected students
         for student in self.selectedStudents():
             # get the root of the student homework repository
             root = self.course.homework(student)
+            print(" -- posting at {!r}".format(root))
             # if the repository doesn't exist
             if not os.path.isdir(root):
                 # initialize it
                 self.repository.initialize(root)
+
+            # bring the tree up to date
+            self.repository.update()
+
             # construct the name of the assignment directory
             directory = os.path.join(root, 'assignment-{}'.format(self.assignment))
             # if it doesn't exist
@@ -76,7 +82,7 @@ class PostAssignment(pyre.application):
                 os.mkdir(directory)
 
             # copy the assignment pdf here
-            shutil.copy(pdf, directory)
+            shutil.copy2(pdf, directory)
             # copy the sources
             for name in os.listdir(assignmentSource):
                 # form the absolute path to the source file
@@ -98,6 +104,8 @@ class PostAssignment(pyre.application):
             self.repository.commit(
                 path=directory,
                 message='posted assignment {}'.format(self.assignment))
+
+            print(" -- done posting at {!r}".format(root))
 
         return 0
 
