@@ -57,6 +57,8 @@ class PostAssignment(pyre.application):
             '{}-hw-{}.pdf'.format(self.course.name, self.due))
         print("pdf: {!r}".format(pdf))
 
+        # locate the source of the assignment
+        assignmentSource = self.course.assignments(assignment=self.assignment)
 
         # iterate over the selected students
         for student in self.selectedStudents():
@@ -72,8 +74,24 @@ class PostAssignment(pyre.application):
             if not os.path.isdir(directory):
                 # create it
                 os.mkdir(directory)
+
             # copy the assignment pdf here
             shutil.copy(pdf, directory)
+            # copy the sources
+            for name in os.listdir(assignmentSource):
+                # form the absolute path to the source file
+                srcName = os.path.join(assignmentSource, name)
+                # and the absolute path to the destination
+                dstName = os.path.join(directory, name)
+                # if the source is a directory
+                if os.path.isdir(srcName):
+                    # copy its entire contents
+                    shutil.copytree(srcName, dstName)
+                # otherwise
+                else:
+                    # copy the file over
+                    shutil.copy2(srcName, dstName)
+
             # ask the server to add this directory to the repository
             self.repository.add(directory)
             # and to commit it
