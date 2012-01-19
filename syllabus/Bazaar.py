@@ -100,14 +100,15 @@ class Bazaar(pyre.component, family="syllabus.repositories.bzr", implements=repo
     
 
     @pyre.export
-    def update(self):
+    def update(self, path):
         """
         Update the working tree
         """
         # build the command line
         commands = [
             self.executable,
-            'update'
+            'update',
+            path
             ]
         # invoke the server
         return subprocess.call(commands)

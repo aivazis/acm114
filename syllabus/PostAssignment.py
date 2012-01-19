@@ -72,7 +72,7 @@ class PostAssignment(pyre.application):
                 self.repository.initialize(root)
 
             # bring the tree up to date
-            self.repository.update()
+            self.repository.update(root)
 
             # construct the name of the assignment directory
             directory = os.path.join(root, 'assignment-{}'.format(self.assignment))
