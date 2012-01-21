@@ -1,369 +1,267 @@
 % -*- LaTeX -*-
 % -*- coding: utf-8 -*-
 %
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-%
-%                             michael a.g. aïvázis
-%                      california institute of technology
-%                      (c) 1998-2010  all rights reserved
-%
-% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
 %
 
-\lecture{Cost modeling and performance tradeoffs}{20100113}
+\lecture{Programming with pthreads}{20120123}
 
 % --------------------------------------
-% generic parallel architecture
+% threads and shared memory parallelism 
 \begin{frame}[fragile]
 %
-  \frametitle{Time, parallelism and computational work}
+  \frametitle{Threads and shared memory parallelism}
 %
   \begin{itemize}
-  \item recall our embarrassingly parallel reduction: 
+%
+  \item recall the shared memory architecture
+%
+    \begin{figure}
+      \centering
+      \includegraphics[scale=0.5]{figures/shared-memory.pdf}
+    \end{figure}
+    \vspace{-1.0em}
+%
     \begin{itemize}
-    \item given a function $f$ and a sequence of numbers $S$ of length $N$, evaluate
-    \[
-    s = \sum_{i=0}^{N-1}f(S_{i})
-    \]
+    \item processors are connected to a memory pool with a global address space
+    \item processors have their own cache but no private memory
     \end{itemize}
 %
-  \item initial parallelism profile for a simple mapping, assuming that
+  \item model is relevant for {\em threads}
+%
     \begin{itemize}
-    \item the computation of $f(S)$ is the parallel task
-    \item the summation is sequential
+    \item lightweight processes that can be scheduled independently, but share many OS
+      resources
+      \begin{itemize}
+      \item CPU
+      \item memory
+      \item but also file descriptors, process environment, etc.
+      \end{itemize}
+    \item supported by most modern operating systems
     \end{itemize}
 %
-    \begin{minipage}{.45\linewidth}
-      \includegraphics[scale=0.6]{figures/reduction-parallel-work.pdf}
-    \end{minipage}
-    $\longrightarrow$
-    \begin{minipage}{.45\linewidth}
-      \includegraphics[scale=0.6]{figures/reduction-partitioned-work.pdf}
-    \end{minipage}
+  \end{itemize}
 %
-  \item shaded area is $w$, the {\em computational work}
+    \begin{figure}
+      \centering
+      \includegraphics[scale=0.5]{figures/threads-memory.pdf}
+    \end{figure}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Processes and threads}
+%
+  \begin{itemize}
+%
+  \item in most operating systems, a process has
+    \begin{itemize}
+    \item process id and group id, user id and group id
+    \item environment variables
+    \item working directory
+    \item scheduling information
+    \item registers, stack, heap, instruction stream
+    \item file descriptors, signal handlers, other process dependent structures
+    \end{itemize}
+%
+  \item threads 
+    \begin{itemize}
+      \item share many of the per-process properties
+        \begin{itemize}
+        \item they are lightweight since they incur low overhead
+        \end{itemize}
+      \item have their own copy of
+        \begin{itemize}
+        \item registers, stack, instruction stream
+        \item scheduling information
+        \end{itemize}
+    \end{itemize}
+%
+  \item threads are important programming constructs
+    \begin{itemize}
+    \item every vendor supports a proprietary interface
+    \item {\em pthreads}, the POSIX standard API specification brought portability
+    \item standardized creation, management, synchronization
+    \end{itemize}
 %
   \end{itemize}
 %
 \end{frame}
 
 % --------------------------------------
-% speedup and efficiency
+% template
 \begin{frame}[fragile]
 %
-  \frametitle{Metrics: speedup and efficiency}
+  \frametitle{The pthreads API}
 %
   \begin{itemize}
 %
-    \item let
+  \item threads require support from the compiler, the linker, the loader, and the OS kernel
+    \begin{itemize}
+    \item thread safety
+    \end{itemize}
+%
+  \item special command line argument to most compliant compilers
+    \begin{itemize}
+    \item changes the instruction strategy
+    \item adds the pthread runtime library to the link line
+    \item links against the thread safe runtime
+    \end{itemize}
+%
+  \item naming conventions
+    \begin{table}
+      \scriptsize
+      \centering
+      \begin{tabular}{l|l}
+        Prefix & Functional group\\ \hline
+        {\tt pthread\_ } &
+            access to the threads, and some miscellaneous routines\\
+        {\tt pthread\_attr\_ } & 
+            thread attribute objects\\
+        {\tt pthread\_mutex\_ } & 
+            mutexes\\
+        {\tt pthread\_mutexattr\_ } & 
+            mutex attribute objects\\
+        {\tt pthread\_cond\_ } & 
+            condition variables\\
+        {\tt pthread\_condattr\_ } & 
+            condition variable attribute objects\\
+        {\tt pthread\_key\_ } & 
+            thread-specific data keys\\
+        {\tt pthread\_rwlock\_ } & 
+            read/write locks\\
+        {\tt pthread\_barrier\_ } & 
+            synchronization barriers\\
+      \end{tabular}
+    \end{table}
+%
+  \item the standard specifies the API for \cc\ only; \fortran\ support varies
+    \begin{itemize}
+    \item must include \srcfile{pthread.h}
+    \end{itemize}
+%
+  \item lots of good books; see \href{http://acm114.caltech.edu/references}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Creating threads}
+  \begin{itemize}
+%
+  \item create threads by calling
+%
+  \begin{C}
+int pthread_create(
+    pthread_t* id, const pthread_attr_t* attr,
+    void* (*startup)(void*), void* arg);
+  \end{C}
+%
+\item initially a process has one thread; every other thread must be explicitly created
+  by calling \function{pthread\_create} and passing
+  \begin{itemize}
+  \item \identifier{id}: the location where a unique thread identifier will be stored
+  \item \identifier{attr}: an opaque attribute object with thread initialization options
+  \item \function{startup}: a pointer to a \cc\ function that will be executed by the thread
+    once it gets scheduled
+  \item \identifier{arg}: user defined data to be passed to \function{startup}; may be \NULL
+  \end{itemize}
+%
+  \item once scheduled, threads are first class citizens
+%
+  \item the maximum number of threads per process depends on the implementation
+%
+  \end{itemize}
+%
+    \begin{figure}
+      \centering
+      \includegraphics[scale=0.5]{figures/threads.pdf}
+    \end{figure}
+%
+\end{frame}
+
+% --------------------------------------
+% terminating threads
+\begin{frame}[fragile]
+%
+  \frametitle{Terminating threads}
+%
+  \begin{itemize}
+%
+    \item several ways to terminate a thread
       \begin{itemize}
-        \item $T_{1}$ be the sequential execution time on one processor
-        \item $T_{p}$ be the parallel execution time on $p$ processors
+      \item the thread returns from \function{main}
+      \item the thread explicitly calls \function{pthread\_exit}
+      \item the thread is killed when another thread calls \function{pthread\_cancel}
+      \item the process terminates due to some system call, e.g.~\function{exit},
+        \function{exec}, etc.
       \end{itemize}
 %
-    \item define
-      \begin{itemize}
-        \item {\em speedup}: \[\sigma \defeq T_{1}/T_{p}\]
-        \item {\em efficiency}: \[\eta \defeq T_{1}/(p T_{p})\]
-        \item related through $\eta = \sigma/p$ and $\sigma = \eta p$
-      \end{itemize}
+  \item use \function{pthread\_exit} to kill a thread when it is no longer needed
 %
-    \item pseudo-theorems: $\sigma \leq p$ and $\eta \leq 1$
-      \begin{itemize}
-        \item but {\em speedup anomalies} can occur if resources increase with $p$ causing an
-          increase in the effective computation rate
-        \item example: for large enough $p$, your problem may fit entirely in the L2 cache
-        \item {\em sweet spots} like that abound; the craftsman knows how to
-          \begin{itemize}
-            \item implement the solution in a portable manner
-            \item expose enough controls to enable tuning to a given architecture at {\em
-              runtime}
-          \end{itemize}
-      \end{itemize}
+    \begin{C}
+int pthread_exit(void * status);
+    \end{C}
 %
+  \item if \function{main} finishes and any threads remain
+    \begin{itemize}
+    \item they get killed unless \function{main} has called \function{pthread\_exit}
+    \item otherwise they continue to run
+    \end{itemize}
+%
+  \item thread routines do not have to call \function{pthread\_exit} unless they intend to pass
+    their termination status to their creator
+%
+  \item \function{pthread\_exit} does not perform any process cleanup: it doesn't flush/close
+    files, release other resources, signal the process parent, etc.
   \end{itemize}
 %
 \end{frame}
 
 % --------------------------------------
-% amdahl's law
-%
+% hello world
 \begin{frame}[fragile]
 %
-  \frametitle{The bad news: Amdahl's law}
+  \frametitle{Hello world}
 %
-  \begin{minipage}{.55\linewidth}
-    \begin{itemize}
-%
-    \item consider a solution that consists of two parts
-      \begin{itemize}
-      \item a serial fraction $s$ with $0 \leq s \leq 1$
-      \item a $p$-fold parallel fraction $1-s$
-      \end{itemize}
-%
-    \item for a fixed problem size, Amdahl's law relates $(T_{p}, \sigma, \eta)$ to
-      $(T_{1}, s)$
-      \begin{eqnarray*}
-        T_{p}  & = & s T_{1} + (1-s) T_{1} / p \\
-        \sigma & = & \frac{p}{sp + (1-s)} \\
-        \eta & = & \frac{1}{sp + (1-s)}
-      \end{eqnarray*}
-%
-    \item with corollaries $\sigma_{\infty} = \frac{1}{s}$ and $\eta_{\infty} = 0$
-    \end{itemize}
-  \end{minipage}
- %
-  \hfill
-  \begin{minipage}{.40\linewidth}
-    \includegraphics[width=1.2\linewidth]{figures/reduction-parallel-work.pdf}
-    \vspace{2em}
+  \begin{C}
+#include <pthread.h>
+#include <stdio.h>
+#define THREADS 10
 
-    \includegraphics[width=1.2\linewidth]{figures/amdahl.pdf}
-  \end{minipage}
-%
-\end{frame}
+void* hello(void* threadID) {
+    long id = (long) threadID;
+    printf("hello from %02ld/%0d\n", id, THREADS);
+    pthread_exit(NULL);
+    return NULL;
+}
 
-% --------------------------------------
-% scaling and isoefficiency
-\begin{frame}[fragile]
-%
-  \frametitle{Beating Amdahl's law}
-%
-  \begin{itemize}
-  \item Amdahl's law holds if
-    \begin{itemize}
-      \item the problem size is fixed
-      \item the serial fraction $s$ is not a function of $p$
-    \end{itemize}
-%
-  \item {\em weak scaling}: let the problem size grow with $p$
-    \begin{itemize}
-    \item larger computers are used to solve larger problems
-    \item the effective serial fraction {\em decreases} with problem size
-    \item the right scaling metric would be constant, or properly bounded away from 0, as $p
-      \rightarrow \infty$
-    \end{itemize}
-%
-  \item {\em isoefficiency}
-    \begin{itemize}
-      \item how rapidly must the problem size grow so that $\eta$ is constant as $p$ increases?
-      \item since $\eta = T_{1}/(pT_{p})$, constant efficiency implies
-        \[
-        T_{1} = c (p T_{p})
-        \]
-        for some constant $c$
-      \item $T_{1}$ measures the sequential work, so the above relation determines your
-        implementation's {\em isoefficiency function}
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
+int main(int argc, char* argv[]) {
+    long id;
+    int status;
+    pthread_t threads[THREADS];
 
-
-
-% --------------------------------------
-% algorithmic trade-offs
-\begin{frame}[fragile]
-%
-  \frametitle{Algorithmic improvements}
-%
-  \begin{itemize}
-%
-  \item getting smarter is the best way to improve $\sigma$ and $\eta$
-    \begin{itemize}
-      \item reduce the sequential fraction $s$
-      \item what are the effects on communication and locality?
-    \end{itemize}
-%
-  \item parallelize the partial sums
-    \begin{figure}
-      \centering
-      \includegraphics[scale=0.70]{figures/reduction-partial-sum.pdf}
-    \end{figure}
-%
-  \item parallelize the final sum using a {\em reduction tree}
-    \begin{figure}
-      \centering
-      \includegraphics[scale=0.70]{figures/reduction-tree-sum.pdf}
-    \end{figure}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% load balance
-\begin{frame}[fragile]
-%
-  \frametitle{Load balance}
-%
-  \begin{itemize}
-%
-  \item non-optimal task distributions show up as {\em load imbalance}
-    \begin{figure}
-      \centering
-      \includegraphics[scale=1.0]{figures/reduction-load-imbalance.pdf}
-    \end{figure}
-%
-  \item excessive coarsening tends to increase load imbalance
-  \item so can inappropriate mapping
-  \item synchronization also causes load imbalance (see later slide)
-  \item new upper bound for the speedup
-    \[
-    \sigma \leq \frac{w_{1}}{{\rm max}_{p}(w_{p} + {\rm idle})}
-    \]
-      
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% overhead
-\begin{frame}[fragile]
-%
-  \frametitle{Parallelization overhead}
-%
-  \begin{itemize}
-%
-  \item there is always some extra work that is not present in the sequential implementation
-    \begin{figure}
-      \centering
-      \includegraphics[scale=1.0]{figures/reduction-overhead.pdf}
-    \end{figure}
-%
-  \item orchestration, management, bookkeeping
-    \[
-    \sigma \leq \frac{w_{1}}{{\rm max}_{p}(w_{p} + {\rm idle} + {\rm overhead})}
-    \]
-      
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% communication and synchronization costs
-\begin{frame}[fragile]
-%
-  \frametitle{Communication and synchronization costs}
-%
-  \begin{itemize}
-%
-  \item communication is required for data movement and synchronization
-    \begin{figure}
-      \centering
-      \includegraphics[scale=0.75]{figures/reduction-comsync.pdf}
-    \end{figure}
-%
-  \item the cost is modeled by
-    \[
-    T_{c} = \lambda + \beta L
-    \]
-    where the {\em latency} $\lambda$ measures the communication startup cost, $\beta$ is the
-    bandwidth of the interconnect and $L$ is the message length in {\em words} 
-%
-  \item the speedup is now bounded by
-    \[
-    \sigma \leq \frac{w_{1}}{{\rm max}_{p}(w_{p} + {\rm idle} + {\rm overhead} + {\rm comm})}
-    \]
-%      
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% reducing communication costs
-\begin{frame}[fragile]
-%
-  \frametitle{Reducing communication costs}
-%
-  \begin{itemize}
-%
-  \item multiple strategies
-%
-  \item co\"ordinating placement of work and the associated data to minimize inter-process
-    dependencies
-    \begin{figure}
-      \centering
-      \includegraphics[scale=0.5]{figures/reduction-comsync-replication.pdf}
-    \end{figure}
-%
-  \item trading memory for efficiency by replicating data
-%
-  \item trading cpu for efficiency by doing redundant work
-    \begin{figure}
-      \centering
-      \includegraphics[scale=0.5]{figures/reduction-comsync-redundancy.pdf}
-    \end{figure}
-%
-  \item improving communication efficiency by tuning the cost factors
-    \begin{itemize}
-    \item communication frequency, message size, contention, architecture specific
-      optimizations
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% tension
-\begin{frame}[fragile]
-%
-  \frametitle{Optimizing speedup and efficiency}
-  \begin{itemize}
-%
-    \item the goal is to minimize the denominator
-      \[
-      \sigma \leq \frac{w_{1}}{{\rm max}_{p}(w_{p} + {\rm idle} + {\rm overhead} + {\rm comm})}
-      \]
-      \begin{itemize}
-        \item but its parts are in tension: minimizing one happens at the expense of another
-      \end{itemize}
-%
-  \item fine grain decomposition and intelligent mapping tend to minimize load imbalance at the
-    cost of increased communication
-    \begin{itemize}
-    \item coarser grains imply larger message size and fewer synchronization events
-    \item for many problems communication costs decrease as surface to volume
-    \end{itemize}
-%
-  \item na\"ive static partitioning reduces redundant work but cause load imbalance
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% the good news
-\begin{frame}[fragile]
-%
-  \frametitle{The good news}
-%
-  \begin{itemize}
-%
-  \item the basic work unit of a parallel algorithm may be more efficient (and better
-    performing) than the sequential equivalent
-    \begin{itemize}
-    \item only a small fraction of typical problems fits in L2 cache
-    \item single node performance {\em requires} partitioning
-    \item just like the parallel implementation
-    \item don't be surprised by the poor quality of your sequential version after you see
-      your parallel implementation
-    \end{itemize}
-%
-  \item communication can be interleaved with computation
-    \begin{itemize}
-    \item better algorithms on today's complicated memory hierarchies
-    \end{itemize}
-%
-    \item parallel algorithms may lead to better sequential ones
-      \begin{itemize}
-        \item e.g.~parallel search may explore configuration space more effectively
-      \end{itemize}
-%
-  \end{itemize}
+    for (id=0; id<THREADS; id++) {
+        printf("creating thread %02ld\n", id);
+        status = pthread_create(&threads[id], NULL, hello, (void*) id);
+        if (status) {
+            printf("error %d in pthread_create\n", status);
+        }
+    }
+    /* there is a problem here... */
+    pthread_exit(NULL);
+    return 0;
+}
+  \end{C}
 %
 \end{frame}
 
