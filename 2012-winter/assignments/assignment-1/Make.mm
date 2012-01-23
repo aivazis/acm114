@@ -7,20 +7,13 @@
 
 PROJECT = acm114
 PACKAGE = lectures
-
-#--------------------------------------------------------------------------
-#
-
 DOCUMENT = 20120120
 
-#--------------------------------------------------------------------------
-#
 
 all: $(DOCUMENT).pdf
 
-
-#--------------------------------------------------------------------------
-#
+export:: $(DOCUMENT).pdf
+	mv $(DOCUMENT).pdf ../../www/content/acm114-hw-$(DOCUMENT).pdf
 
 # preview types
 osx: $(DOCUMENT).pdf
@@ -36,6 +29,5 @@ xpdf: $(DOCUMENT).pdf
 # housekeeping
 PROJ_CLEAN += $(CLEAN_LATEX) *.snm *.nav *.vrb 
 PROJ_DISTCLEAN += *.ps *.pdf $(PROJ_CLEAN)
-
 
 # end of file
