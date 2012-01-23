@@ -1,0 +1,144 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2010  all rights reserved
+%
+
+\documentclass[12pt,answers]{exam}
+
+% packages, setup, macros, etc.
+\input{setup}
+
+\begin{document}
+\pagestyle{headandfoot}
+\runningfootrule
+\firstpageheader{ACM/CS 114}{Assignment 2}{Due: 1 February 2012}
+\runningheader{}{}{}
+\firstpagefooter{}{}{}
+\runningfooter{ACM/CS 114}{Assignment 2}{\thepage}
+
+
+
+% --------------------------------------
+% reduction using threads
+\def\Li{\mbox{\rm Li}_{2}}
+\def\len{\mbox{\rm length}}
+\def\dilog{\mbox{\tt dilog}}
+
+A better definition for the dilogarithm $\Li$ is given by
+%
+\begin{equation}
+\Li(z) \bydef
+- \int_{0}^{z} dz' \; \frac{\log(1-z')}{z'} \label{eq:li-def}
+\end{equation}
+%
+This is well defined for arbitrary complex values $z$, with a branch cut along the real axis
+for $z > 1$. It can be shown that
+%
+\begin{eqnarray}
+  \Li(1)  & = & \frac{\pi^{2}}{6} \label{eq:li1} \\
+  \Li(-1) & = & - \frac{\pi^{2}}{12} \label{eq:li-1}
+\end{eqnarray}
+%
+We will try to establish that \eqref{li1} and \eqref{li-1} are true by numerically evaluating
+the integral in \eqref{li-def} both sequentially and {\em in parallel} using threads and \mpi.
+%
+
+\begin{questions}
+
+\question Let's implement a function \function{dilog} that accepts a real number $z$ and a
+potentially large integer $N$, and returns an approximation to \eqref{li-def}. For example, a
+\cc\ or \cpp\ prototype would look like
+%
+\begin{C}
+    double dilog(double z, long N);
+\end{C}
+%
+\begin{parts}
+%
+  \part First, take care of the obvious cases $N < 1$, $z = 0$ and, for the sake of simplicity,
+  $z > 1$ where the dilogarithm picks up an imaginary part. You may throw exceptions, exit
+  after printing an error message, or use any other means of signaling the user that the input
+  is invalid.
+%
+  \part Implement the numerical approximation to the integral in \eqref{li-def} by splitting
+  the interval $(0,z)$ in $N$ subintervals of equal length $dz$. Each subinterval contributes
+  an amount equal to its width multiplied by the value of the integrand at the center of the
+  subinterval. Return the sum of these contributions as the approximation to the dilogarithm. 
+%
+  \part Why do we only evaluate the function at the center of each subinterval?
+%
+  \part Write a driver for \function{dilog} and convince yourself that it gives reasonable
+  approximations to the values in \eqref{li1} and \eqref{li-1}. Fill out the following table: 
+  \begin{table}[h]
+    \small
+    \centering
+    \[
+    \begin{array}{l|d{8}d{8}|d{8}d{8}}
+      % header
+      \multicolumn{1}{c|}{N} &
+      \multicolumn{1}{c}{\Li(-1)} &
+      \multicolumn{1}{c|}{\Delta} &
+      \multicolumn{1}{c}{\Li(1)} &
+      \multicolumn{1}{c}{\Delta}
+      \\ [.75ex]
+      % body
+      \hline 
+%
+      10^{1} & & & & \\ [.75ex]
+%
+      10^{3} & & & & \\ [.75ex]
+%
+      10^{6} & & & & \\ [.75ex]
+%
+      10^{9} & & & & \\ [.75ex]
+%
+      10^{12} & & & & 
+%
+    \end{array}
+    \]
+  \end{table}
+%
+
+where $\Delta$ is the relative error in each case.
+%
+\end{parts}
+%
+
+\question Explain how you would compute an approximation of the integral in \eqref{li-def} {\em
+  in parallel}. In particular:
+\begin{parts}
+  \part What are the finest grain parallel tasks?
+  \part What are the communication requirements among these tasks?
+  \part What is the correct coarsening strategy?
+  \part How you would map the coarse tasks onto physical processing units?
+\end{parts}
+
+\question Implement \function{dilog\_threads} that uses pthreads for enhanced performance.
+\begin{parts}
+  \part What is the correct partitioning, coarsening and mapping strategies when using threads?
+  \part Implement the routine that becomes the body of each thread.
+  \part Implement \function{dilog\_threads} to perform the error checking, spawn $p$ threads to
+  perform the calculation, collect the results of each thread and return the approximation to
+  the integral.
+  \part Convince yourself that \function{dilog\_threads} returns correct values regardless of
+  the number of threads it spawned.
+\end{parts}
+
+\question Implement a parallel version \function{dilog\_mpi} using \mpi.
+\begin{parts}
+  \part What is the correct partitioning, coarsening and mapping strategies when using
+  distributed memory parallelism?
+  \part Implement \function{dilog\_mpi}, making sure that every processor holds the final
+  answer for the value of the integral. 
+  \part Convince yourself that \function{dilog\_mpi} returns correct values regardless of the
+  number of processors used.
+\end{parts}
+
+\end{questions}
+
+\end{document}
+
+% end of file 
