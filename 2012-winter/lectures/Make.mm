@@ -36,6 +36,7 @@ SECTIONS = \
     20120123.tex \
     20120125.tex \
     20120127.tex \
+    20120130.tex \
 
 FIGURES = \
     figures/amdahl.pdf \
@@ -44,6 +45,13 @@ FIGURES = \
     figures/asymptotic-theta.pdf \
     figures/distributed-memory.pdf \
     figures/generic-parallel-architecture.pdf \
+    figures/mpi-alltoall-pattern.pdf \
+    figures/mpi-bcast-pattern.pdf \
+    figures/mpi-data-patterns.pdf \
+    figures/mpi-gather-pattern.pdf \
+    figures/mpi-gather.pdf \
+    figures/mpi-scatter-pattern.pdf \
+    figures/mpi-scatter.pdf \
     figures/parallelization-steps.pdf \
     figures/putty-initial.png \
     figures/putty-key.png \
