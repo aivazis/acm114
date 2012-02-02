@@ -37,6 +37,8 @@ SECTIONS = \
     20120125.tex \
     20120127.tex \
     20120130.tex \
+    20120201.tex \
+    20120203.tex \
 
 FIGURES = \
     figures/amdahl.pdf \
