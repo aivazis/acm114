@@ -33,6 +33,33 @@
       \right|_{z'=(n+\frac{1}{2})\frac{z}{N}}
     \end{equation*}
 %
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% implementations
+\begin{frame}[fragile]
+%
+  \frametitle{Quadrature rule}
+%
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/dilog-quadrature.pdf}
+    \label{fig:reduction-shared}
+  \end{figure}
+%
+\end{frame}
+
+%
+% --------------------------------------
+% implementations
+\begin{frame}[fragile]
+%
+  \frametitle{Implementations}
+%
+  \begin{itemize}
+%
     \item three implementations
       \begin{itemize}
       \item sequential: to get a feeling for how to convert the algorithm into a functioning
@@ -43,9 +70,9 @@
         partitioning problem
       \end{itemize}
 %
-    \item let's walk through composing, building and running my solutions
+    \item let's walk through composing, building and running
       \begin{itemize}
-      \item on my desktop, on \href{mind-meld.cacr.caltech.edu}, and on \href{shc.cacr.caltech.edu}
+      \item on my desktop, and on \href{shc.cacr.caltech.edu}
       \end{itemize}
 %
   \end{itemize}
@@ -169,7 +196,7 @@ int main(int argc, char* argv[]) {
   \begin{itemize}
   \item computing the error and printing out the results
   \begin{lstlisting}[language=c++,name=sequential]
-    // build a database of the known dilogarithm values
+    // build a naive database of the known dilogarithm values
     const double pi = M_PI;
     std::map<double, double> answers;
     answers[1.0] = pi*pi/6;

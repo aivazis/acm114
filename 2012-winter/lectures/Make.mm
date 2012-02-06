@@ -46,6 +46,7 @@ FIGURES = \
     figures/asymptotic-o.pdf \
     figures/asymptotic-omega.pdf \
     figures/asymptotic-theta.pdf \
+    figures/dilog-quadrature.pdf \
     figures/distributed-memory.pdf \
     figures/generic-parallel-architecture.pdf \
     figures/mpi-alltoall-pattern.pdf \
