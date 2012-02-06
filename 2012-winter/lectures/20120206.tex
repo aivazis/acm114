@@ -234,13 +234,8 @@ int main(int argc, char* argv[]) {
   \frametitle{Building and running the sequential driver}
 %
   \begin{shell}{}
-#> g++ dilog_sequential.cc -o dilog_sequential
-#> dilog_sequential -N 1e7 -z 1.0
-Li2(1)=
- computed: 1.6449340282186398
-    exact: 1.6449340668482264
-    error: 2.34839726522278546e-08
-#> time dilog_sequential -N 1e9 -z 1.0
+#> g++ dilog-quadrature_sequential
+#> dilog-sequential -N 1e9 -z 1.0
 Li2(1)=
  computed: 1.6449339414016682
     exact: 1.6449340668482264
@@ -381,7 +376,6 @@ double dilog(double z, long N, int threads) {
     context thr_info[threads];
     // partition the number of subdivisions
     long nominal_load = N/threads;
-
   \end{lstlisting}
 %
   \end{itemize}
@@ -484,7 +478,6 @@ int main(int argc, char* argv[]) {
             break;
         }
     }
-
   \end{lstlisting}
 %
   \end{itemize}
@@ -517,7 +510,6 @@ int main(int argc, char* argv[]) {
 
     // compute
     double value = dilog(z, N, threads);
-
   \end{lstlisting}
 %
   \end{itemize}
@@ -571,13 +563,13 @@ int main(int argc, char* argv[]) {
   \frametitle{Building and running the threaded driver}
 %
   \begin{shell}{}
-#> g++ dilog_threads.cc -o dilog_threads -pthread
-#> dilog_threads -N 1e7 -z 1.0 -t 4
+#> g++ dilog-threads.cc -o dilog-threads -pthread
+#> dilog-threads -N 1e7 -z 1.0 -t 4
 Li2(1)=
  computed: 1.6449340301295035
     exact: 1.6449340668482264
     error: 2.23223068274304058e-08
-#> time dilog_threads -N 1e9 -z 1.0 -t 8
+#> time dilog-threads -N 1e9 -z 1.0 -t 8
 Li2(1)=
  computed: 1.6449340044883614
     exact: 1.6449340668482264
@@ -814,13 +806,13 @@ int main(int argc, char* argv[]) {
   \end{itemize}
 %
   \begin{shell}{}
-#> mpic++ dilog_mpi.cc -o dilog_mpi -lmpi_cxx -lmpi
-#> mpirun -np 4 dilog_mpi -N 1e7 -z 1.0
+#> mpic++ dilog-mpi.cc -o dilog-mpi -lmpi_cxx -lmpi
+#> mpirun -np 4 dilog-mpi -N 1e7 -z 1.0
 Li2(1)=
  computed: 1.6449340301295035
     exact: 1.6449340668482264
     error: 2.23223068274304058e-08
-#> time mpirun -np 8 dilog_mpi -N 1e9 -z 1.0
+#> time mpirun -np 8 dilog-mpi -N 1e9 -z 1.0
 Li2(1)=
  computed: 1.6449340044883614
     exact: 1.6449340668482264
@@ -849,13 +841,13 @@ sys     0m0.015s
   \end{itemize}
 %
   \begin{shell}{}
-# shc-a> mpic++ dilog_mpi.cc -o dilog_mpi
+# shc-a> mpic++ dilog-mpi.cc -o dilog-mpi
 # shc-a> qsub -I -l nodes=1:core8 -l walltime=0:15:00
 qsub: waiting for job 105059.mistress to start
 qsub: job 105059.mistress ready
-Logging in as aivazis on shc168, a Linux-2.x_x86_64 system
+Logging in as aivazis on shc168, a linux.x86 system
   setting up: (environment) (aliases) (machines) (tools: Linux-2.x_x86_64)
-# shc168> time mpirun -np 8 dilog_mpi -N 1e9 -z 1.0
+# shc168> time mpirun -np 8 dilog-mpi -N 1e9 -z 1.0
 Li2(1)=
  computed: 1.6449340044883614
     exact: 1.6449340668482264
