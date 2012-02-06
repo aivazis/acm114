@@ -7,58 +7,26 @@
 #
 
 PROJECT = acm114
-
-
-#--------------------------------------------------------------------------
-#
-
-all: tidy
-
-TESTS = \
-    abi \
-    dilog \
-    hello_threads \
-    hello_mpi \
-    laplace \
-    squares_threads \
-    squares_mpi \
-    tick_mpi \
-    memxchng_cuda \
-    scale_cuda \
-
-#--------------------------------------------------------------------------
-#
-abi: abi.cc
-	$(CXX) $< -o $@
-
-dilog: dilog.cc
-	$(CXX) $< -o $@
-
-hello_threads: hello_threads.cc
-	$(CXX) -pthread $< -o $@
-
-hello_mpi: hello_mpi.c
-	$(CC) $< -o $@ -lmpi
-
-laplace: laplace.cc
-	$(CXX) -g $< -o $@
-
-squares_threads: squares_threads.c
-	$(CXX) -pthread $< -o $@
-
-squares_mpi: squares_mpi.c
-	$(CC) $< -o $@ -lmpi
-
-tick_mpi: tick_mpi.c
-	$(CC) $< -o $@ -lmpi
-
-memxchng_cuda: memxchng.cu
-	nvcc $< -o $@
-
-scale_cuda: scale.cu
-	nvcc $< -o $@
-
 PROJ_CLEAN += ${TESTS} *.csv *.dSYM
 
+TESTS = \
+    dilog-sequential \
+    dilog-threads \
+    dilog-mpi \
+
+#--------------------------------------------------------------------------
+
+all: ${TESTS}
+
+#--------------------------------------------------------------------------
+
+dilog-sequential: dilog-sequential.cc
+	$(CXX) $< -o $@
+
+dilog-threads: dilog-threads.cc
+	$(CXX) -pthread $< -o $@
+
+dilog-mpi: dilog-mpi.cc
+	$(CXX) $(CXXFLAGS) $< -o $@ $(LCXXFLAGS) $(EXTERNAL_LIBS)
 
 # end of file 
