@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>246</string>
+	<string>330</string>
 	<key>AMApplicationVersion</key>
-	<string>2.1</string>
+	<string>2.2.2</string>
 	<key>AMDocumentVersion</key>
 	<string>2</string>
 	<key>actions</key>
@@ -21,11 +21,16 @@
 					<true/>
 					<key>Types</key>
 					<array>
-						<string>com.apple.applescript.text-object</string>
+						<string>com.apple.cocoa.string</string>
 					</array>
 				</dict>
 				<key>AMActionVersion</key>
-				<string>1.0</string>
+				<string>1.1</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+					<string>TextEdit</string>
+				</array>
 				<key>AMParameterProperties</key>
 				<dict>
 					<key>buttonAffirmative</key>
@@ -50,7 +55,7 @@
 					<string>List</string>
 					<key>Types</key>
 					<array>
-						<string>com.apple.applescript.text-object</string>
+						<string>com.apple.cocoa.string</string>
 					</array>
 				</dict>
 				<key>ActionBundlePath</key>
@@ -70,15 +75,10 @@
 					<key>requireInput</key>
 					<true/>
 				</dict>
-				<key>Application</key>
-				<array>
-					<string>Automator</string>
-					<string>TextEdit</string>
-				</array>
 				<key>BundleIdentifier</key>
 				<string>com.apple.Automator.TextInputDialog</string>
 				<key>CFBundleVersion</key>
-				<string>1.0</string>
+				<string>1.1</string>
 				<key>CanShowSelectedItemsWhenRun</key>
 				<true/>
 				<key>CanShowWhenRun</key>
@@ -88,7 +88,7 @@
 					<string>AMCategoryText</string>
 				</array>
 				<key>Class Name</key>
-				<string>AMAppleScriptAction</string>
+				<string>AMAskForTextAction</string>
 				<key>InputUUID</key>
 				<string>B0C717A5-36DA-41C9-8F3D-15E9A196B913</string>
 				<key>Keywords</key>
@@ -177,7 +177,7 @@
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>412.500000:1472.000000</string>
+				<string>343.000000:1472.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Ask for Text.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
@@ -199,7 +199,11 @@
 					</array>
 				</dict>
 				<key>AMActionVersion</key>
-				<string>2.0.1</string>
+				<string>2.0.2</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
 				<key>AMParameterProperties</key>
 				<dict>
 					<key>COMMAND_STRING</key>
@@ -260,14 +264,10 @@ document.close()</string>
 					<key>source</key>
 					<string></string>
 				</dict>
-				<key>Application</key>
-				<array>
-					<string>Automator</string>
-				</array>
 				<key>BundleIdentifier</key>
 				<string>com.apple.RunShellScript</string>
 				<key>CFBundleVersion</key>
-				<string>2.0.1</string>
+				<string>2.0.2</string>
 				<key>CanShowSelectedItemsWhenRun</key>
 				<false/>
 				<key>CanShowWhenRun</key>
@@ -367,7 +367,7 @@ document.close()</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>412.500000:1290.000000</string>
+				<string>343.000000:1290.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
@@ -389,7 +389,11 @@ document.close()</string>
 					</array>
 				</dict>
 				<key>AMActionVersion</key>
-				<string>2.0.1</string>
+				<string>2.0.2</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
 				<key>AMParameterProperties</key>
 				<dict>
 					<key>COMMAND_STRING</key>
@@ -433,14 +437,10 @@ cd /tmp
 					<key>source</key>
 					<string></string>
 				</dict>
-				<key>Application</key>
-				<array>
-					<string>Automator</string>
-				</array>
 				<key>BundleIdentifier</key>
 				<string>com.apple.RunShellScript</string>
 				<key>CFBundleVersion</key>
-				<string>2.0.1</string>
+				<string>2.0.2</string>
 				<key>CanShowSelectedItemsWhenRun</key>
 				<false/>
 				<key>CanShowWhenRun</key>
@@ -540,7 +540,7 @@ cd /tmp
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>412.500000:1107.000000</string>
+				<string>343.000000:1107.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
@@ -562,7 +562,11 @@ cd /tmp
 					</array>
 				</dict>
 				<key>AMActionVersion</key>
-				<string>1.1</string>
+				<string>1.1.1</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Finder</string>
+				</array>
 				<key>AMParameterProperties</key>
 				<dict>
 					<key>fileNames</key>
@@ -588,14 +592,10 @@ cd /tmp
 						<string>/tmp/graffle.pdf</string>
 					</array>
 				</dict>
-				<key>Application</key>
-				<array>
-					<string>Finder</string>
-				</array>
 				<key>BundleIdentifier</key>
 				<string>com.apple.Automator.SpecifiedFiles</string>
 				<key>CFBundleVersion</key>
-				<string>1.1</string>
+				<string>1.1.1</string>
 				<key>CanShowSelectedItemsWhenRun</key>
 				<false/>
 				<key>CanShowWhenRun</key>
@@ -642,7 +642,7 @@ cd /tmp
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>412.500000:744.000000</string>
+				<string>343.000000:924.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Get Specified Finder Items.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
@@ -664,7 +664,11 @@ cd /tmp
 					</array>
 				</dict>
 				<key>AMActionVersion</key>
-				<string>1.0</string>
+				<string>1.0.1</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
 				<key>AMParameterProperties</key>
 				<dict>
 					<key>source</key>
@@ -686,16 +690,12 @@ cd /tmp
 				<key>ActionParameters</key>
 				<dict>
 					<key>source</key>
-					<string>on run {input, parameters}		set equationSource to the clipboard	set equationPath to POSIX path of input	set equation to POSIX file equationPath	set the clipboard to equation		tell application "OmniGraffle Professional 5"		activate		set xy to canvasSize of canvas 1 of front window		tell application "System Events" to keystroke "v" using command down		set selectedItems to selection of the front window		# set notes of (first item of selectedItems) to equationSource		set origin of (first item of selectedItems) to {(item 1 of xy) / 2, (item 2 of xy) / 2}			end tell		return inputend run</string>
+					<string>on run {input, parameters}		set equationSource to the clipboard	set equationPath to POSIX path of input	set equation to POSIX file equationPath	set the clipboard to equation		tell application "OmniGraffle Professional 5"		activate		set xy to canvasSize of canvas 1 of front window		tell application "System Events" to keystroke "v" using command down		set selectedItems to selection of the front window		set notes of (first item of selectedItems) to equationSource		set origin of (first item of selectedItems) to {(item 1 of xy) / 2, (item 2 of xy) / 2}			end tell		return inputend run</string>
 				</dict>
-				<key>Application</key>
-				<array>
-					<string>Automator</string>
-				</array>
 				<key>BundleIdentifier</key>
 				<string>com.apple.Automator.RunScript</string>
 				<key>CFBundleVersion</key>
-				<string>1.0</string>
+				<string>1.0.1</string>
 				<key>CanShowSelectedItemsWhenRun</key>
 				<false/>
 				<key>CanShowWhenRun</key>
@@ -744,7 +744,7 @@ end run</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>412.500000:506.000000</string>
+				<string>343.000000:686.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run AppleScript.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
@@ -766,7 +766,11 @@ end run</string>
 					</array>
 				</dict>
 				<key>AMActionVersion</key>
-				<string>2.0.1</string>
+				<string>2.0.2</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
 				<key>AMParameterProperties</key>
 				<dict>
 					<key>COMMAND_STRING</key>
@@ -807,14 +811,10 @@ rm -rf graffle.*</string>
 					<key>source</key>
 					<string></string>
 				</dict>
-				<key>Application</key>
-				<array>
-					<string>Automator</string>
-				</array>
 				<key>BundleIdentifier</key>
 				<string>com.apple.RunShellScript</string>
 				<key>CFBundleVersion</key>
-				<string>2.0.1</string>
+				<string>2.0.2</string>
 				<key>CanShowSelectedItemsWhenRun</key>
 				<false/>
 				<key>CanShowWhenRun</key>
@@ -914,7 +914,7 @@ rm -rf graffle.*</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>412.500000:193.000000</string>
+				<string>343.000000:193.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
@@ -924,40 +924,40 @@ rm -rf graffle.*</string>
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>47B8CCFD-EAF0-47E5-9E06-A65E1100808A</key>
+		<key>1A788052-AE39-4866-A2F6-20F1C9C13F5E</key>
+		<dict>
+			<key>from</key>
+			<string>EC2B2155-C0A6-460D-8ACB-C1523935B4E6 - EC2B2155-C0A6-460D-8ACB-C1523935B4E6</string>
+			<key>to</key>
+			<string>863E481B-983B-47B5-B20B-4E9170F4221E - 863E481B-983B-47B5-B20B-4E9170F4221E</string>
+		</dict>
+		<key>67645FE3-B2CD-4F46-AC74-E5A5F2D39789</key>
 		<dict>
 			<key>from</key>
 			<string>CEA16CE4-E36C-482F-B810-2202D05AC860 - CEA16CE4-E36C-482F-B810-2202D05AC860</string>
 			<key>to</key>
 			<string>A8FAAA5B-D90F-4F86-BC4A-13C8596AA263 - A8FAAA5B-D90F-4F86-BC4A-13C8596AA263</string>
 		</dict>
-		<key>66B3F3F4-397F-4D08-A34E-B53540F976F5</key>
-		<dict>
-			<key>from</key>
-			<string>90192859-4213-4A9B-822F-972B5F3989EC - 90192859-4213-4A9B-822F-972B5F3989EC</string>
-			<key>to</key>
-			<string>EC2B2155-C0A6-460D-8ACB-C1523935B4E6 - EC2B2155-C0A6-460D-8ACB-C1523935B4E6</string>
-		</dict>
-		<key>8BF9D590-EE07-44E4-8ECE-5F2C6AAD6132</key>
-		<dict>
-			<key>from</key>
-			<string>863E481B-983B-47B5-B20B-4E9170F4221E - 863E481B-983B-47B5-B20B-4E9170F4221E</string>
-			<key>to</key>
-			<string>CEA16CE4-E36C-482F-B810-2202D05AC860 - CEA16CE4-E36C-482F-B810-2202D05AC860</string>
-		</dict>
-		<key>B8F71777-DBC5-44E0-89C2-EEAA041F71F7</key>
+		<key>B5C6FFD3-9EEF-4A74-9099-B345CC8829F0</key>
 		<dict>
 			<key>from</key>
 			<string>26301FBD-D3A7-4547-9A3B-27BFABDF3830 - 26301FBD-D3A7-4547-9A3B-27BFABDF3830</string>
 			<key>to</key>
 			<string>90192859-4213-4A9B-822F-972B5F3989EC - 90192859-4213-4A9B-822F-972B5F3989EC</string>
 		</dict>
-		<key>BA8C6BA7-C815-4A1D-80EE-C3D9FA5369BB</key>
+		<key>EA64C35D-8A55-41FF-ADB2-7278516E79CF</key>
 		<dict>
 			<key>from</key>
-			<string>EC2B2155-C0A6-460D-8ACB-C1523935B4E6 - EC2B2155-C0A6-460D-8ACB-C1523935B4E6</string>
+			<string>90192859-4213-4A9B-822F-972B5F3989EC - 90192859-4213-4A9B-822F-972B5F3989EC</string>
 			<key>to</key>
+			<string>EC2B2155-C0A6-460D-8ACB-C1523935B4E6 - EC2B2155-C0A6-460D-8ACB-C1523935B4E6</string>
+		</dict>
+		<key>F5E521D0-40FE-47FD-B2BE-52BD6354FD9A</key>
+		<dict>
+			<key>from</key>
 			<string>863E481B-983B-47B5-B20B-4E9170F4221E - 863E481B-983B-47B5-B20B-4E9170F4221E</string>
+			<key>to</key>
+			<string>CEA16CE4-E36C-482F-B810-2202D05AC860 - CEA16CE4-E36C-482F-B810-2202D05AC860</string>
 		</dict>
 	</dict>
 	<key>state</key>
