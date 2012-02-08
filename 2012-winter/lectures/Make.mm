@@ -40,6 +40,7 @@ SECTIONS = \
     20120201.tex \
     20120203.tex \
     20120206.tex \
+    20120208.tex \
 
 FIGURES = \
     figures/amdahl.pdf \
