@@ -1,0 +1,430 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+%                             michael a.g. aïvázis
+%                      california institute of technology
+%                      (c) 1998-2010  all rights reserved
+%
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+
+\lecture{Functional decomposition}{20120210}
+
+% --------------------------------------
+% functional decomposition
+\begin{frame}[fragile]
+%
+  \frametitle{Functional decomposition}
+%
+  \begin{itemize}
+%
+  \item {\em functional decomposition} determines the fine grain parallel tasks by partitioning
+    the problem into semi-independent tasks that can be executed in parallel
+%
+  \item our numerical integration examples fall in this category
+    \begin{itemize}
+    \item partitioning identified the finest grain work unit as the evaluation of the
+      integrand; no need for fancy domain decomposition
+    \item little or no communication/synchronization is required among the tasks, i.e. they are
+      embarrassingly parallel
+    \item coarsening consists of grouping fine grain tasks into larger work units in a straight
+      forward manner
+    \item the mapping of the coarse grain tasks onto processing units is trivial
+    \end{itemize}
+%
+  \item in general, the computations involved in carrying out the coarse tasks are
+    computationally equivalent
+    \begin{itemize}
+    \item the computation is {\em self balancing}
+    \item or there is no need for sophisticated load balancing
+    \end{itemize}
+%
+  \item scalability and parallel efficiency are determined by the particulars of the problem,
+    such as inherent limitations on the largest problem size of interest
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% relevant problems
+\begin{frame}[fragile]
+%
+  \frametitle{Monte Carlo integration}
+%
+  \begin{itemize}
+%
+  \item let $f$ be sufficiently well behaved in a region $\Omega \subset \mathbb{R}^{n}$ and
+    consider the integral
+    \begin{equation}
+      I_{\Omega} (f) = \int_{\Omega} dx \, f 
+      \label{eq:integral}
+    \end{equation}
+%
+  \item the {\em Monte Carlo} method approximates the value of the integral in \eqref{integral}
+    by sampling $f$ at random points in $\Omega$
+%
+  \item let $X_{N}$ be such a sample of $N$ points; then the Monte Carlo estimate is given by
+    \begin{equation}
+      I_{\Omega} (f; X_{N})
+      =
+      \Omega \cdot \langle f \rangle
+      =
+      \Omega \, \frac{1}{N} \sum_{x \in X_{N}} f(x)
+      \label{eq:mc-estimate}
+    \end{equation}
+%
+    where $\langle f \rangle$ is the sample mean of $f$, and $\Omega$ is used as a shorthand
+    for the volume of the integration region.
+%
+  \item the approximation error falls like $1/\sqrt{N}$
+    \begin{itemize}
+    \item rather slow
+    \item but dimension independent!
+    \end{itemize}
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% mc implementation
+\begin{frame}[fragile]
+%
+  \frametitle{Implementation strategy}
+%
+  \begin{itemize}
+%
+  \item computer implementations require a pseudo-random number generator to build the sample
+%
+    \item most generators return numbers in $(0,1)$ so
+      \begin{itemize}
+      \item find a box $B$ that contains $\Omega$
+      \item generate $n$ numbers to build a point in the unit $\mathbb{R}^{n}$ cube
+      \item stretch and translate the unit cube onto $B$
+      \end{itemize}
+%
+  \item the integration is restricted to $\Omega$ by introducing
+    \begin{equation}
+        \Theta_{\Omega}
+        =
+        \left\{
+          \begin{array}{ll}
+            1 & x \in \Omega \\
+            0 & {\rm otherwise}
+          \end{array}
+        \right.
+        \label{eq:theta}
+    \end{equation}
+    to get
+    \begin{equation}
+      I_{\Omega} (f)
+      =
+      \int_{B} dx \, \Theta_{\Omega} \, f
+      \label{eq:integral-box}
+    \end{equation}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Recasting Monte Carlo integration}
+%
+  \begin{itemize}
+%
+  \item there are now two classes of points in the sample $X_{N}$ 
+    \begin{itemize}
+    \item those in $\Omega$
+    \item and the rest
+    \end{itemize}
+%
+  \item let $\tilde{N}$ be the number of sample points in $\Omega$; \eqref{mc-estimate} becomes
+    \begin{equation}
+      I_{\Omega} (f; X_{N})
+      =
+      \Omega \, \frac{1}{\tilde{N}} \sum_{x \in X_{\tilde{N}}} f(x)
+      \label{eq:mc-box}
+    \end{equation}
+%
+  \item let $B$ be the volume of the sampling box; observe that the volume of the integration
+    region can be approximated by
+    \begin{equation}
+      \Omega = \frac{\tilde{N}}{N} B
+    \end{equation}
+%
+    and the sum over the points $x \in X_{\tilde{N}}$ can be extended to the entire sample
+    $X_{N}$ by using the filter $\Theta_{\Omega}$
+%
+    \begin{equation}
+      I_{\Omega} (f; X_{N})
+      =
+      B \, \frac{1}{N} \sum_{x \in X_{N}} \Theta_{\Omega} \, f(x)
+    \end{equation}
+%
+  \end{itemize}
+%
+\end{frame}
+
+
+% --------------------------------------
+% recap
+\begin{frame}[fragile]
+%
+  \frametitle{Requirements}
+%
+  \begin{itemize}
+%
+  \item to summarize, the Monte Carlo approximation is computed using
+%
+    \begin{equation}
+      I_{\Omega} (f; X_{N})
+      =
+      B \, \frac{1}{N} \sum_{x \in X_{N}} \Theta_{\Omega} \, f(x)
+    \end{equation}
+%
+  \item using
+    \begin{itemize}
+    \item an implementation of the function $f$ to be integrated over $\Omega$
+    \item an $n$-dimensional box $B$ that contains $\Omega$
+    \item a good pseudo-random number generator to build the sample $X_{N} \in B$
+    \item a routine to test points $x \in X_{N}$ and return \keyword{false} if they are
+      exterior to $\Omega$ and \keyword{true} otherwise
+    \end{itemize}
+%
+  \item to sum the values of the integrand on points interior to $\Omega$, and scale by the
+    volume of the bounding box $B$ over the sample size $N$
+%
+  \item essentially a reduction, similar to our other examples 
+    \begin{itemize}
+    \item should be straightforward to implement in parallel
+    \item see homework assignment
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% random number generators
+\begin{frame}[fragile]
+%
+  \frametitle{Pseudo-random number generators}
+%
+  \begin{itemize}
+%
+  \item essential when solving problems using stochastic methods
+  \item most generators are terrible, e.g.~\identifier{libc}
+    \begin{itemize}
+    \item always check that you are getting the statistics you expect
+    \item \identifier{/dev/random} is better, but not portable and produces integers only
+    \end{itemize}
+  \item get the GNU scientific library
+    \begin{itemize}
+    \item from \href{http://www.gnu.org/software/gsl}, or your OS distribution
+    \item broad scope, extensive documentation
+    \item thread safe
+    \item pick \RANLUX\ or something similar
+    \end{itemize}
+%
+  \item there are algorithms that use uniformly distributed random numbers to generate numbers
+    of any distribution function
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% c++ implementation
+\begin{frame}[fragile]
+%
+  \frametitle{Monte Carlo estimate of $\pi$}
+%
+\begin{C}[basicstyle=\tt\bfseries\tiny]
+#include <cmath>
+#include <iostream>
+#include <gsl/gsl_rng.h>
+
+int main(int, char*[]) {
+    // the number of points in the sample
+    const long N = (long) 1.0e7;
+    // point counters
+    long interiorPoints = 0, totalPoints = 0;
+
+    // create the random number generator
+    gsl_rng * generator = gsl_rng_alloc(gsl_rng_ranlxs2);
+
+    // integrate by sampling some number of times
+    for (long i=0; i<N; ++i) {
+        // create a random point
+        double x = gsl_rng_uniform(generator);
+        double y = gsl_rng_uniform(generator);
+        // check whether it is inside the unit quarter circle
+        if ((x*x + y*y) <= 1.0) { // no need to waste time computing the square root
+            // update the interior point counter
+            interiorPoints++;
+        }
+        // update the total number of points
+        totalPoints++;
+    }
+
+    // print the results
+    std::cout << "pi: " << 4.*((double)interiorPoints)/totalPoints << std::endl;
+
+    return 0;
+}
+\end{C}
+%
+\end{frame}
+
+% --------------------------------------
+% reductions
+\begin{frame}[fragile]
+%
+  \frametitle{Functional decomposition and load balancing}
+%
+  \begin{itemize}
+%
+  \item {\em load balancing} refers to a class of algorithms that attempt to provide optimal or
+    near optimal solutions to the {\em task scheduling} problem
+    \begin{itemize}
+    \item enormous and diverse literature
+    \item broad applicability
+      \begin{itemize}
+      \item computer systems: operating systems, parallel computing, distributed computing
+      \item theoretical computer science
+      \item operations research
+      \item and many other application domains, perhaps disguised
+      \end{itemize}
+    \end{itemize}
+%
+  \item {\em scheduling} is a closely related problem: determine the order in which a set
+    of tasks should run
+%
+  \item problems that parallelize effectively using functional decomposition tend to be {\em
+      self scheduling} and {\em self balancing}
+%
+  \item abstract the essentials of the approach and construct a load balancing technique
+    \begin{itemize}
+    \item static and semi-static load balancing
+    \item self scheduling
+    \item distributed task queues
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% static load balancing
+\begin{frame}[fragile]
+%
+  \frametitle{Overview of load balancing}
+%
+  \begin{itemize}
+%
+  \item information relevant to work distribution
+    \begin{itemize}
+    \item number of tasks: is it fixed or are tasks added as the work progresses?
+    \item task costs: when is the cost known? what is the cost distribution among tasks?
+    \item task inter-dependencies: can they be run in any order? when do we find out?
+    \item locality: should some tasks be scheduled close to each other, i.e.~on the same
+      processor, or a nearby one? when does this information become available?
+    \end{itemize}
+%
+    \item there is a spectrum of available solutions depending on how information about task
+      details becomes available
+      \begin{itemize}
+      \item static: all necessary information is available initially
+        \begin{itemize}
+        \item off-line algorithms: run before any real computation starts
+        \end{itemize}
+      \item semi-static: some information available, context changes slowly
+        \begin{itemize}
+        \item off-line algorithms produce acceptable results in most cases
+        \end{itemize}
+      \item dynamic: little or no information is available at the outset
+        \begin{itemize}
+        \item on-line algorithms, based on code instrumentation to enable decisions
+        \end{itemize}
+      \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Static and semi-static load balancing}
+%
+  \begin{itemize}
+%
+  \item common static cases:
+    \begin{itemize}
+    \item dense matrix algorithms: LU factorizations, etc.
+    \item most computations on a regular grid: FFT
+    \item sparse matrix-vector multiplication: when graph partitioned
+    \end{itemize}
+%
+  \item common semi-static cases:
+    \begin{itemize}
+    \item particle and particle-in-cell methods
+      \begin{itemize}
+      \item where the main problem is locality as particles move from one cell to another
+      \end{itemize}
+    \item computations structured as tree traversals
+    \item dynamic grids that change slowly, e.g.~after many time steps
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% self scheduling
+\begin{frame}[fragile]
+%
+  \frametitle{Self scheduling}
+%
+  \begin{itemize}
+%
+  \item task manager:
+    \begin{itemize}
+    \item maintain a central pool of tasks that are ready to be scheduled
+    \item once a processor completes its current task, assign it a new one from the pool
+    \item if a computation of a task generates more, add them to the pool
+    \end{itemize}
+%
+  \item works well when
+    \begin{itemize}
+    \item tasks have no dependencies on each other
+    \item tasks are very weakly inter-dependent (but not studied extensively)
+    \item task cost is not known
+    \item locality is not important
+    \end{itemize}
+%
+  \item do not schedule the fine grain parallel tasks directly; coarsen first
+    \begin{itemize}
+    \item larger grains reduce the task queue management overhead
+    \item smaller grains even out the finish times
+    \end{itemize}
+%
+  \item variations:
+    \begin{itemize}
+    \item fixed grain size: like our quadrature implementation
+    \item guided self scheduling: start out with coarse grains and refine as you approach the
+      end of the queue
+    \item distributed task queues: details and an important use case next time 
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% end of file 
