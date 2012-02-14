@@ -43,6 +43,7 @@ SECTIONS = \
     20120208.tex \
     20120210.tex \
     20120213.tex \
+    20120215.tex \
 
 FIGURES = \
     figures/amdahl.pdf \
@@ -52,6 +53,7 @@ FIGURES = \
     figures/dilog-quadrature.pdf \
     figures/distributed-memory.pdf \
     figures/generic-parallel-architecture.pdf \
+    figures/laplace-example.pdf \
     figures/mpi-alltoall-pattern.pdf \
     figures/mpi-bcast-pattern.pdf \
     figures/mpi-data-patterns.pdf \
@@ -109,7 +111,6 @@ FIGURES = \
 #
 
 all: $(DOCUMENT).pdf
-	BLD_ACTION="all" $(MM) recurse
 
 tidy::
 	BLD_ACTION="tidy" $(MM) recurse
