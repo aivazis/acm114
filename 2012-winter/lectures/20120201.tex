@@ -28,7 +28,7 @@ int MPI_Send(
     \begin{C}
 int MPI_Recv(
         void* buffer, int count, MPI_Datatype datatype,
-        int source, int tag, MPI_Comm communicator
+        int source, int tag, MPI_Comm communicator, MPI_Status* status
         );
    \end{C}
 %
