@@ -23,6 +23,7 @@ EXPORT_BINS = \
     hw-missing.py \
     hw-post.py \
     hw-init-repos.py \
+    project-init.py \
     ssh-keys.py \
 
 export:: export-binaries

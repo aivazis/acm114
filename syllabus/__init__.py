@@ -36,10 +36,21 @@ def postHomeworkAssignment():
     return app.main()
 
 
+def createProjectDirectory():
+    """
+    Create the student project repositories
+    """
+    # access the app
+    from .CreateProjectDirectory import CreateProjectDirectory
+    # build one
+    app = CreateProjectDirectory(globalAliases=True)
+    # all done
+    return app.main()
+
+
 # component factories
 from .ACM114 import ACM114 as acm114
 from .Bazaar import Bazaar as bzr
-
 
 
 # end of file 

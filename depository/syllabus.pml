@@ -31,6 +31,12 @@
     <bind property="repository">bzr#bzr-acm114</bind>
   </component>
 
+  <!-- the application that initializes the project repositories -->
+  <component name="project-init">
+    <bind property="course">acm114</bind>
+    <bind property="repository">bzr#bzr-acm114</bind>
+  </component>
+
   <!-- the application that serves the student's homework repositories -->
   <component name="homework">
     <bind property="course">acm114</bind>

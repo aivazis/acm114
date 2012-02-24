@@ -23,6 +23,7 @@ EXPORT_PYTHON_MODULES = \
     ACM114.py \
     Access.py \
     Bazaar.py \
+    CreateProjectDirectory.py \
     Homework.py \
     MissingRepositories.py \
     PostAssignment.py \
