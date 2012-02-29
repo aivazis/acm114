@@ -1,0 +1,90 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
+%
+
+\documentclass[12pt,answers]{exam}
+
+% packages, setup, macros, etc.
+\input{setup}
+
+\begin{document}
+\pagestyle{headandfoot}
+\runningfootrule
+\firstpageheader{ACM/CS 114}{Assignment 3}{Due: 16 Mar 2012}
+\runningheader{}{}{}
+\firstpagefooter{}{}{}
+\runningfooter{ACM/CS 114}{Assignment 2}{\thepage}
+
+
+% --------------------------------------
+% Solving the Laplace equation using Jacobi iteration
+
+In this assignment, we will solve the Laplace equation over some domain $\Omega \in
+\mathbb{R}^{d}$, subject to Dirichlet boundary conditions
+%
+\begin{equation}
+  \begin{array}{ccc}
+    \nabla^{2} \phi = 0 & {\rm with} & \phi(\partial \Omega) = f
+  \end{array}
+  \label{eq:laplace}
+\end{equation}
+%
+Let $\Omega$ be the unit box in two dimensions, and let $\phi$ satisfy the following boundary
+conditions
+%
+\begin{equation}
+  \begin{array}{rcrcll}
+    & & \phi(x,0) & = & \sin(\pi x)           & 0 \leq x \leq 1 \\
+    & & \phi(x,1) & = & e^{-\pi} \sin(\pi x)  & 0 \leq x \leq 1 \\
+    \phi(0,y) & = & \phi(1, y) & = & 0        & 0 \leq y \leq 1
+  \end{array}
+\end{equation}
+%
+The exact solution is given by
+%
+\begin{equation}
+  \phi(x,y) = e^{-\pi y} \sin(\pi x)
+\end{equation}
+%
+We will solve this equation using the Jacobi iterative scheme on a uniform grid:
+\begin{itemize}
+\item make an initial guess for $\phi$ over a discretization of $\Omega$
+\item apply the boundary conditions
+\item use the Jacobi update, which replaces each cell with the average of its four nearest
+  neighbors
+%
+  \begin{equation}
+    \raisebox{-1.6em}{\includegraphics[width=4em]{structured-2d-centered.pdf}}_{t}
+    =
+    \frac{1}{4}
+    \raisebox{-1.6em}{\includegraphics[width=4em]{structured-2d-average.pdf}}_{t-1}
+  \end{equation}
+%
+\item stop when a convergence criterion is met
+\end{itemize}
+%
+
+\begin{questions}
+
+\question Write a sequential solver that accepts the number $N$ of sample points along the $x$ axis
+as an argument and solves the above equation on an $N^{2}$ grid.
+
+\question Reimplement the grid update using $n$ threads, where $n$ is accepted as a command line
+argument
+
+\question Reimplement the grid update using MPI
+
+\question For extra credit, build a hybrid solver: let there be $m$ MPI tasks, each of which
+uses $n$ threads for the update. With some care, you should be able to {\em overlap} the grid
+update with the communications among neighboring MPI tasks, effectively eliminating the
+communication cost.
+
+\end{questions}
+
+\end{document}
+
+% end of file 
