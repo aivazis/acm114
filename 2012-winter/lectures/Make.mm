@@ -44,6 +44,11 @@ SECTIONS = \
     20120210.tex \
     20120213.tex \
     20120215.tex \
+    20120217.tex \
+    20120222.tex \
+    20120224.tex \
+    20120227.tex \
+    20120229.tex \
 
 FIGURES = \
     figures/amdahl.pdf \

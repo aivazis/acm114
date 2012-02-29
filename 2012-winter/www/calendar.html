@@ -115,7 +115,7 @@
           <td><a href="#20120224">24</a></td>
         </tr>
         <tr>
-          <td>27</td>
+          <td><a href="#20120227">27</a></td>
           <td>29</td>
           <td></td>
         </tr>
@@ -421,7 +421,7 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120201.pdf">lecture notes</a>
@@ -441,7 +441,7 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120201.pdf">lecture notes</a>
@@ -463,7 +463,7 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120206.pdf">lecture notes</a>
@@ -482,7 +482,7 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120208.pdf">lecture notes</a>
@@ -504,7 +504,7 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120210.pdf">lecture notes</a>
@@ -528,7 +528,7 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120213.pdf">lecture notes</a>
@@ -548,7 +548,7 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120215.pdf">lecture notes</a>
@@ -569,7 +569,7 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120217.pdf">lecture notes</a>
@@ -592,7 +592,7 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120222.pdf">lecture notes</a>
@@ -602,7 +602,8 @@
     <p>
       A critical look at the state of the solution. Base classes Problem and Solver and their
       specializations Example and Jacobi. Parallelization strategy for the shared memory
-      solution. Identification of the shared and private per-thread information. The solver
+      solution: identification of the finest grain tasks, coarsening strategy and mapping to
+      threads. Identification of the shared and private per-thread information. The solver
       driver for the sequential portion.
     </p>
 
@@ -614,16 +615,41 @@
         <li><a href="#20120206">wk6</a></li>
         <li><a href="#20120213">wk7</a></li>
         <li><a href="#20120222">wk8</a></li>
-        <li>wk9</li>
+        <li><a href="#20120227">wk9</a></li>
         <li>MAR</li>
       </ul>
       &loz;&nbsp;<a href="content/acm114-20120224.pdf">lecture notes</a>
     </div>
 
+    <!-- week 9 -->
+    <h4><a name="20120227">Monday, February 27</a></h4>
+    <p>
+      Simple implementation of the main thread logic that drives the worker
+      threads. Performance measurements and scalability properties of the simple
+      implementation. Reimplementation of the solver using a pool of threads. Thread
+      synchronization using condition variables. Common usage patterns to avoid race
+      conditions. Assessing the scalability of the improved implementation.
+    </p>
+
+    <div class="inline-navigation">
+      <ul>
+        <li><a href="#20120104">JAN</a></li>
+        <li><a href="#20120201">FEB:</a></li>
+        <li><a href="#20120201">wk5</a></li>
+        <li><a href="#20120206">wk6</a></li>
+        <li><a href="#20120213">wk7</a></li>
+        <li><a href="#20120222">wk8</a></li>
+        <li><a href="#20120227">wk9</a></li>
+        <li>MAR</li>
+      </ul>
+      &loz;&nbsp;<a href="content/acm114-20120227.pdf">lecture notes</a>
+    </div>
+
+
   </div> <!-- end of class outlines -->  
 
   <div id="colophon" class="clear-all-floats">
-    Last update: 24 February 2012
+    Last update: 27 February 2012
   </div>
 
 </body>
