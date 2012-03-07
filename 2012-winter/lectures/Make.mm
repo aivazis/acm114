@@ -49,6 +49,9 @@ SECTIONS = \
     20120224.tex \
     20120227.tex \
     20120229.tex \
+    20120302.tex \
+    20120307.tex \
+    20120309.tex \
 
 FIGURES = \
     figures/amdahl.pdf \
@@ -59,6 +62,13 @@ FIGURES = \
     figures/distributed-memory.pdf \
     figures/generic-parallel-architecture.pdf \
     figures/laplace-example.pdf \
+    figures/mesh-cpt.pdf \
+    figures/mesh-dogbone.pdf \
+    figures/mesh-drag.pdf \
+    figures/mesh-penetration.pdf \
+    figures/mesh-subdivision.pdf \
+    figures/mesh-tetsubdivision.pdf \
+    figures/mesh-volumecontact.pdf \
     figures/mpi-alltoall-pattern.pdf \
     figures/mpi-bcast-pattern.pdf \
     figures/mpi-data-patterns.pdf \
@@ -66,6 +76,7 @@ FIGURES = \
     figures/mpi-gather.pdf \
     figures/mpi-scatter-pattern.pdf \
     figures/mpi-scatter.pdf \
+    figures/orq.pdf \
     figures/parallelization-steps.pdf \
     figures/putty-initial.png \
     figures/putty-key.png \
@@ -83,6 +94,11 @@ FIGURES = \
     figures/reduction-tree-sum.pdf \
     figures/shared-memory.pdf \
     figures/simd.pdf \
+    figures/spatial-kd-split.pdf \
+    figures/spatial-kd-tree.pdf \
+    figures/spatial-ortho-split.pdf \
+    figures/spatial-ortho-tree.pdf \
+    figures/spatial-points.pdf \
     figures/structured.pdf \
     figures/structured-1d-centered.pdf \
     figures/structured-1d-left.pdf \
