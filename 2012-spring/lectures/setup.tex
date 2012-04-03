@@ -1,0 +1,183 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
+%
+
+% language
+\usepackage[english]{babel}
+
+% beamer configuration
+\usepackage{acm114}
+
+% typesetting interactive sessions
+\usepackage{fancyvrb}
+
+% dimensions
+\usepackage{fancyhdr}
+
+% fonts
+\usepackage{amsfonts}
+\usepackage{times}
+\usepackage{textcomp}
+%\usepackage[iso-8859-7]{inputenc}
+
+% references
+\usepackage[numbers]{natbib}
+\bibliographystyle{unsrtnat}
+\renewcommand\bibsection{\section{\refname}}
+\def\newblock{\small}
+
+% figures
+\usepackage{graphicx}
+\usepackage{subfigure}
+
+\definecolor{acm114@cream}{rgb}{0.98, 0.98, 0.96}
+\definecolor{acm114@sand}{rgb}{0.86, 0.85, 0.77}
+\definecolor{acm114@stone}{rgb}{0.55, 0.54, 0.46}
+\definecolor{acm114@leather}{rgb}{0.48, 0.47, 0.38}
+\definecolor{acm114@olive}{rgb}{0.28, 0.29, 0.25}
+\definecolor{acm114@lava}{rgb}{0.25, 0.23, 0.22}
+\definecolor{acm114@brick}{rgb}{0.95, 0.50, 0.30}
+
+% misc
+\usepackage{multirow}
+\usepackage{stackrel}
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+\usepackage{url}
+\usepackage{hyperref}
+
+% listings and their configurations
+\usepackage[slide,algoruled,linesnumbered,noend]{algorithm2e}
+\usepackage{listings}
+\definecolor{keywordcolor}{rgb}{0.25,0.25,1.0}
+\definecolor{commentcolor}{gray}{0.75}
+\definecolor{stringcolor}{rgb}{0.5, 0.25, 0.75}
+\definecolor{linenumbercolor}{gray}{0.75}
+\definecolor{listingbgcolor}{gray}{1.0}
+\lstloadlanguages{C,C++,python,bash}
+
+\lstset{
+  columns=flexible,
+  upquote=true,
+  % 
+  aboveskip=\medskipamount,
+  belowskip=\bigskipamount,
+  % abovecaptionskip=\medskipamount,
+  % belowcaptionskip=\medskipamount,
+  % 
+  numbers=left,
+  numberstyle=\color{linenumbercolor}\tiny,
+  firstnumber=auto,
+  stepnumber=1,
+  numbersep=5pt,
+  numberblanklines=true,
+  % 
+  % basicstyle=\scriptsize,
+  basicstyle=\tt\scriptsize,
+  keywordstyle=\color{keywordcolor},
+  commentstyle=\color{commentcolor}\slshape,
+  stringstyle=\color{stringcolor}\slshape,
+  showstringspaces=false,
+  % 
+  frame=tb,
+  captionpos=t,
+  backgroundcolor=\color{acm114@cream},
+  backgroundcolor=\color{listingbgcolor},
+  xleftmargin=0em,
+  xrightmargin=0em,
+}
+
+\def\python#1#2{
+  \lstinputlisting[%
+  language=python,
+  morekeywords={self,yield,False,True,None},
+  escapeinside={\#@}{@},#1]
+  {#2}}
+  
+\def\C++#1#2{
+  \lstinputlisting[%
+    language=C++,
+    escapeinside={/*}{*/},#1]
+  {#2}}
+
+% shortcuts
+\def\slideref#1{{Slide~\ref{slide:#1}}}
+\def\algref#1{{Alg.~\ref{alg:#1}}}
+\def\alglineref#1{{line~\ref{line:#1}}}
+\def\eqref#1{{Eq.~\ref{eq:#1}}}
+\def\figref#1{{Fig.~\ref{fig:#1}}}
+\def\secref#1{{Sec.~\ref{sec:#1}}}
+\def\tabref#1{{Table~\ref{tab:#1}}}
+\def\lstref#1{{Listing~\ref{lst:#1}}}
+\def\lstlineref#1{{line~\ref{line:#1}}}
+
+% macros
+\def\href#1{{\footnotesize\bfseries\url{#1}}}
+\def\defeq{\mathrel{\mathop:}=}
+\def\GNU{\mbox{\tt\small GNU}}
+\def\GSL{\mbox{\tt\small GSL}}
+\def\RANLUX{\mbox{\tt\small RANLUX}}
+\def\NULL{\mbox{\tt\small NULL}}
+
+\def\extremum#1{\stackrel[#1]{}{\mbox{\rm ext}}\,}
+\def\maximum#1{\stackrel[#1]{}{\mbox{\rm max}}\,}
+\def\minimum#1{\stackrel[#1]{}{\mbox{\rm min}}\,}
+\def\optimum#1{\stackrel[#1]{}{\mbox{\rm opt}}\,}
+
+\def\cc{\mbox{\tt\small C}}
+\def\cpp{\mbox{\tt\small C++}}
+%\def\cpp{\mbox{\tt C\raise.4ex\hbox{++}}}
+\def\fortran{{\tt\small FORTRAN}}
+\def\f90{{\tt\small FORTRAN90}}
+\def\mpi{{\tt MPI}}
+\def\th#1{\mbox{$#1^{\rm th}$}}
+
+\def\bydef{\mathrel{\mathop:}=}
+
+\def\pyre{{\tt pyre}}
+\def\bzr{{\tt\small bzr}}
+\def\ssh{{\tt\small ssh}}
+\def\sshkeygen{{\tt\small ssh-keygen}}
+\def\putty{{\tt\small PuTTY}}
+
+\def\order#1{\mbox{$\mathcal{O}(#1)$}}
+\def\literal#1{\mbox{\tt\scriptsize #1}}
+\def\class#1{\mbox{\tt #1}}
+\def\component#1{\mbox{\tt #1}}
+\def\function#1{\mbox{\tt #1}}
+\def\method#1{\mbox{\tt #1}}
+\def\identifier#1{\mbox{\tt #1}}
+\def\keyword#1{\mbox{\tt #1}}
+\def\operator#1{\mbox{\tt #1}}
+\def\srcfile#1{\mbox{\tt #1}}
+
+\def\TODO#1{{%
+    \subsubsection*{Still to do}%
+    \scriptsize\tt%
+    \begin{list}{\leftpointright}{} #1 \end{list}}}
+
+% set up the PDF options
+\hypersetup{
+    pdftitle={ACM/CS 114: Spring 2012},
+    pdfauthor={Michael A.G. A\"iv\'azis},
+    pdfsubject={Lecture notes},
+    pdfkeywords=,           % list of keywords
+%
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat's bookmarks
+    pdftoolbar=true,        % show Acrobat's toolbar?
+    pdfmenubar=true,        % show Acrobat's menu?
+    pdffitwindow=true,      % page fit to window when opened
+    pdfnewwindow=true,      % links in new window
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=acm114@leather, % color of internal links
+    citecolor=acm114@stone  % color of links to bibliography
+    filecolor=acm114@sand,  % color of file links
+    urlcolor=acm114@stone   % color of external links
+}
+
+% end of file 

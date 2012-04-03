@@ -1,0 +1,189 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
+%
+
+\lecture{Introduction to python}{20120404}
+
+% --------------------------------------
+% programming paradigms
+\begin{frame}[fragile]
+%
+  \frametitle{Languages and programming paradigms}
+%
+  \begin{itemize}
+%
+  \item a very active area of research
+    \begin{itemize}
+    \item dozens of languages and runtime environments of the last 50 years
+    \end{itemize}
+%
+  \item the survivors:
+    \begin{itemize}
+      \item procedural programming, and its offspring structured programming
+      \item functional programming
+      \item object oriented programming
+    \end{itemize}
+%
+  \item current areas of research:
+    \begin{itemize}
+    \item component oriented programming
+    \item aspect programming
+    \end{itemize}
+%
+  \item languages are important:
+    \begin{itemize}
+    \item they reflect an approach to computing
+    \item they shape what is easily expressible
+    \end{itemize}
+%
+  \item we'll take a quick tour of python
+    \begin{itemize}
+    \item resources: \url{www.python.org}
+    \item overview of the language
+    \item interactive sessions with the interpreter
+    \item building extensions in \cc/\cpp
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% preview: a python script
+\begin{frame}[fragile]
+%
+  \frametitle{A python script}
+%
+  \begin{itemize}
+  \item python reads like pseudocode
+  \item here is the code for the $\pi$ estimator using Monte Carlo integration over the quarter
+    disk
+  \end{itemize}
+%
+\python{
+  firstline=9,lastline=25,
+  label={lst:python:pi},
+  caption={\srcfile{pi.py}: Estimating $\pi$ in python},
+}{listings/pi.py}
+
+%
+\end{frame}
+
+% --------------------------------------
+% overview
+\begin{frame}[fragile]
+%
+  \frametitle{Overview}
+%
+  \begin{itemize}
+%
+  \item built-in objects and their operators
+    \begin{itemize}
+    \item numbers, strings, containers
+    \item files
+    \end{itemize}
+%
+  \item statements
+    \begin{itemize}
+      \item evaluating expressions, explicit and implicit assignments, logic, iteration
+    \end{itemize}
+%
+  \item functions
+    \begin{itemize}
+    \item scope rules, argument passing, callable objects
+    \end{itemize}
+%
+  \item modules and packages
+    \begin{itemize}
+    \item name qualification, importing symbols
+    \end{itemize}
+%
+  \item user defined objects
+    \begin{itemize}
+    \item declarations and definitions, inheritance, overloading operators
+    \end{itemize}
+%
+  \item exceptions
+    \begin{itemize}
+    \item raising and catching, exception hierarchies
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% built-in objects
+\begin{frame}[fragile]
+%
+  \frametitle{Built-in objects}
+%
+  \begin{itemize}
+  \item the more commonly used types
+  \end{itemize}
+%
+  \begin{table}
+    \begin{tabular}{l|l}
+      Type           & Sample \\[.25em] \hline \\
+      booleans       & \literal{True}, \literal{False} \\[.25em]
+      numbers        & \literal{1234}, \literal{3.14159}, \literal{3+4j} \\[.25em]
+      strings        & \literal{'help'}, \literal{"hello"}, \literal{"it's mine"},
+                       \literal{"""multi-line strings"""} \\[.25em]
+      tuples         & \literal{(1, 'this', "other")} \\[.25em]
+      lists          & \literal{['this', ['and', 0], 2]} \\[.25em]
+      sets           & \literal{\{1,2,3\}} \\[.25em]
+      dictionaries   & \literal{\{'first': 'Jim', 'last': 'Brown'\}}
+    \end{tabular}
+  \end{table}
+%
+  \begin{itemize}
+  \item there are others; details to follow, as necessary
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% operators and precedence
+\begin{frame}[fragile]
+%
+  \frametitle{Operators and precedence}
+%
+  \begin{itemize}
+  \item from lower to higher precendece
+  \end{itemize}
+%
+  \begin{table}\footnotesize
+    \begin{tabular}{l|l}
+      Operator & Description \\ \hline
+      \literal{lambda} & used to build anonymous functions \\
+      \literal{if} -- \literal{else} & conditional expression (similar to \literal{?:} from
+                                       \cc) \\
+      \literal{or} & boolean or \\
+      \literal{and} & boolean and \\
+      \literal{not} & boolean not \\
+      \literal{in}, \literal{not in}, \literal{is}, \literal{is not} &
+      \multirow{2}{*}{membership tests, identity tests, comparisons} \\
+      \literal{<}, \literal{<=}, \literal{>}, \literal{>=}, \literal{!=}, \literal{==} & \\
+      \literal{|} & bitwise or \\
+      \literal{\^{}} & bitwise xor \\
+      \literal{\&} & bitwise and \\
+      \literal{<<}, \literal{>>} & left and right bit shifts \\
+      \literal{+}, \literal{-} & binary addition, binary subtraction \\
+      \literal{*}, \literal{/}, \literal{//}, \literal{\%} &
+      multiplication, division, integer division, modulo \\
+      \literal{+}, \literal{-}, \literal{\~{}} & positive, negative, bitwise not \\
+      \literal{**} & exponentiation \\
+      \literal{[]}, \literal{[:]}, \literal{()}, \literal{.} &
+      indexing, slicing, function call, attribute reference 
+    \end{tabular}
+  \end{table}
+%
+\end{frame}
+
+
+
+% end of file 
