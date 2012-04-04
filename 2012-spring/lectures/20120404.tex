@@ -503,40 +503,6 @@
 \end{frame}
 
 % --------------------------------------
-% other built-in objects
-\begin{frame}[fragile]
-%
-  \frametitle{Other built-in objects}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% type hierarchy
-\begin{frame}[fragile]
-%
-  \frametitle{Type hierarchy}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
 % comparisons
 \begin{frame}[fragile]
 %
@@ -688,10 +654,26 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item general form
+    \begin{ipython}{}
+      def <name>(<parameter_list>):
+          <statements>
+          return <expression>
+    \end{ipython}
+%
+  \item creates a function object and assigns it to the given name
     \begin{itemize}
-    \item
+    \item the optional \keyword{return} statement sends an object back to the caller
+    \item arguments are passed by \emph{assignment}
+    \item no declarations of arguments, return types and local variables
     \end{itemize}
+%
+  \item a simple example
+    \begin{ipython}{}
+      def greet(friend):
+          print('Hello', friend)
+          return
+    \end{ipython}
 %
   \end{itemize}
 %
@@ -705,11 +687,26 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item the enclosing module acts as the global scope
+  \item each call to the function creates a new local scope
+  \item all assignments in the function body are local by default
     \begin{itemize}
-    \item
+    \item you can override using the \keyword{global} statement
     \end{itemize}
+  \item all other names should either be global or built-in
 %
+    \begin{ipython}{}
+      root = 12
+
+      def isServer(pid):
+          if pid == root: return True
+          return False
+
+      def setServer(pid):
+          global root
+          root = pid
+          return
+    \end{ipython}
   \end{itemize}
 %
 \end{frame}
@@ -722,11 +719,40 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item argument passing rules:
     \begin{itemize}
-    \item
+    \item arguments are passed by creating a local reference to an existing object
+    \item re-assigning the local variable does not affect the caller
+    \item but modifying a mutable object through the reference impacts the caller
     \end{itemize}
 %
+  \item argument matching modes:
+    \begin{itemize}
+    \item by position
+    \item by keyword
+    \item using varargs:
+      \begin{itemize}
+      \item \keyword{*}: places non-keyword arguments in a tuple
+      \item \keyword{**}: places keyword arguments in a dictionary
+      \end{itemize}
+    \item using default values supplied in the function declaration
+    \end{itemize}
+%
+  \item ordering rules:
+    \begin{itemize}
+    \item declaration: normal, *arguments, **arguments
+    \item caller: non-keyword arguments first, then keyword arguments
+    \end{itemize}
+%
+    \item matching algorithm
+      \begin{itemize}
+      \item assign non-keyword arguments by position
+      \item assign keyword arguments by matching names
+      \item assign left over non-keyword arguments to \literal{*args}
+      \item assign extra keyword arguments to \literal{**kwds}
+      \item unassigned arguments in declaration get their default values
+      \end{itemize}
+      
   \end{itemize}
 %
 \end{frame}
@@ -804,6 +830,40 @@
 \begin{frame}[fragile]
 %
   \frametitle{Namespaces as objects}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% other built-in objects
+\begin{frame}[fragile]
+%
+  \frametitle{Other built-in objects}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% type hierarchy
+\begin{frame}[fragile]
+%
+  \frametitle{Type hierarchy}
 %
   \begin{itemize}
 %
