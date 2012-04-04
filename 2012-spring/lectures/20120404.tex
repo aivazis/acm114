@@ -117,6 +117,76 @@
 \end{frame}
 
 % --------------------------------------
+% syntax
+\begin{frame}[fragile]
+%
+  \frametitle{Syntax}
+%
+  \begin{itemize}
+%
+  \item comments: from a \literal{\#} to the end of the line
+%
+  \item indentation denotes scope
+    \begin{itemize}
+    \item avoid using tab characters; set your editor to insert a fixed number of spaces when
+      the tab key is pressed
+    \end{itemize}
+%
+  \item statements end at the end of the line, or at \literal{;}
+    \begin{itemize}
+    \item open delimiters imply continuation
+      \item explicit continuation with \literal{$\backslash$}, but considered obsolete
+    \end{itemize}
+%
+  \item identifiers
+    \begin{itemize}
+    \item start with an underscore or letter, followed by underscores, letters or digits
+    \item unicode is supported in identifier names; details at
+      {\scriptsize \url{http://docs.python.org/py3k/reference/lexical_analysis.html#literals}}
+    \item identifiers are case sensitive
+    \end{itemize}
+%
+  \item certain classes of identifiers have special meaning
+    \begin{itemize}
+    \item the pattern \literal{\_\_*\_\_} is reserved by python for its own use
+    \item identifiers of the form \literal{\_\_*} in class definition are mangled and become
+      private
+    \item identifiers of the form \literal{\_*} are not bulk imported from modules; more on
+      this later
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% reserved words
+\begin{frame}[fragile]
+%
+  \frametitle{Reserved words}
+%
+  \begin{itemize}
+%
+  \item the following words are reserved
+    \begin{table}
+      \begin{tabular}{lllll}
+%
+ \keyword{False} & \keyword{None} & \keyword{True} & \operator{and} & \keyword{as} \\
+ \keyword{assert} & \keyword{break} & \keyword{class} & \keyword{continue} & \keyword{def} \\ 
+ \keyword{del} & \keyword{elif} & \keyword{else} & \keyword{except} & \keyword{finally} \\ 
+ \keyword{for} & \keyword{from} & \keyword{global} & \keyword{if} & \keyword{import} \\
+ \operator{in} & \operator{is} & \keyword{lambda} & \keyword{nonlocal} & \operator{not} \\
+ \operator{or} & \keyword{pass} & \keyword{raise} & \keyword{return} & \keyword{try} \\ 
+ \keyword{while} & \keyword{with} & \keyword{yield} & &
+%
+      \end{tabular}
+    \end{table}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % built-in objects
 \begin{frame}[fragile]
 %
@@ -126,10 +196,10 @@
   \item the more commonly used types
   \end{itemize}
 %
-  \begin{table}
+  \begin{table}\footnotesize
     \begin{tabular}{l|l}
-      Type           & Sample \\[.25em] \hline \\
-      booleans       & \literal{True}, \literal{False} \\[.25em]
+      \emph{Type}    & \emph{Sample} \\[.25em] \hline \\
+      booleans       & \keyword{True}, \keyword{False} \\[.25em]
       numbers        & \literal{1234}, \literal{3.14159}, \literal{3+4j} \\[.25em]
       strings        & \literal{'help'}, \literal{"hello"}, \literal{"it's mine"},
                        \literal{"""multi-line strings"""} \\[.25em]
@@ -158,25 +228,25 @@
 %
   \begin{table}\footnotesize
     \begin{tabular}{l|l}
-      Operator & Description \\ \hline
-      \literal{lambda} & used to build anonymous functions \\
-      \literal{if} -- \literal{else} & conditional expression (similar to \literal{?:} from
+      \emph{Operator} & \emph{Description} \\ \hline
+      \operator{lambda} & used to build anonymous functions \\
+      \keyword{if} -- \keyword{else} & conditional expression (similar to \literal{?:} from
                                        \cc) \\
-      \literal{or} & boolean or \\
-      \literal{and} & boolean and \\
-      \literal{not} & boolean not \\
-      \literal{in}, \literal{not in}, \literal{is}, \literal{is not} &
+      \operator{or} & boolean or \\
+      \operator{and} & boolean and \\
+      \operator{not} & boolean not \\
+      \operator{in}, \operator{not in}, \operator{is}, \operator{is not} &
       \multirow{2}{*}{membership tests, identity tests, comparisons} \\
-      \literal{<}, \literal{<=}, \literal{>}, \literal{>=}, \literal{!=}, \literal{==} & \\
-      \literal{|} & bitwise or \\
-      \literal{\^{}} & bitwise xor \\
-      \literal{\&} & bitwise and \\
-      \literal{<<}, \literal{>>} & left and right bit shifts \\
-      \literal{+}, \literal{-} & binary addition, binary subtraction \\
-      \literal{*}, \literal{/}, \literal{//}, \literal{\%} &
+      \operator{<}, \operator{<=}, \operator{>}, \operator{>=}, \operator{!=}, \operator{==} & \\
+      \operator{|} & bitwise or \\
+      \operator{\^{}} & bitwise xor \\
+      \operator{\&} & bitwise and \\
+      \operator{<<}, \operator{>>} & left and right bit shifts \\
+      \operator{+}, \operator{-} & binary addition, binary subtraction \\
+      \operator{*}, \operator{/}, \operator{//}, \operator{\%} &
       multiplication, division, integer division, modulo \\
-      \literal{+}, \literal{-}, \literal{\~{}} & positive, negative, bitwise not \\
-      \literal{**} & exponentiation \\
+      \operator{+}, \operator{-}, \operator{\~{}} & positive, negative, bitwise not \\
+      \operator{**} & exponentiation \\
       \literal{[]}, \literal{[:]}, \literal{()}, \literal{.} &
       indexing, slicing, function call, attribute reference 
     \end{tabular}
@@ -192,9 +262,26 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item numeric literals
+    \begin{table}\footnotesize
+      \begin{tabular}{l|l}
+        \emph{Literal} & \emph{Description} \\ \hline
+        \literal{1234} & arbitrary precision integers \\
+        \literal{3.1415}, \literal{6.023e23} & floats \\
+        \literal{j}, \literal{1+j} & complex numbers \\
+        \literal{0b1001} & binary integers \\
+        \literal{0o777} & octal integers \\
+        \literal{0xdeadbeef} & hexadecimal integers
+      \end{tabular}
+    \end{table}
+%
+  \item expressions:
     \begin{itemize}
-    \item
+    \item the usual arithmetic operators
+    \item bitwise operators similar to \cc
+    \item adjust precedence and association by using parenthesis; be aware of the ``tuple
+      conflict''
+    \item in expressions with mixed types, python converts towards the wider types
     \end{itemize}
 %
   \end{itemize}
@@ -209,10 +296,35 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item string literals
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \hline
+        \literal{'Hello'} & single quotes \\
+        \literal{"Hello"}, & double quotes \\
+        \literal{"It's embedded"} & mix and match \\
+        \literal{'''Hello'''}, \literal{"""Hello"""} & triple quotes -- extend over multiple
+        lines \\
+      \end{tabular}
+    \end{table}
+%
+  \item strings are immutable ordered sequences of unicode characters
     \begin{itemize}
-    \item
-    \end{itemize}
+    \item no \literal{char} type: \literal{'a'} is a string with one character
+    \item native support for all code pages
+  \end{itemize}
+%
+  \item common operations: given the strings $s_{i}$:
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \hline
+        \literal{s1+s2}, \literal{s*4} & concatenation, repetition \\
+        \literal{s[3]}, \literal{s[3:4]} & indexing, slicing \\
+        \literal{len(s)} & length\\
+        \literal{'H' in s} & membership\\
+        \literal{for x in s} & iteration
+      \end{tabular}
+    \end{table}
 %
   \end{itemize}
 %
@@ -226,10 +338,17 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item all objects are representable as strings
+  \item coercion can be triggered explicitly
     \begin{itemize}
-    \item
+    \item using the \keyword{str} constructor
+    \item using the \keyword{repr} built-in function
     \end{itemize}
+  \item strings have a powerful formatting method:
+    \begin{ipython}{}
+      'temperature={:+13.4f}, pressure={:13.4f}'.format(T, P)
+    \end{ipython}
+  \item more details after we go over the rules for function calls
 %
   \end{itemize}
 %
@@ -243,10 +362,29 @@
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item tuples are immutable ordered inhomogeneous sequences of objects
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \hline
+        \literal{()} & the empty tuple \\
+        \literal{(1,)}, & a tuple with one item \\
+        \literal{(1,2,3,4)} & a longer tuple \\
+        \literal{(1,'Hello', 'world')} & tuple elements don't have to be the same type\\
+        \literal{(1,2,('Hello', 'world'),4)} & tuples nest arbitrarily deeply
+      \end{tabular}
+    \end{table}
+%
+  \item common operations:
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \hline
+        \literal{t1+t2}, \literal{t*4} & concatenation, repetition \\
+        \literal{t[3]}, \literal{t[3:4]} & indexing, slicing \\
+        \literal{len(t)} & length\\
+        \literal{x in t} & membership\\
+        \literal{for x in t} & iteration
+      \end{tabular}
+    \end{table}
 %
   \end{itemize}
 %
@@ -260,10 +398,30 @@
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item lists are mutable ordered inhomogeneous sequences of objects
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \hline
+        \literal{[]} & the empty list \\
+        \literal{[1])}, & a list with one item \\
+        \literal{[1,2,3,4]} & a longer list \\
+        \literal{[1,'Hello', 'world']} & list elements don't have to be the same type\\
+        \literal{[1,2,['Hello', 'world'],4]} & lists nest arbitrarily deeply
+      \end{tabular}
+    \end{table}
+%
+  \item common operations:
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \hline
+        \literal{l1+l2}, \literal{l*4} & concatenation, repetition \\
+        \literal{len(l)}, \literal{x in l}, \literal{for x in l} & length, membership, iteration \\
+        \literal{l[3]}, \literal{l[3:4]} & indexing, slicing \\
+        \literal{del l[3]}, \literal{l[3:7]=[]} & shrink \\
+        \literal{l[3:7]=[1,2]} & slice assignment \\
+        \literal{l.append(1)} & add to the end of the list
+      \end{tabular}
+    \end{table}
 %
   \end{itemize}
 %
@@ -277,10 +435,30 @@
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item sets are mutable unordered inhomogeneous containers of objects
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \hline
+        \literal{set()} & the empty set \\
+        \literal{\{1\})}, & a set with one item \\
+        \literal{\{1,2,3,4\}} & a longer set \\
+        \literal{\{1,'Hello', 'world'\}} & set elements don't have to be the same type
+      \end{tabular}
+    \end{table}
+%
+  \item common operations:
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \hline
+        \literal{s1|s2} & union \\
+        \literal{s1\&s2} & intersection \\
+        \literal{s1-s2}, \literal{s1\^{}s2} & difference, symmetric difference \\
+        \literal{len(s)}, \literal{x in s}, \literal{for x in s} & length, membership, iteration \\
+        \literal{s.add(x)} & add \\
+        \literal{s.discard(x)} & remove if present\\
+        \literal{s.remove(x)} & remove; raise \literal{KeyError} if not present
+      \end{tabular}
+    \end{table}
 %
   \end{itemize}
 %
@@ -294,10 +472,31 @@
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item dictionaries are mutable inhomogeneous associative maps
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \hline
+        \literal{\{\}} & the empty dictionary \\
+        \literal{\{'first':'Guido', 'last':'van Rossum'\}}, & a dictionary with two items \\
+      \end{tabular}
+    \end{table}
+%
+  \item dictionary keys must be \emph{hashable}; dictionary values may be of any type
+%
+  \item common operations
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \hline
+        \literal{d['first']='Guido'} & make an association \\
+        \multirow{2}{*}{\literal{d['first']}} & value retrieval \\
+        & raise \literal{KeyError} if key not present \\
+        \literal{d.get('first')}, \literal{d.get('first', default='')} & value retrieval \\
+        \literal{len(d)} & the number of keys \\
+        \literal{x in d} & key presence \\
+        \literal{d.keys()}, \literal{d.values()}, \literal{d.items()} &
+        views of the dictionary contents
+      \end{tabular}
+    \end{table}
 %
   \end{itemize}
 %
@@ -345,60 +544,31 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item the following are considered false in logical expressions
     \begin{itemize}
-    \item
+    \item the boolean constant \keyword{False}
+    \item the special object \keyword{None}
+    \item the number \literal{0}
+    \item any empty container
     \end{itemize}
 %
-  \end{itemize}
+  \item other values are true, including the boolean constant \keyword{True}
 %
-\end{frame}
-
-% --------------------------------------
-% syntax
-\begin{frame}[fragile]
-%
-  \frametitle{Syntax}
-%
-  \begin{itemize}
-%
-  \item 
+  \item operators:
     \begin{itemize}
-    \item
+    \item the object identity operator \operator{is}
+    \item the container membership operator \operator{is}
+    \item the usual relational operators -- borrowed from \cc
     \end{itemize}
 %
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% reserved words
-\begin{frame}[fragile]
-%
-  \frametitle{Reserved words}
-%
-  \begin{itemize}
-%
-  \item 
+  \item object comparisons
     \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% printing
-\begin{frame}[fragile]
-%
-  \frametitle{Printing}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
+    \item strings are compared lexicographically
+    \item nested data structured are checked recursively
+    \item lists and tuples are compared depth first, left to right
+    \item dictionaries are compared as sorted (key, value) tuples
+    \item user defined types can supply custom comparison functions by overloading the special
+      methods
     \end{itemize}
 %
   \end{itemize}
@@ -413,10 +583,33 @@
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item explicitly, using the \operator{=} operator
+    \begin{ipython}{}
+      greeting = 'Hello world!'
+    \end{ipython}
+    which makes the symbol \literal{greeting} become a name for the literal string in the right
+    hand side
+%
+  \item implicitly, when defining a function
+    \begin{ipython}{}
+      def greeting(name): pass
+    \end{ipython}
+    which makes \literal{greeting} become a name for the function object built out of the
+    statements that follow the \literal{:}
+%
+  \item implicitly, when defining a class
+    \begin{ipython}{}
+      class greeting: pass
+    \end{ipython}
+    which makes \literal{greeting} become a name for the \emph{class object} built out of the
+    statements that follow the \literal{:}
+%
+  \item implicitly, when importing symbols from a module
+    \begin{ipython}{}
+      import sys
+      from math import pi
+      from math import pi as #@$\pi$@ 
+    \end{ipython}
 %
   \end{itemize}
 %
@@ -430,9 +623,21 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item using \keyword{if}
+    \begin{ipython}{}
+      if <expression>:
+          <statements>
+      elif <expression>:
+          <statements>
+      else:
+          <statements>
+    \end{ipython}
+%
+  \item no \keyword{switch} statement
     \begin{itemize}
-    \item
+    \item use an \keyword{if} cascade
+    \item better yet, think about achieving the same result using containers; it's typically
+      more efficient and robust
     \end{itemize}
 %
   \end{itemize}
@@ -447,10 +652,29 @@
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item the \keyword{while} loop
+    \begin{ipython}{}
+      while <expression>:
+          <statements>
+      else:
+          <statements>
+    \end{ipython}
+    executes the statements in its body until its expression evaluates to \keyword{False}, at
+    which point it executes the optional \keyword{else} clause
+%
+  \item the \keyword{for} loop 
+    \begin{ipython}{}
+      for <name> in <expression>:
+          <statements>
+      else:
+          <statements>
+    \end{ipython}
+    evaluates its expression once to get an iterator, binds \literal{name} to each object
+    provided by the iterator and executes its body; iteration stops when the iterator is
+    exhausted, at which point the \keyword{else} clause is executed; if execution encounters a
+    \keyword{break} statement in the body of the loop, iteration is terminated, and the
+    \keyword{else} clause is skipped; if execution encounters a \keyword{continue} statement,
+    it skips the remainder of the loop body and proceeds with the next item from the iterator
 %
   \end{itemize}
 %
@@ -512,6 +736,23 @@
 \begin{frame}[fragile]
 %
   \frametitle{Functions as objects}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% printing
+\begin{frame}[fragile]
+%
+  \frametitle{Printing}
 %
   \begin{itemize}
 %

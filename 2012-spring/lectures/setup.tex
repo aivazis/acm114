@@ -65,7 +65,7 @@
   upquote=true,
   % 
   aboveskip=\medskipamount,
-  belowskip=\bigskipamount,
+  belowskip=\medskipamount,
   % abovecaptionskip=\medskipamount,
   % belowcaptionskip=\medskipamount,
   % 
@@ -103,6 +103,17 @@
     language=C++,
     escapeinside={/*}{*/},#1]
   {#2}}
+
+\lstnewenvironment{ipython}[2][]{
+  \lstset{
+    language=python,
+    frame=none,
+    backgroundcolor=\color{acm114@cream},
+    morekeywords={self,yield,False,True,None},
+    escapeinside={\#@}{@},
+    %
+    #1
+  }}{#2}
 
 % shortcuts
 \def\slideref#1{{Slide~\ref{slide:#1}}}
