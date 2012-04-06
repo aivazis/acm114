@@ -1,0 +1,1312 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
+%
+
+\lecture{Introduction to python}{20120406}
+
+% --------------------------------------
+% programming paradigms
+\begin{frame}[fragile]
+%
+  \frametitle{Languages and programming paradigms}
+%
+  \begin{itemize}
+%
+  \item a very active area of research
+    \begin{itemize}
+    \item dozens of languages and runtime environments of the last 50 years
+    \end{itemize}
+%
+  \item the survivors:
+    \begin{itemize}
+      \item procedural programming, and its offspring structured programming
+      \item functional programming
+      \item object oriented programming
+    \end{itemize}
+%
+  \item current areas of research:
+    \begin{itemize}
+    \item component oriented programming
+    \item aspect programming
+    \end{itemize}
+%
+  \item languages are important:
+    \begin{itemize}
+    \item they reflect an approach to computing
+    \item they shape what is easily expressible
+    \end{itemize}
+%
+  \item we'll take a quick tour of python
+    \begin{itemize}
+    \item resources: \url{www.python.org}
+    \item overview of the language
+    \item interactive sessions with the interpreter
+    \item building extensions in \cc/\cpp
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% preview: a python script
+\begin{frame}[fragile]
+%
+  \frametitle{A python script}
+%
+  \begin{itemize}
+  \item python reads like pseudocode
+  \item here is the code for the $\pi$ estimator using Monte Carlo integration over the quarter
+    disk
+  \end{itemize}
+%
+\python{
+  firstline=9,lastline=25,
+  label={lst:python:pi},
+  caption={\srcfile{pi.py}: Estimating $\pi$ in python},
+}{listings/pi.py}
+
+%
+\end{frame}
+
+% --------------------------------------
+% overview
+\begin{frame}[fragile]
+%
+  \frametitle{Overview}
+%
+  \begin{itemize}
+%
+  \item built-in objects and their operators
+    \begin{itemize}
+    \item numbers, strings, containers
+    \item files
+    \end{itemize}
+%
+  \item statements
+    \begin{itemize}
+      \item evaluating expressions, explicit and implicit assignments, logic, iteration
+    \end{itemize}
+%
+  \item functions
+    \begin{itemize}
+    \item scope rules, argument passing, callable objects
+    \end{itemize}
+%
+  \item modules and packages
+    \begin{itemize}
+    \item name qualification, importing symbols
+    \end{itemize}
+%
+  \item user defined objects
+    \begin{itemize}
+    \item declarations and definitions, inheritance, overloading operators
+    \end{itemize}
+%
+  \item exceptions
+    \begin{itemize}
+    \item raising and catching, exception hierarchies
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% syntax
+\begin{frame}[fragile]
+%
+  \frametitle{Syntax}
+%
+  \begin{itemize}
+%
+  \item comments: from a \literal{\#} to the end of the line
+%
+  \item indentation denotes scope
+    \begin{itemize}
+    \item avoid using tab characters; set your editor to insert a fixed number of spaces when
+      the tab key is pressed
+    \end{itemize}
+%
+  \item statements end at the end of the line, or at \literal{;}
+    \begin{itemize}
+    \item open delimiters imply continuation
+      \item explicit continuation with \literal{$\backslash$}, but considered obsolete
+    \end{itemize}
+%
+  \item identifiers
+    \begin{itemize}
+    \item start with an underscore or letter, followed by underscores, letters or digits
+    \item unicode is supported in identifier names; details at
+      {\scriptsize \url{http://docs.python.org/py3k/reference/lexical_analysis.html#literals}}
+    \item identifiers are case sensitive
+    \end{itemize}
+%
+  \item certain classes of identifiers have special meaning
+    \begin{itemize}
+    \item the pattern \literal{\_\_*\_\_} is reserved by python for its own use
+    \item identifiers of the form \literal{\_\_*} in class definition are mangled and become
+      private
+    \item identifiers of the form \literal{\_*} are not bulk imported from modules; more on
+      this later
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% reserved words
+\begin{frame}[fragile]
+%
+  \frametitle{Reserved words}
+%
+  \begin{itemize}
+%
+  \item the following words are reserved
+    \begin{table}
+      \begin{tabular}{lllll}
+%
+ \keyword{False} & \keyword{None} & \keyword{True} & \operator{and} & \keyword{as} \\
+ \keyword{assert} & \keyword{break} & \keyword{class} & \keyword{continue} & \keyword{def} \\ 
+ \keyword{del} & \keyword{elif} & \keyword{else} & \keyword{except} & \keyword{finally} \\ 
+ \keyword{for} & \keyword{from} & \keyword{global} & \keyword{if} & \keyword{import} \\
+ \operator{in} & \operator{is} & \keyword{lambda} & \keyword{nonlocal} & \operator{not} \\
+ \operator{or} & \keyword{pass} & \keyword{raise} & \keyword{return} & \keyword{try} \\ 
+ \keyword{while} & \keyword{with} & \keyword{yield} & &
+%
+      \end{tabular}
+    \end{table}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% built-in objects
+\begin{frame}[fragile]
+%
+  \frametitle{Built-in objects}
+%
+  \begin{itemize}
+  \item the more commonly used types
+  \end{itemize}
+%
+  \begin{table}\footnotesize
+    \begin{tabular}{ll}
+      \emph{Type}    & \emph{Sample} \\ \midrule
+      booleans       & \keyword{True}, \keyword{False} \\
+      numbers        & \literal{1234}, \literal{3.14159}, \literal{3+4j} \\
+      strings        & \literal{'help'}, \literal{"hello"}, \literal{"it's mine"},
+                       \literal{"""multi-line strings"""} \\
+      tuples         & \literal{(1, 'this', "other")} \\
+      lists          & \literal{['this', ['and', 0], 2]} \\
+      sets           & \literal{\{1,2,3\}} \\
+      dictionaries   & \literal{\{'first': 'Jim', 'last': 'Brown'\}}
+    \end{tabular}
+  \end{table}
+%
+  \begin{itemize}
+  \item there are others; details to follow, as necessary
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% operators and precedence
+\begin{frame}[fragile]
+%
+  \frametitle{Operators and precedence}
+%
+  \begin{itemize}
+  \item from lower to higher precendece
+  \end{itemize}
+%
+  \begin{table}\footnotesize
+    \begin{tabular}{ll}
+      \emph{Operator} & \emph{Description} \\ \midrule
+      \operator{lambda} & used to build anonymous functions \\
+      \keyword{if} -- \keyword{else} & conditional expression (similar to \literal{?:} from
+                                       \cc) \\
+      \operator{or} & boolean or \\
+      \operator{and} & boolean and \\
+      \operator{not} & boolean not \\
+      \operator{in}, \operator{not in}, \operator{is}, \operator{is not} &
+      \multirow{2}{*}{membership tests, identity tests, comparisons} \\
+      \operator{<}, \operator{<=}, \operator{>}, \operator{>=}, \operator{!=}, \operator{==} & \\
+      \operator{|} & bitwise or \\
+      \operator{\^{}} & bitwise xor \\
+      \operator{\&} & bitwise and \\
+      \operator{<<}, \operator{>>} & left and right bit shifts \\
+      \operator{+}, \operator{-} & binary addition, binary subtraction \\
+      \operator{*}, \operator{/}, \operator{//}, \operator{\%} &
+      multiplication, division, integer division, modulo \\
+      \operator{+}, \operator{-}, \operator{\~{}} & positive, negative, bitwise not \\
+      \operator{**} & exponentiation \\
+      \literal{[]}, \literal{[:]}, \literal{()}, \literal{.} &
+      indexing, slicing, function call, attribute reference 
+    \end{tabular}
+  \end{table}
+%
+\end{frame}
+
+% --------------------------------------
+% number
+\begin{frame}[fragile]
+%
+  \frametitle{Numbers}
+%
+  \begin{itemize}
+%
+  \item numeric literals
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \midrule
+        \literal{1234} & arbitrary precision integers \\
+        \literal{3.1415}, \literal{6.023e23} & floats \\
+        \literal{j}, \literal{1+j} & complex numbers \\
+        \literal{0b1001} & binary integers \\
+        \literal{0o777} & octal integers \\
+        \literal{0xdeadbeef} & hexadecimal integers
+      \end{tabular}
+    \end{table}
+%
+  \item expressions:
+    \begin{itemize}
+    \item the usual arithmetic operators
+    \item bitwise operators similar to \cc
+    \item adjust precedence and association by using parenthesis; be aware of the ``tuple
+      conflict''
+    \item in expressions with mixed types, python converts towards the wider types
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% strings
+\begin{frame}[fragile]
+%
+  \frametitle{Strings}
+%
+  \begin{itemize}
+%
+  \item string literals
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \midrule
+        \literal{'Hello'} & single quotes \\
+        \literal{"Hello"}, & double quotes \\
+        \literal{"It's embedded"} & mix and match \\
+        \literal{'''Hello'''}, \literal{"""Hello"""} & triple quotes -- extend over multiple
+        lines \\
+      \end{tabular}
+    \end{table}
+%
+  \item strings are immutable ordered sequences of unicode characters
+    \begin{itemize}
+    \item no \literal{char} type: \literal{'a'} is a string with one character
+    \item native support for all code pages
+  \end{itemize}
+%
+  \item common operations: given the strings $s_{i}$:
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \midrule
+        \literal{s1+s2}, \literal{s*4} & concatenation, repetition \\
+        \literal{s[3]}, \literal{s[3:4]} & indexing, slicing \\
+        \literal{len(s)} & length\\
+        \literal{'H' in s} & membership\\
+        \literal{for x in s} & iteration
+      \end{tabular}
+    \end{table}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% string coercions
+\begin{frame}[fragile]
+%
+  \frametitle{String coercions}
+%
+  \begin{itemize}
+%
+  \item all objects are representable as strings
+  \item coercion can be triggered explicitly
+    \begin{itemize}
+    \item using the \keyword{str} constructor
+    \item using the \keyword{repr} built-in function
+    \end{itemize}
+  \item strings have a powerful formatting method:
+    \begin{ipython}{}
+      'temperature={:+13.4f}, pressure={:13.4f}'.format(T, P)
+    \end{ipython}
+  \item more details after we go over the rules for function calls
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% tuples
+\begin{frame}[fragile]
+%
+  \frametitle{Tuples}
+%
+  \begin{itemize}
+%
+  \item tuples are immutable ordered inhomogeneous sequences of objects
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \midrule
+        \literal{()} & the empty tuple \\
+        \literal{(1,)}, & a tuple with one item \\
+        \literal{(1,2,3,4)} & a longer tuple \\
+        \literal{(1,'Hello', 'world')} & tuple elements don't have to be the same type\\
+        \literal{(1,2,('Hello', 'world'),4)} & tuples nest arbitrarily deeply
+      \end{tabular}
+    \end{table}
+%
+  \item common operations:
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \midrule
+        \literal{t1+t2}, \literal{t*4} & concatenation, repetition \\
+        \literal{t[3]}, \literal{t[3:4]} & indexing, slicing \\
+        \literal{len(t)} & length\\
+        \literal{x in t} & membership\\
+        \literal{for x in t} & iteration
+      \end{tabular}
+    \end{table}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% lists
+\begin{frame}[fragile]
+%
+  \frametitle{Lists}
+%
+  \begin{itemize}
+%
+  \item lists are mutable ordered inhomogeneous sequences of objects
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \midrule
+        \literal{[]} & the empty list \\
+        \literal{[1])}, & a list with one item \\
+        \literal{[1,2,3,4]} & a longer list \\
+        \literal{[1,'Hello', 'world']} & list elements don't have to be the same type\\
+        \literal{[1,2,['Hello', 'world'],4]} & lists nest arbitrarily deeply
+      \end{tabular}
+    \end{table}
+%
+  \item common operations:
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \midrule
+        \literal{l1+l2}, \literal{l*4} & concatenation, repetition \\
+        \literal{len(l)}, \literal{x in l}, \literal{for x in l} & length, membership, iteration \\
+        \literal{l[3]}, \literal{l[3:4]} & indexing, slicing \\
+        \literal{del l[3]}, \literal{l[3:7]=[]} & shrink \\
+        \literal{l[3:7]=[1,2]} & slice assignment \\
+        \literal{l.append(1)} & add to the end of the list
+      \end{tabular}
+    \end{table}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% sets
+\begin{frame}[fragile]
+%
+  \frametitle{Sets}
+%
+  \begin{itemize}
+%
+  \item sets are mutable unordered inhomogeneous containers of objects
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \midrule
+        \literal{set()} & the empty set \\
+        \literal{\{1\})}, & a set with one item \\
+        \literal{\{1,2,3,4\}} & a longer set \\
+        \literal{\{1,'Hello', 'world'\}} & set elements don't have to be the same type
+      \end{tabular}
+    \end{table}
+%
+  \item common operations:
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \midrule
+        \literal{s1|s2} & union \\
+        \literal{s1\&s2} & intersection \\
+        \literal{s1-s2}, \literal{s1\^{}s2} & difference, symmetric difference \\
+        \literal{len(s)}, \literal{x in s}, \literal{for x in s} & length, membership, iteration \\
+        \literal{s.add(x)} & add \\
+        \literal{s.discard(x)} & remove if present\\
+        \literal{s.remove(x)} & remove; raise \literal{KeyError} if not present
+      \end{tabular}
+    \end{table}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% dictionaries
+\begin{frame}[fragile]
+%
+  \frametitle{Dictionaries}
+%
+  \begin{itemize}
+%
+  \item dictionaries are mutable inhomogeneous associative maps
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Literal} & \emph{Description} \\ \midrule
+        \literal{\{\}} & the empty dictionary \\
+        \literal{\{'first':'Guido', 'last':'van Rossum'\}}, & a dictionary with two items \\
+      \end{tabular}
+    \end{table}
+%
+  \item dictionary keys must be \emph{hashable}; dictionary values may be of any type
+%
+  \item common operations
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{Expression} & \emph{Description} \\ \midrule
+        \literal{d['first']='Guido'} & make an association \\
+        \multirow{2}{*}{\literal{d['first']}} & value retrieval \\
+        & raise \literal{KeyError} if key not present \\
+        \literal{d.get('first')}, \literal{d.get('first', default='')} & value retrieval \\
+        \literal{len(d)} & the number of keys \\
+        \literal{x in d} & key presence \\
+        \literal{d.keys()}, \literal{d.values()}, \literal{d.items()} &
+        views of the dictionary contents
+      \end{tabular}
+    \end{table}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% comparisons
+\begin{frame}[fragile]
+%
+  \frametitle{Comparisons}
+%
+  \begin{itemize}
+%
+  \item the following are considered false in logical expressions
+    \begin{itemize}
+    \item the boolean constant \keyword{False}
+    \item the special object \keyword{None}
+    \item the number \literal{0}
+    \item any empty container
+    \end{itemize}
+%
+  \item other values are true, including the boolean constant \keyword{True}
+%
+  \item operators:
+    \begin{itemize}
+    \item the object identity operator \operator{is}
+    \item the container membership operator \operator{is}
+    \item the usual relational operators -- borrowed from \cc
+    \end{itemize}
+%
+  \item object comparisons
+    \begin{itemize}
+    \item strings are compared lexicographically
+    \item nested data structured are checked recursively
+    \item lists and tuples are compared depth first, left to right
+    \item dictionaries are compared as sorted (key, value) tuples
+    \item user defined types can supply custom comparison functions by overloading the special
+      methods
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% assignments
+\begin{frame}[fragile]
+%
+  \frametitle{Assignments}
+%
+  \begin{itemize}
+%
+  \item explicitly, using the \operator{=} operator
+    \begin{ipython}{}
+      greeting = 'Hello world!'
+    \end{ipython}
+    which makes the symbol \literal{greeting} become a name for the literal string in the right
+    hand side
+%
+  \item implicitly, when defining a function
+    \begin{ipython}{}
+      def greeting(name): pass
+    \end{ipython}
+    which makes \literal{greeting} become a name for the function object built out of the
+    statements that follow the \literal{:}
+%
+  \item implicitly, when defining a class
+    \begin{ipython}{}
+      class greeting: pass
+    \end{ipython}
+    which makes \literal{greeting} become a name for the \emph{class object} built out of the
+    statements that follow the \literal{:}
+%
+  \item implicitly, when importing symbols from a module
+    \begin{ipython}{}
+      import sys
+      from math import pi
+      from math import pi as #@$\pi$@ 
+    \end{ipython}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% selections
+\begin{frame}[fragile]
+%
+  \frametitle{Selections}
+%
+  \begin{itemize}
+%
+  \item using \keyword{if}
+    \begin{ipython}{}
+      if <expression>:
+          <statements>
+      elif <expression>:
+          <statements>
+      else:
+          <statements>
+    \end{ipython}
+%
+  \item no \keyword{switch} statement
+    \begin{itemize}
+    \item use an \keyword{if} cascade
+    \item better yet, think about achieving the same result using containers; it's typically
+      more efficient and robust
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% iteration
+\begin{frame}[fragile]
+%
+  \frametitle{Iteration}
+%
+  \begin{itemize}
+%
+  \item the \keyword{while} loop
+    \begin{ipython}{}
+      while <expression>:
+          <statements>
+      else:
+          <statements>
+    \end{ipython}
+    executes the statements in its body until its expression evaluates to \keyword{False}, at
+    which point it executes the optional \keyword{else} clause
+%
+  \item the \keyword{for} loop 
+    \begin{ipython}{}
+      for <name> in <expression>:
+          <statements>
+      else:
+          <statements>
+    \end{ipython}
+    evaluates its expression once to get an iterator, binds \literal{name} to each object
+    provided by the iterator and executes its body; iteration stops when the iterator is
+    exhausted, at which point the \keyword{else} clause is executed; if execution encounters a
+    \keyword{break} statement in the body of the loop, iteration is terminated, and the
+    \keyword{else} clause is skipped; if execution encounters a \keyword{continue} statement,
+    it skips the remainder of the loop body and proceeds with the next item from the iterator
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% functions
+\begin{frame}[fragile]
+%
+  \frametitle{Functions}
+%
+  \begin{itemize}
+%
+  \item general form
+    \begin{ipython}{}
+      def <name>(<parameter_list>):
+          <statements>
+          return <expression>
+    \end{ipython}
+%
+  \item creates a function object and assigns it to the given name
+    \begin{itemize}
+    \item the optional \keyword{return} statement sends an object back to the caller
+    \item arguments are passed by \emph{assignment}
+    \item no declarations of arguments, return types and local variables
+    \end{itemize}
+%
+  \item a simple example
+    \begin{ipython}{}
+      def greet(friend):
+          print('Hello {}!'.format(friend))
+          return
+    \end{ipython}
+%
+  \item it is invoked using a \emph{call expression}
+    \begin{ipython}{}
+      greet(friend='world')
+    \end{ipython}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% scoping rules
+\begin{frame}[fragile]
+%
+  \frametitle{Scope and visibility}
+%
+  \begin{itemize}
+%
+  \item the enclosing module acts as the global scope
+  \item each call to the function creates a new local scope
+  \item all assignments in the function body are local by default
+    \begin{itemize}
+    \item you can override using the \keyword{global} statement
+    \end{itemize}
+  \item all other names should either be global or built-in
+%
+    \begin{ipython}{}
+      root = 12
+
+      def isServer(pid):
+          if pid == root: return True
+          return False
+
+      def setServer(pid):
+          global root
+          root = pid
+          return
+    \end{ipython}
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% function arguments
+\begin{frame}[fragile]
+%
+  \frametitle{Function arguments}
+%
+  \begin{itemize}
+%
+  \item argument passing rules:
+    \begin{itemize}
+    \item arguments are passed by creating a local reference to an existing object
+    \item re-assigning the local variable does not affect the caller
+    \item but modifying a mutable object through the reference impacts the caller
+    \end{itemize}
+%
+  \item argument matching modes:
+    \begin{itemize}
+    \item by position
+    \item by keyword
+    \item using varargs:
+      \begin{itemize}
+      \item \keyword{*}: places non-keyword arguments in a tuple
+      \item \keyword{**}: places keyword arguments in a dictionary
+      \end{itemize}
+    \item using default values supplied in the function declaration
+    \end{itemize}
+%
+  \item ordering rules:
+    \begin{itemize}
+    \item declaration: normal, *arguments, **arguments
+    \item caller: non-keyword arguments first, then keyword arguments
+    \end{itemize}
+%
+    \item matching algorithm
+      \begin{itemize}
+      \item assign non-keyword arguments by position
+      \item assign keyword arguments by matching names
+      \item assign left over non-keyword arguments to \literal{*args}
+      \item assign extra keyword arguments to \literal{**kwds}
+      \item unassigned arguments in declaration get their default values
+      \end{itemize}
+      
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% function examples
+\begin{frame}[fragile]
+%
+  \frametitle{Simple examples}
+%
+  \begin{itemize}
+%
+  \item here are some examples of function declarations and the possible ways to invoke them --
+    don't forget that python uses ``pass by assignment''
+%
+  \item the simplest, but not the best, is positional invocation:
+    \begin{ipython}{}
+      # declare a function
+      def greet(friend): print('Hello {}!'.format(friend))
+
+      # invoke it
+      greet('world')
+    \end{ipython}
+%
+  \item a better way is to use the name of the dummy variable, as was done in our first example
+    \begin{ipython}{}
+      # declare a function
+      def greet(friend): print('Hello {}!'.format(friend))
+
+      # invoke it by explicitly binding the dummy variable to a value
+      greet(friend='world')
+    \end{ipython}
+%
+  \item it may look silly with one argument, but this technique eliminates more bugs than
+    the strong type checking in languages like \cpp!
+    \begin{itemize}
+    \item (long rant removed by the editor...)
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% function examples
+\begin{frame}[fragile]
+%
+  \frametitle{Default arguments}
+%
+  \begin{itemize}
+%
+  \item a function declaration can provide default values for arguments that were not provided by
+    the caller; consider the following declaration:
+    \begin{ipython}{}
+      # declare a function
+      def say(what='Hello', whom='world'):
+          print('{} {}!'.format(what, whom))
+          return
+    \end{ipython}
+%
+    \item this function can be invoked as before
+    \begin{ipython}{}
+      # invoke with a full argument set -- note the twist
+      say(whom='cruel world', what='Goodbye')
+    \end{ipython}
+%
+  \item either one of the arguments can be absent; it will be bound to the default value
+    \begin{ipython}{}
+      # change the target
+      say(whom='class')
+    \end{ipython}
+    or
+    \begin{ipython}{}
+      # change the message
+      say(what='Greetings')
+    \end{ipython}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% trickiness with default arguments
+\begin{frame}[fragile]
+%
+  \frametitle{A potential pitfall}
+%
+  \begin{itemize}
+%
+  \item there is some trickiness to default arguments, having to do with how this feature is
+    currently implemented by the interpreter
+    \begin{itemize}
+    \item the default values are treated as expressions that are evaluated during the
+        function declaration, and stored along with the function itself
+    \end{itemize}
+%
+  \item consider the following function:
+    \begin{ipython}{}
+      # the mail routine
+      def mail(item, recipients=[]):
+          # for each recipient
+          for recipient in recipients:
+              # mail the item
+              print('mailing {} to {}'.format(item, recipient))
+          # all done; return the recipient list back to the caller
+          return recipients
+    \end{ipython}
+%
+  \item what happens when the return value is modified?
+    \begin{ipython}{}
+      # send a letter to the default set of recipients
+      friends = mail(item='a letter')
+      # add a couple of people to the list
+      friends += [ 'Alec', 'MacKenzie' ]
+      # send a postcard to the default set of recipients
+      mail(item='a postcard')
+    \end{ipython}
+    unlike what you might expect, the second invocation sends postcards to Alec and MacKenzie
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% varags
+\begin{frame}[fragile]
+%
+  \frametitle{Variable number of arguments}
+%
+  \begin{itemize}
+%
+  \item occasionally -- but rarely -- there are legitimate reasons for a function to accept an
+    unknown number of arguments
+    \begin{itemize}
+    \item but please consider alternatives before resorting to this
+    \item we'll see a case where it is necessary when we discuss multiple inheritance
+    \end{itemize}
+%
+  \item consider:
+    \begin{ipython}{}
+      # the mail routine
+      def mail(item, *recipients):
+          # for each recipient
+          for recipient in recipients:
+              # mail the item
+              print('mailing {} to {}'.format(item, recipient))
+          # all done
+          return
+    \end{ipython}
+    which can be invoked as
+    \begin{ipython}{}
+      mail('letter', 'Alec', 'MacKenzie')
+    \end{ipython}
+    the variable \literal{recipients} gets bound to a tuple of all the arguments that follow
+    \literal{'letter'}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% varags
+\begin{frame}[fragile]
+%
+  \frametitle{Variable number of arguments}
+%
+  \begin{itemize}
+%
+  \item it is now illegal to use the form \literal{item='letter'} in the function
+    call
+%
+  \item instead you gain the ability to do this:
+    \begin{ipython}{}
+      friends = ['Alec', 'MacKenzie']
+      mail('letter', *friends)
+    \end{ipython}
+%
+  \item similar considerations apply to
+    \begin{ipython}{}
+      # the mail routine
+      def configure(item, **options):
+          print('configuring {!r}'.format(item))
+          # for each option
+          for option, value in options.items():
+              # print the option
+              print('  {} <- {}'.format(option, value))
+          # all done
+          return
+    \end{ipython}
+    which can be invoked using
+    \begin{ipython}{}
+      # set some options
+      options = {
+          'paper': 'A4',
+          'orientation': 'landscape'
+          }
+      # configure the printer
+      configure('printer', **options)
+    \end{ipython}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% function objects
+\begin{frame}[fragile]
+%
+  \frametitle{Functions as objects}
+%
+  \begin{itemize}
+%
+  \item like everything else, functions are objects
+    \begin{ipython}{}
+      def hello():
+          """say hello"""
+          return "Hello"
+      
+      def goodbye():
+          """say goodbye"""
+          return "Goodbye"
+
+      def greet(how=nice, whom='world'):
+          """call {how} to compute what to say to {whom}"""
+          print('{} {}!',format(how(), whom))
+          return
+          
+      greet(how=goodbye, whom='class')
+    \end{ipython}
+%
+  \item the name of a function is a reference to the callable object that \keyword{def} left
+    behind
+    \begin{itemize}
+    \item you can use it anywhere a variable would go
+    \item to invoke the function,  you must involve the reference in a call expression
+    \end{itemize}
+    \begin{ipython}{}
+      greeter = nice
+      message = greeter()
+    \end{ipython}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% printing
+\begin{frame}[fragile]
+%
+  \frametitle{Printing}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% namespaces
+\begin{frame}[fragile]
+%
+  \frametitle{Namespaces}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% namespace access
+\begin{frame}[fragile]
+%
+  \frametitle{Namespace access}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% namespaces as objects
+\begin{frame}[fragile]
+%
+  \frametitle{Namespaces as objects}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% other built-in objects
+\begin{frame}[fragile]
+%
+  \frametitle{Other built-in objects}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% type hierarchy
+\begin{frame}[fragile]
+%
+  \frametitle{Type hierarchy}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% classes
+\begin{frame}[fragile]
+%
+  \frametitle{Classes}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% inheritance
+\begin{frame}[fragile]
+%
+  \frametitle{Inheritance}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% methods
+\begin{frame}[fragile]
+%
+  \frametitle{Methods}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% class glossary
+\begin{frame}[fragile]
+%
+  \frametitle{Class glossary}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% special methods
+\begin{frame}[fragile]
+%
+  \frametitle{Special methods}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% namespace rules
+\begin{frame}[fragile]
+%
+  \frametitle{Blank}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% classes as objects
+\begin{frame}[fragile]
+%
+  \frametitle{Classes as objects}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% methods as objects
+\begin{frame}[fragile]
+%
+  \frametitle{Methods as objects}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% exceptions
+\begin{frame}[fragile]
+%
+  \frametitle{Exceptions}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% raising exceptions
+\begin{frame}[fragile]
+%
+  \frametitle{Raising exceptions}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% catching exceptions
+\begin{frame}[fragile]
+%
+  \frametitle{Catching exceptions}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% object oriented programming
+\begin{frame}[fragile]
+%
+  \frametitle{Object oriented programming}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% end of file 

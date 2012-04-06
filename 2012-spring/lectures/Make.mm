@@ -27,7 +27,8 @@ INCLUDES = \
     references.bib
 
 SECTIONS = \
-    20120404.tex
+    20120404.tex \
+    20120406.tex \
 
 FIGURES = \
 
