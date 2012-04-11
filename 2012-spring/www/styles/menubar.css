@@ -1,0 +1,46 @@
+/*  -*- CSS -*-  */
+/*
+ * michael a.g. aïvázis
+ * california institute of technology
+ * (c) 1998-2012 all rights reserved
+ */
+
+#menubar {
+    height: 2em;
+    padding: 1em 0 0 22.5em; 
+    background: url(../images/menubar.png) repeat;
+}
+
+#menubar ul {
+    padding: 1em 0 0 0;
+    font-size: 75%;
+    font-stretch: condensed;
+}
+
+#menubar ul li {
+    display: inline;
+    text-decoration: none;
+    margin: 1em 0 0 0;
+    padding: 1em 1em 0.2em 1em;
+    border-right: solid 2px #474a41;
+    border-right: solid 2px #171a11;
+}
+
+#menubar ul li.first {
+    padding-left: 0;
+}
+
+#menubar ul li.last {
+    border-right: none;
+}
+
+#menubar ul li a {
+    cursor: pointer;
+    color: #8a8781;
+}
+
+#menubar ul li a:hover {
+    color: #dddbc5;
+}
+
+/* end of file  */

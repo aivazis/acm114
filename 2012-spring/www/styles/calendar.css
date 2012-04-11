@@ -1,0 +1,89 @@
+/*  -*- CSS -*-  */
+/*
+ * michael a.g. aïvázis
+ * california institute of technology
+ * (c) 1998-2012 all rights reserved
+ */
+
+table.calendar {
+    margin: 2.0em 0.2em auto auto;
+
+    font-family: futura, verdana, arial, sans-serif;
+    font-size: 75%;
+    line-height: 120%;
+
+    border-collapse: collapse;
+
+    color: #494944;
+}
+
+table.calendar th {
+    height: 2em;
+    font-weight: normal;
+    vertical-align: middle;
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: .3em;
+}
+
+table.calendar th.hrule {
+    height: 0px;
+    border-bottom: 1px solid #8a8781;
+}
+
+table.calendar th.vrule {
+    padding-right: .5em;
+    border-right: 1px solid #8a8781;
+}
+
+table.calendar th.lhead {
+    width: 4em;
+    border-right: 1px solid #8a8781;
+}
+
+table.calendar td {
+    padding: .1em .5em .1em .5em;
+    width: 1.5em;
+    height: 1.5em;
+    text-align: right;
+    vertical-align: middle;
+    color: #c0c0c0;
+}
+
+table.calendar td.holiday {
+    color: #e0b0b0;
+}
+
+table.calendar td.finals {
+    color: #b0e0b0;
+}
+
+table.calendar td a {
+    color: #6d6b55;
+}
+
+table.calendar td a:hover {
+    font-size: 120%;
+}
+
+/* inline navigation */
+
+div.inline-navigation {
+    margin-top: -1.5em;
+    font-size: 60%;
+    font-stretch: condensed;
+}
+
+div.inline-navigation ul {
+    display: inline;
+    float: right;
+    text-align: right;
+}
+
+div.inline-navigation ul li {
+    display: inline;
+    text-decoration: none;
+    padding: 0em 0.3em 0em 0.3em;
+}
+
+/* end of file  */
