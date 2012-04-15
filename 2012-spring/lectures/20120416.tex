@@ -9,23 +9,6 @@
 \lecture{Introduction to python}{20120416}
 
 % --------------------------------------
-% printing
-\begin{frame}[fragile]
-%
-  \frametitle{Printing}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
 % namespaces
 \begin{frame}[fragile]
 %
@@ -33,9 +16,28 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item names are placed in \emph{namespaces} in order to avoid collisions
     \begin{itemize}
-    \item
+    \item no specific type or construct: anything that supports the \keyword{.} operator
+    \item examples: classes, modules, packages
+    \end{itemize}
+%
+  \item modules are objects created when requesting access to the names from a different file
+    \begin{itemize}
+    \item python sources, which are byte-compiled on first import
+    \item shared libraries, which are dynamically loaded on first request
+    \item folders on the filesystem that contain the marker \literal{\_\_init\_\_.py}
+    \item statically linked when the interpreter was compiled
+    \end{itemize}
+%
+  \item the interpreter has a \emph{search path} for modules, which is controlled
+    \begin{itemize}
+    \item at interpreter compile time
+    \item by the current working directory of the process
+    \item by reading user settings at interpreter start up
+      \begin{itemize}
+      \item the \literal{PYTHONPATH} environment variable on unix, the registry on windows
+      \end{itemize}
     \end{itemize}
 %
   \end{itemize}
@@ -50,9 +52,26 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item names within a namespace are accessed with the \keyword{import} implicit assignment
+    statement
+    \begin{ipython}{}
+      import <namespace>
+      from <namespace> import <name>
+      from <namespace> import *
+      from <namespace> import <name> as <alias>
+    \end{ipython}
+%
+  \item namespaces may be nested
+    \begin{ipython}{}
+      from sys.path import abspath
+    \end{ipython}
+    so \emph{name qualifications} allow fine tuning of the list of imported symbols
+%
+  \item folders, and their sub-folders and files, become a hierarchy of nested namespaces
+    automatically
     \begin{itemize}
-    \item
+    \item files with the \literal{.py} extension
+    \item folders with the \literal{\_\_init\_\_.py} special file
     \end{itemize}
 %
   \end{itemize}
@@ -67,44 +86,25 @@
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
+  \item modules and packages are objects:
+    \begin{ipython}{}
+      def load(material):
+          'load the named {material} model'
+          # build the comman string
+          cmd = 'from materials import {} as model'.format(material)
+          # get the interpreter to do its thing
+          exec(cmd)
+          # if all goes well, return the loaded module
+          return model
 
-% --------------------------------------
-% other built-in objects
-\begin{frame}[fragile]
+      # load the material model
+      model = load(material='perfectGas')
+      # ask for an equation of state
+      eos = model.newMaterial()
+    \end{ipython}
+    dynamic programming!
 %
-  \frametitle{Other built-in objects}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% type hierarchy
-\begin{frame}[fragile]
-%
-  \frametitle{Type hierarchy}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item this example is brittle; one can do much better...
 %
   \end{itemize}
 %
@@ -118,10 +118,30 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item classes are object factories
     \begin{itemize}
-    \item
+    \item they introduce new types with state and behavior
+    \item using the name of a class in a call expression calls the constructor
+    \item each instance has access to all the class attributes
+    \item assignments in class declaration create class attributes
+    \item assignments to \keyword{self} create per-instance attributes
     \end{itemize}
+%
+    \begin{ipython}{}
+      class Shape:
+          'the basis of all shapes'
+
+          # public data
+          name = 'generic shape'
+
+          # interface
+          def kind(self): return self.name
+
+          # meta methods
+          def __init__(self):
+              self.rep = None
+              return
+    \end{ipython}
 %
   \end{itemize}
 %
@@ -302,6 +322,57 @@
 \begin{frame}[fragile]
 %
   \frametitle{Object oriented programming}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% other built-in objects
+\begin{frame}[fragile]
+%
+  \frametitle{Other built-in objects}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% type hierarchy
+\begin{frame}[fragile]
+%
+  \frametitle{Type hierarchy}
+%
+  \begin{itemize}
+%
+  \item 
+    \begin{itemize}
+    \item
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% printing
+\begin{frame}[fragile]
+%
+  \frametitle{Printing}
 %
   \begin{itemize}
 %
