@@ -121,9 +121,9 @@
   \item classes are object factories
     \begin{itemize}
     \item they introduce new types with state and behavior
-    \item using the name of a class in a call expression calls the constructor
+    \item using the name of a class in a call expression invokes the constructor
     \item each instance has access to all the class attributes
-    \item assignments in class declaration create class attributes
+    \item assignments in the class declaration create class attributes
     \item assignments to \keyword{self} create per-instance attributes
     \end{itemize}
 %
@@ -138,7 +138,8 @@
           def kind(self): return self.name
 
           # meta methods
-          def __init__(self):
+          def __init__(self, **kwds):
+              super().__init_(**kwds)
               self.rep = None
               return
     \end{ipython}
@@ -148,17 +149,29 @@
 \end{frame}
 
 % --------------------------------------
-% inheritance
+% using classes
 \begin{frame}[fragile]
 %
-  \frametitle{Inheritance}
+  \frametitle{Class records and class instances}
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item the class declaration is an implicit assignment to a \emph{class record}
+  \item class records are a built-in type
+    \begin{ipython}{}
+      print(Shape)
+      print(Shape.name)
+      print(Shape.kind)
+    \end{ipython}
+%
+  \item to make an \emph{instance}, use the name of the class in a call expression
+    \begin{ipython}{}
+      shape = Shape()
+      print(shape.name)
+      print(shape.kind())
+    \end{ipython}
+%
+  \item of course, neither \class{Shape} nor its instances are very interesting
 %
   \end{itemize}
 %
@@ -172,10 +185,56 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item the class declaration creates a class record and assigns it to whatever name you used
+    for the class
+%
+  \item invoking the class name as a function builds new instances of that class
+%
+  \item \emph{methods} are functions defined within the class declaration; they provide
+    behavior for the instances
     \begin{itemize}
-    \item
+    \item they must take at least one parameter to receive the instance through which they were
+      invoked
+    \item this special parameter is named \identifier{self}, by \emph{convention}
     \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% inheritance
+\begin{frame}[fragile]
+%
+  \frametitle{Inheritance}
+%
+  \begin{itemize}
+%
+  \item specialization through inheritance 
+    \begin{itemize}
+    \item super-classes must be listed in the class declaration
+    \item derived classes inherit all the attributes of their ancestors
+    \item instances inherit attributes from all accessible classes
+    \end{itemize}
+%
+    \begin{ipython}{}
+      class Disk(Shape):
+          'the shape bounded by a circle'
+
+          # public data
+          name = 'disk'
+          radius = 1
+          center = (0,0)
+
+          # meta methods
+          def __init__(self, radius=radius, center, **kwds):
+              super().__init_(**kwds)
+              self.radius = radius
+              self.center = center
+              return
+    \end{ipython}
+%
+  \item all classes inherit from \identifier{object}
 %
   \end{itemize}
 %
@@ -189,9 +248,30 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item \emph{class}
     \begin{itemize}
-    \item
+    \item a blueprint for the construction of new types of objects
+    \end{itemize}
+%
+  \item \emph{instance}
+    \begin{itemize}
+    \item an object created using a class constructor
+    \end{itemize}
+%
+  \item \emph{member}
+    \begin{itemize}
+    \item an attribute of a class instance
+    \end{itemize}
+%
+  \item \emph{method}
+    \begin{itemize}
+    \item an attribute of a class instance that is bound to a function object
+    \end{itemize}
+%
+  \item \emph{self}
+    \begin{itemize}
+    \item the conventional name give to the method parameter that receives the referenced
+      instance
     \end{itemize}
 %
   \end{itemize}
@@ -202,16 +282,48 @@
 % special methods
 \begin{frame}[fragile]
 %
-  \frametitle{Special methods}
+  \frametitle{Overloading operators in classes}
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item \emph{Don't!}
+  \item most python operations involving instances can be intercepted and customized
+  \item through methods that have special names
 %
   \end{itemize}
+%
+  \vspace{.5em}
+  \begin{minipage}{.40\linewidth}
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{method} & \emph{purpose} \\
+        \method{\_\_init\_\_} & construction: \literal{x = X()} \\
+        \method{\_\_del\_\_} & destruction \\
+        \method{\_\_str\_\_} & string coercion: \literal{str(x)} \\
+        \method{\_\_repr\_\_} & representation: \literal{repr(x)} \\
+        \method{\_\_len\_\_} & size, truth tests: \literal{len(x)} \\
+        \method{\_\_cmp\_\_} & comparisons: \literal{cmp(x)}, \literal{x < other} \\
+        \method{\_\_call\_\_} & function class: \literal{x()}
+      \end{tabular}
+    \end{table}
+  \end{minipage}
+%
+  \hspace{.1\linewidth}
+%
+  \begin{minipage}{.40\linewidth}
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{method} & \emph{purpose} \\
+        \method{\_\_getattr\_\_} & member access: \literal{x.name} \\
+        \method{\_\_getitem\_\_} & indexing: \literal{x[5]} \\
+        \method{\_\_setitem\_\_} & indexing: \literal{x[5] = 0} \\
+        \method{\_\_add\_\_} & addition: \literal{x + other} \\
+        \method{\_\_radd\_\_} & addition: \literal{other + x} \\
+        \method{\_\_and\_\_} & logic: \literal{x and other} \\
+        \method{\_\_or\_\_} & logic: \literal{x or other}
+      \end{tabular}
+    \end{table}
+  \end{minipage}
 %
 \end{frame}
 
@@ -223,162 +335,29 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item a more complete story
     \begin{itemize}
-    \item
+    \item unqualified names are looked up in a chain of lexical namespaces
+    \item qualified names conduct a search in the indicated namespace
+    \item scopes initialize object namespaces: packages/modules, classes, instances
     \end{itemize}
 %
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% classes as objects
-\begin{frame}[fragile]
-%
-  \frametitle{Classes as objects}
-%
-  \begin{itemize}
-%
-  \item 
+  \item unqualified names
     \begin{itemize}
-    \item
+    \item are global on read
+    \item are local on write, unless explicitly marked \keyword{global}
     \end{itemize}
 %
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% methods as objects
-\begin{frame}[fragile]
-%
-  \frametitle{Methods as objects}
-%
-  \begin{itemize}
-%
-  \item 
+  \item qualified names, e.g. \literal{instance.name}, are looked up in the indicated namespace
     \begin{itemize}
-    \item
+    \item module and package
+    \item instance, then class record, then ancestors as specified in the \identifier{\_\_mro\_\_}
     \end{itemize}
 %
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% exceptions
-\begin{frame}[fragile]
-%
-  \frametitle{Exceptions}
-%
-  \begin{itemize}
-%
-  \item 
+  \item namespace dictionaries
     \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% raising exceptions
-\begin{frame}[fragile]
-%
-  \frametitle{Raising exceptions}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% catching exceptions
-\begin{frame}[fragile]
-%
-  \frametitle{Catching exceptions}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% object oriented programming
-\begin{frame}[fragile]
-%
-  \frametitle{Object oriented programming}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% other built-in objects
-\begin{frame}[fragile]
-%
-  \frametitle{Other built-in objects}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% type hierarchy
-\begin{frame}[fragile]
-%
-  \frametitle{Type hierarchy}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% printing
-\begin{frame}[fragile]
-%
-  \frametitle{Printing}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
+    \item \identifier{\_\_dict\_\_}
+    \item name qualification is a dictionary lookup
     \end{itemize}
 %
   \end{itemize}
