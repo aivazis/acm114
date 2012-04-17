@@ -9,6 +9,92 @@
 \lecture{Introduction to python}{20120418}
 
 % --------------------------------------
+% special methods
+\begin{frame}[fragile]
+%
+  \frametitle{Overloading operators in classes}
+%
+  \begin{itemize}
+%
+  \item \emph{Don't!}
+  \item most python operations involving instances can be intercepted and customized
+  \item through methods that have special names
+%
+  \end{itemize}
+%
+  \vspace{.5em}
+  \begin{minipage}{.40\linewidth}
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{method} & \emph{purpose} \\
+        \method{\_\_init\_\_} & construction: \literal{x = X()} \\
+        \method{\_\_del\_\_} & destruction \\
+        \method{\_\_str\_\_} & string coercion: \literal{str(x)} \\
+        \method{\_\_repr\_\_} & representation: \literal{repr(x)} \\
+        \method{\_\_len\_\_} & size, truth tests: \literal{len(x)} \\
+        \method{\_\_cmp\_\_} & comparisons: \literal{cmp(x)}, \literal{x < other} \\
+        \method{\_\_call\_\_} & function class: \literal{x()}
+      \end{tabular}
+    \end{table}
+  \end{minipage}
+%
+  \hspace{.1\linewidth}
+%
+  \begin{minipage}{.40\linewidth}
+    \begin{table}\footnotesize
+      \begin{tabular}{ll}
+        \emph{method} & \emph{purpose} \\
+        \method{\_\_getattr\_\_} & member access: \literal{x.name} \\
+        \method{\_\_getitem\_\_} & indexing: \literal{x[5]} \\
+        \method{\_\_setitem\_\_} & indexing: \literal{x[5] = 0} \\
+        \method{\_\_add\_\_} & addition: \literal{x + other} \\
+        \method{\_\_radd\_\_} & addition: \literal{other + x} \\
+        \method{\_\_and\_\_} & logic: \literal{x and other} \\
+        \method{\_\_or\_\_} & logic: \literal{x or other}
+      \end{tabular}
+    \end{table}
+  \end{minipage}
+%
+\end{frame}
+
+% --------------------------------------
+% namespace rules
+\begin{frame}[fragile]
+%
+  \frametitle{Namespace rules}
+%
+  \begin{itemize}
+%
+  \item a more complete story
+    \begin{itemize}
+    \item unqualified names are looked up in a chain of lexical namespaces
+    \item qualified names conduct a search in the indicated namespace
+    \item scopes initialize object namespaces: packages/modules, classes, instances
+    \end{itemize}
+%
+  \item unqualified names
+    \begin{itemize}
+    \item are global on read
+    \item are local on write, unless explicitly marked \keyword{global}
+    \end{itemize}
+%
+  \item qualified names, e.g. \literal{instance.name}, are looked up in the indicated namespace
+    \begin{itemize}
+    \item module and package
+    \item instance, then class record, then ancestors as specified in the \identifier{\_\_mro\_\_}
+    \end{itemize}
+%
+  \item namespace dictionaries
+    \begin{itemize}
+    \item \identifier{\_\_dict\_\_}
+    \item name qualification is a dictionary lookup
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % exceptions
 \begin{frame}[fragile]
 %
@@ -16,10 +102,25 @@
 %
   \begin{itemize}
 %
-  \item 
+  \item a non-local, high level control flow device
+%
+  \item exceptions are used to signal
     \begin{itemize}
-    \item
+    \item critical errors
+    \item but also recoverable runtime failures
     \end{itemize}
+%
+  \item raised by the interpreter whenever an error is detected
+    \begin{itemize}
+    \item there is an extensive exception class hierarchy that captures and documents a wide
+      variety of errors
+    \end{itemize}
+%
+  \item user code can trigger an exception using the \keyword{raise} statement
+%
+  \item the \literal{try ... except} statement sets up a net for catching exceptions
+%
+  \item proper exception hierarchies are an extremely important part of application design
 %
   \end{itemize}
 %
@@ -29,99 +130,37 @@
 % raising exceptions
 \begin{frame}[fragile]
 %
-  \frametitle{Raising exceptions}
+  \frametitle{Raising and catching exceptions}
 %
   \begin{itemize}
 %
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item exceptions are triggered by \keyword{raise}
+    \begin{ipython}{}
+      raise <expression>
+    \end{ipython}
+    where \literal{<expression>} must evaluate to an instance of a class that derives from
+    \identifier{Exception}, the base class of all python exceptions
 %
-  \end{itemize}
+  \item exceptions may \emph{chain} to other exceptions
+    \begin{ipython}{}
+      raise <expression> from <expression>
+    \end{ipython}
+    this form is most useful after catching some other exception and you want to preserve the
+    original error
 %
-\end{frame}
-
-% --------------------------------------
-% catching exceptions
-\begin{frame}[fragile]
-%
-  \frametitle{Catching exceptions}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% object oriented programming
-\begin{frame}[fragile]
-%
-  \frametitle{Object oriented programming}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% other built-in objects
-\begin{frame}[fragile]
-%
-  \frametitle{Other built-in objects}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% type hierarchy
-\begin{frame}[fragile]
-%
-  \frametitle{Type hierarchy}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
-%
-  \end{itemize}
-%
-\end{frame}
-
-% --------------------------------------
-% printing
-\begin{frame}[fragile]
-%
-  \frametitle{Printing}
-%
-  \begin{itemize}
-%
-  \item 
-    \begin{itemize}
-    \item
-    \end{itemize}
+  \item to catch an exception, you have to set up a \keyword{try} block; the full form is
+    \begin{ipython}{}
+      try:
+          <statements>
+      except <expression> as <name>:
+          <statements>
+      else:
+          <statements>
+      finally:
+          <statements>
+    \end{ipython}
+    there may be as many \keyword{except} sections as you need; most parts of the statement are
+    optional
 %
   \end{itemize}
 %
