@@ -24,6 +24,7 @@ table.calendar th {
     text-align: right;
     text-transform: uppercase;
     letter-spacing: .3em;
+    color: #7b7b46;
 }
 
 table.calendar th.hrule {
@@ -32,13 +33,12 @@ table.calendar th.hrule {
 }
 
 table.calendar th.vrule {
-    padding-right: .5em;
-    border-right: 1px solid #8a8781;
+    padding-right: 1.0em;
+    border-right: 0px solid #8a8781;
 }
 
 table.calendar th.lhead {
     width: 4em;
-    border-right: 1px solid #8a8781;
 }
 
 table.calendar td {
@@ -47,19 +47,20 @@ table.calendar td {
     height: 1.5em;
     text-align: right;
     vertical-align: middle;
-    color: #c0c0c0;
+    color: #ccc;
 }
 
 table.calendar td.holiday {
-    color: #e0b0b0;
+    color: #ebb;
 }
 
 table.calendar td.finals {
-    color: #b0e0b0;
+    color: #beb;
 }
 
 table.calendar td a {
     color: #6d6b55;
+    color: #555;
 }
 
 table.calendar td a:hover {
