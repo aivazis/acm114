@@ -1,0 +1,101 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
+%
+
+\documentclass[12pt,answers]{exam}
+
+% packages, setup, macros, etc.
+\input{setup}
+
+\begin{document}
+\pagestyle{headandfoot}
+\runningfootrule
+\firstpageheader{ACM/CS 114}{Assignment 1}{Due: 7 May 2012}
+\runningheader{}{}{}
+\firstpagefooter{}{}{}
+\runningfooter{ACM/CS 114}{Assignment 1}{\thepage}
+
+% intro
+As warm up, we will repeat some of the assignments from the previous quarter, but this time you
+\emph{must} implement everything in python. Answering these questions does not require
+extensive familiarity with the large number of packages in the python runtime: we will only use
+the package \identifier{random}. But feel free to look around.
+
+\begin{questions}
+
+% --------------------------------------
+% merge sort
+\question
+Recall the pseudocode for \mergesort:
+%
+\begin{center}
+  \begin{minipage}{.5\linewidth}
+    \begin{algorithm}[H]
+      \label{alg:merge-sort}
+%
+      \DontPrintSemicolon
+      %\NoCaptionOfAlgo
+      \SetAlCapHSkip{0ex}
+%
+      \caption{\mergesort($S$, $p$, $r$)}
+      \vspace{.5em}
+%
+      \If{$p < r$}{
+        $q \leftarrow \lfloor (p+r)/2 \rfloor$ \;
+        \mergesort($S$, $p$, $q$) \;
+        \mergesort($S$, $q+1$, $r$) \;
+        \merge($S$, $p$, $q$, $r$) \;
+      }
+%
+      \vspace{.5em}
+%
+    \end{algorithm}
+  \end{minipage}
+\end{center}
+%
+\begin{parts}
+\part Implement \mergesort\ and \merge, its workhorse, in python.
+\part Write a driver that invokes it with $S = (5, 2, 4, 6, 1, 3)$.
+\part Build a container with $10^6$ random numbers. Sort it using your implementation.
+\end{parts}
+
+% --------------------------------------
+% dilog
+\def\Li{\mbox{\rm Li}_{2}}
+\def\dilog{\function{dilog}}
+\question Recall the definition for the dilogarithm in terms of the integral
+%
+\begin{equation}
+\Li(z) \bydef
+- \int_{0}^{z} dz' \; \frac{\log(1-z')}{z'} \label{eq:li-def}
+\end{equation}
+%
+\begin{parts}
+\part Implement a function \dilog\ that accepts a real number $z$ and an integer $N$, and
+returns an approximation to \eqref{li-def} using the midpoint rule.
+\part Build a table of the value, the error and the amount of time it takes to compute $\Li(1)$
+and $\Li(-1)$, for $N \in \{ 10, 10^3, 10^6, 10^9 \}$.
+%
+\end{parts}
+
+% --------------------------------------
+% montecarlo
+\question Use Monte Carlo integration to compute an approximation to the value of $\pi$ by
+computing the area of the upper right quadrant of a unit circle centered at the origin, as
+shown below.
+%
+\begin{figure}[h]
+\centering
+\includegraphics[scale=.5]{pie.pdf}
+\end{figure}
+%
+
+\end{questions}
+
+\end{document}
+
+% end of file 
