@@ -34,6 +34,7 @@ SECTIONS = \
     20120413.tex \
     20120416.tex \
     20120418.tex \
+    20120507.tex \
 
 FIGURES = \
 

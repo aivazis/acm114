@@ -1,0 +1,226 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
+%
+
+\lecture{Introduction to python}{20120507}
+
+% --------------------------------------
+% preview: a python script
+\begin{frame}[fragile]
+%
+  \frametitle{A python script}
+%
+Recall the code for the $\pi$ estimator using Monte Carlo integration
+%
+\python{firstline=9,lastline=25, label={lst:python:pi}}{listings/pi.py}
+%
+simple, fast but inflexible
+%
+\end{frame}
+
+% --------------------------------------
+% performance
+\begin{frame}[fragile]
+%
+  \frametitle{Accuracy and cost of the python script}
+%
+  \begin{table}
+    \centering
+    \[
+    \begin{array}{rd{8}cd{4}}
+      % headersep
+      \multicolumn{1}{c}{N} & 
+      \multicolumn{1}{c}{\pi_{N}} & 
+      \multicolumn{1}{c}{\Delta} & 
+      \multicolumn{1}{c}{t \mbox{(sec)}} \\
+      \hline \\ [-1.5ex]
+      % body
+      10^{0} &  0          & 1                   &    .014  \\
+      10^{1} &  3.6        & 1.46 \times 10^{-1} &    .014  \\
+      10^{2} &  3.36       & 6.95 \times 10^{-2} &    .014  \\
+      10^{3} &  3.076      & 2.09 \times 10^{-2} &    .015  \\
+      10^{4} &  3.156      & 4.59 \times 10^{-3} &    .027  \\
+      10^{5} &  3.14496    & 1.07 \times 10^{-3} &    .144  \\
+      10^{6} &  3.144028   & 7.75 \times 10^{-4} &   1.265  \\
+      10^{7} &  3.142112   & 1.65 \times 10^{-4} &  12.624  \\
+      10^{8} &  3.14170136 & 3.46 \times 10^{-5} & 130.430 
+    \end{array}
+    \]
+    \label{tab:simple-python}
+  \end{table}
+%
+\end{frame}
+
+% --------------------------------------
+% the equivalent C++ code
+\begin{frame}[fragile]
+%
+  \frametitle{The equivalent \cpp\ code}
+%
+\C++{
+  firstline=9,lastline=34,
+  label={lst:python:pi},
+  caption={\srcfile{pi.cc}: Estimating $\pi$ in \cpp},
+}{listings/pi.cc}
+%
+\end{frame}
+
+% --------------------------------------
+% performance
+\begin{frame}[fragile]
+%
+  \frametitle{Accuracy and cost of the \cpp\ code}
+%
+  \begin{table}
+    \centering
+    \[
+    \begin{array}{rd{8}cd{4}}
+      % headersep
+      \multicolumn{1}{c}{N} & 
+      \multicolumn{1}{c}{\pi_{N}} & 
+      \multicolumn{1}{c}{\Delta} & 
+      \multicolumn{1}{c}{t \mbox{(sec)}} \\
+      \hline \\ [-1.5ex]
+      % body
+      10^{0} &  0          & 1                   &    .002  \\
+      10^{1} &  3.2        & 1.86 \times 10^{-2} &    .002  \\
+      10^{2} &  3.16       & 5.86 \times 10^{-3} &    .002  \\
+      10^{3} &  3.2        & 1.86 \times 10^{-2} &    .002  \\
+      10^{4} &  3.1456     & 1.28 \times 10^{-3} &    .004  \\
+      10^{5} &  3.13528    & 2.01 \times 10^{-3} &    .026  \\
+      10^{6} &  3.140756   & 2.66 \times 10^{-4} &    .230  \\
+      10^{7} &  3.141948   & 1.13 \times 10^{-4} &   2.277  \\
+      10^{8} &  3.1417769  & 5.86 \times 10^{-5} &  22.749  \\
+      10^{9} &  3.1415631  & 9.41 \times 10^{-6} & 227.735   
+    \end{array}
+    \]
+    \label{tab:simple-python}
+  \end{table}
+%
+  \begin{itemize}
+  \item it appears that \cpp\ is about six or seven times faster
+  \item but you have to compile and link every time you make a change
+  \item where does the speed difference come from?
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the hunt for objects
+\begin{frame}[fragile]
+%
+  \frametitle{The hunt for objects}
+%
+  perhaps you can be productive without any extra complexity, but that's very rare
+%
+  \python{firstline=9,lastline=25, label={lst:python:pi}}{listings/pi.py}
+%
+  what flexibility do we need?
+%
+\end{frame}
+
+% --------------------------------------
+% the base class for the random number generator
+\begin{frame}[fragile]
+%
+  \frametitle{Base class for the random number generator}
+%
+  the base class, in \srcfile{PointCloud.py}
+%
+  \python{firstline=9,lastline=24, label={lst:python:PointCloud}}{listings/PointCloud.py}
+%
+\end{frame}
+
+% --------------------------------------
+% encapsulating the standard python RNG
+\begin{frame}[fragile]
+%
+  \frametitle{Encapsulating the built-in python RNG}
+%
+  an example implementation, in \srcfile{Mersenne.py}
+%
+  \python{firstline=9,lastline=29, label={lst:python:Mersenne}}{listings/Mersenne.py}
+%
+\end{frame}
+
+% --------------------------------------
+% the abstract representation of the region of integration
+\begin{frame}[fragile]
+%
+  \frametitle{Representing the region of integration}
+%
+  \begin{itemize}
+  \item the next step is building representations of the region of integration
+  \item in \srcfile{Shape.py}
+  \end{itemize}
+%
+  \python{firstline=9,lastline=20, label={lst:python:Shape}}{listings/Shape.py}
+%
+\end{frame}
+
+% --------------------------------------
+% disks
+\begin{frame}[fragile]
+%
+  \frametitle{The interior of a circle, in \srcfile{Disk.py}}
+%
+  \python{firstline=9,lastline=36, label={lst:python:Shape}}{listings/Disk.py}
+%
+\end{frame}
+
+% --------------------------------------
+% the driver
+\begin{frame}[fragile]
+%
+  \frametitle{A first pass at the driver script}
+%
+  \python{firstline=9,lastline=36, label={lst:python:classes}}{listings/classes.py}
+%
+\end{frame}
+
+% --------------------------------------
+% performance
+\begin{frame}[fragile]
+%
+  \frametitle{Comparing the performance of our three implementations}
+%
+  \begin{table}
+    \centering
+    \[
+    \begin{array}{rd{3}d{3}d{3}d{3}d{3}}
+      % headersep
+      & 
+      \multicolumn{1}{c}{\cpp} &
+      \multicolumn{1}{c}{\mbox{\rm python}} &
+      \multicolumn{1}{c}{\mbox{\rm na\"ive OO}} \\
+      % second row
+      \multicolumn{1}{c}{N} &
+      \multicolumn{1}{c}{t \mbox{(sec)}} &
+      \multicolumn{1}{c}{t \mbox{(sec)}}  &
+      \multicolumn{1}{c}{t \mbox{(sec)}} \\
+      \hline \\ [-1.5ex]
+      % body
+      10^{0} &    .002 &    .014 &    .014 \\
+      10^{1} &    .002 &    .014 &    .014 \\
+      10^{2} &    .002 &    .014 &    .014 \\
+      10^{3} &    .002 &    .015 &    .020 \\
+      10^{4} &    .004 &    .027 &    .078 \\
+      10^{5} &    .026 &    .144 &    .625 \\
+      10^{6} &    .230 &   1.265 &   6.242 \\
+      10^{7} &   2.277 &  12.624 &  61.583 \\
+      10^{8} &  22.749 & 130.430 &         \\
+      10^{9} & 227.735 &         &         \\
+    \end{array}        
+    \]
+    \label{tab:classes:simple}
+  \end{table}
+%
+\end{frame}
+
+
+
+% end of file 
