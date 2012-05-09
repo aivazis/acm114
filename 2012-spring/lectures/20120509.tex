@@ -1,0 +1,97 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
+%
+
+\lecture{Introduction to python}{20120509}
+
+% --------------------------------------
+% encapsulating the standard python RNG
+\begin{frame}[fragile]
+%
+  \frametitle{Encapsulating the built-in python RNG}
+%
+  an example implementation, in \srcfile{Mersenne.py}
+%
+  \python{firstline=9,lastline=29}{listings/simple/Mersenne.py}
+%
+\end{frame}
+
+% --------------------------------------
+% the abstract representation of the region of integration
+\begin{frame}[fragile]
+%
+  \frametitle{Representing the region of integration}
+%
+  \begin{itemize}
+  \item the next step is building representations of the region of integration
+  \item in \srcfile{Shape.py}
+  \end{itemize}
+%
+  \python{firstline=9,lastline=20}{listings/simple/Shape.py}
+%
+\end{frame}
+
+% --------------------------------------
+% disks
+\begin{frame}[fragile]
+%
+  \frametitle{The interior of a circle, in \srcfile{Disk.py}}
+%
+  \python{firstline=9,lastline=36}{listings/simple/Disk.py}
+%
+\end{frame}
+
+% --------------------------------------
+% the driver
+\begin{frame}[fragile]
+%
+  \frametitle{A first pass at the driver script}
+%
+  \python{firstline=9,lastline=36}{listings/simple/classes.py}
+%
+\end{frame}
+
+% --------------------------------------
+% performance
+\begin{frame}[fragile]
+%
+  \frametitle{Comparing the performance of our three implementations}
+%
+  \begin{table}
+    \centering
+    \[
+    \begin{array}{rd{3}d{3}d{3}d{3}d{3}}
+      % headersep
+      & 
+      \multicolumn{1}{c}{\cpp} &
+      \multicolumn{1}{c}{\mbox{\rm python}} &
+      \multicolumn{1}{c}{\mbox{\rm na\"ive OO}} \\
+      % second row
+      \multicolumn{1}{c}{N} &
+      \multicolumn{1}{c}{t \mbox{(sec)}} &
+      \multicolumn{1}{c}{t \mbox{(sec)}}  &
+      \multicolumn{1}{c}{t \mbox{(sec)}} \\
+      \hline \\ [-1.5ex]
+      % body
+      10^{0} &    .002 &    .014 &    .014 \\
+      10^{1} &    .002 &    .014 &    .014 \\
+      10^{2} &    .002 &    .014 &    .014 \\
+      10^{3} &    .002 &    .015 &    .020 \\
+      10^{4} &    .004 &    .027 &    .078 \\
+      10^{5} &    .026 &    .144 &    .625 \\
+      10^{6} &    .230 &   1.265 &   6.242 \\
+      10^{7} &   2.277 &  12.624 &  61.583 \\
+      10^{8} &  22.749 & 130.430 &         \\
+      10^{9} & 227.735 &         &         \\
+    \end{array}        
+    \]
+    \label{tab:classes:simple}
+  \end{table}
+%
+\end{frame}
+
+% end of file 
