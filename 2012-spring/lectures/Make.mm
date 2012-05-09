@@ -39,7 +39,12 @@ SECTIONS = \
 FIGURES = \
 
 LISTINGS = \
-    listings/pi.py
+    listings/simple/pi.py \
+    listings/simple/pi.cc \
+    listings/simple/PointCloud.py \
+    listings/simple/Mersenne.py \
+    listings/simple/Shape.py \
+    listings/simple/Disk.py
 
 #--------------------------------------------------------------------------
 #

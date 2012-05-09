@@ -7,11 +7,29 @@
 #
 
 PROJECT = acm114
-PROJ_CLEAN += ${TESTS} *.csv *.dSYM
+PACKAGE = 
+
+RECURSE_DIRS = \
+    simple \
+
+OTHERS = \
+    containers \
+    generators \
+    components \
 
 #--------------------------------------------------------------------------
+#
 
-all: tidy
+all:
+	BLD_ACTION="all" $(MM) recurse
 
+tidy::
+	BLD_ACTION="tidy" $(MM) recurse
+
+clean::
+	BLD_ACTION="clean" $(MM) recurse
+
+distclean::
+	BLD_ACTION="distclean" $(MM) recurse
 
 # end of file 
