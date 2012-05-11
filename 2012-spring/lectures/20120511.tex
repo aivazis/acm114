@@ -9,6 +9,29 @@
 \lecture{Introduction to python}{20120511}
 
 % --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Amortizing cost: containers}
+%
+  \begin{itemize}
+%
+  \item the flexible solution is more expensive
+    \begin{itemize}
+    \item this is sensible and, at some level, inevitable: flexibility implies runtime
+      decisions
+    \item so we should be prepared to tolerate some slow down
+    \end{itemize}
+%
+  \item part of bad performance is caused by executing the \emph{overhead} multiple times
+%
+  \item can we amortize the overhead over $N$, the total number of points?
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % improved  base class for the random number generator
 \begin{frame}[fragile]
 %
@@ -102,6 +125,153 @@
     \]
     \label{tab:classes:simple}
   \end{table}
+%
+\end{frame}
+
+% --------------------------------------
+% generators
+\begin{frame}[fragile]
+%
+  \frametitle{Generators}
+%
+  \begin{itemize}
+%
+  \item the container solution has a certain elegance
+    \begin{itemize}
+    \item the creation of the container and its use are separated
+    \item we pay less overhead per point
+    \item with our points in containers, we can use the fast \emph{functional} routines to
+      operate on them
+    \end{itemize}
+%
+  \item but, we have now uncovered a new source of cost: managing memory
+    \begin{itemize}
+    \item it appears that building large lists is expensive
+    \item can we avoid building the container all together?
+    \end{itemize}
+%
+  \item generators!
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% encapsulating the standard python RNG
+\begin{frame}[fragile]
+%
+  \frametitle{Generating random points}
+%
+  in \srcfile{Mersenne.py}
+%
+  \python{firstline=9,lastline=33}{listings/generators/Mersenne.py}
+%
+\end{frame}
+
+% --------------------------------------
+% disks
+\begin{frame}[fragile]
+%
+  \frametitle{The modified \srcfile{Disk.py}}
+%
+  \python{firstline=9,lastline=39,basicstyle=\tt\tiny}{listings/generators/Disk.py}
+%
+\end{frame}
+
+% --------------------------------------
+% the driver
+\begin{frame}[fragile]
+%
+  \frametitle{The driver for the generator based solution}
+%
+  \python{firstline=9,lastline=43,basicstyle=\tt\tiny}{listings/generators/gauss.py}
+%
+\end{frame}
+
+% --------------------------------------
+% performance
+\begin{frame}[fragile]
+%
+  \frametitle{The performance of the generator solution}
+%
+  \begin{table}
+    \centering
+    \[
+    \begin{array}{rd{3}d{3}d{3}d{3}d{3}}
+      % headersep
+      & 
+      \multicolumn{1}{c}{\cpp} &
+      \multicolumn{1}{c}{\mbox{\rm python}} &
+      \multicolumn{1}{c}{\mbox{\rm na\"ive OO}} &
+      \multicolumn{1}{c}{\mbox{\rm containers}} &
+      \multicolumn{1}{c}{\mbox{\rm generators}} \\
+      % second row
+      \multicolumn{1}{c}{N} &
+      \multicolumn{1}{c}{t \mbox{(sec)}} &
+      \multicolumn{1}{c}{t \mbox{(sec)}}  &
+      \multicolumn{1}{c}{t \mbox{(sec)}}  &
+      \multicolumn{1}{c}{t \mbox{(sec)}}  &
+      \multicolumn{1}{c}{t \mbox{(sec)}} \\
+      \hline \\ [-1.5ex]
+      % body
+      10^{0} &    .002 &    .014 &    .014 &    .014 &    .014 \\
+      10^{1} &    .002 &    .014 &    .014 &    .014 &    .014 \\
+      10^{2} &    .002 &    .014 &    .014 &    .015 &    .014 \\
+      10^{3} &    .002 &    .015 &    .020 &    .019 &    .018 \\
+      10^{4} &    .004 &    .027 &    .078 &    .063 &    .053 \\
+      10^{5} &    .026 &    .144 &    .625 &    .504 &    .401 \\
+      10^{6} &    .230 &   1.265 &   6.242 &   5.925 &   3.780 \\
+      10^{7} &   2.277 &  12.624 &  61.583 & 188.318 &  38.242 \\
+      10^{8} &  22.749 & 130.430 &         &         &         \\
+      10^{9} & 227.735 &         &         &         &         \\
+    \end{array}        
+    \]
+    \label{tab:classes:simple}
+  \end{table}
+%
+\end{frame}
+
+% --------------------------------------
+% functors
+\begin{frame}[fragile]
+%
+  \frametitle{Representing integrands}
+%
+  in \srcfile{Functor.py}
+%
+  \python{firstline=9,lastline=20}{listings/generators/Functor.py}
+%
+\end{frame}
+
+% --------------------------------------
+% a constant function
+\begin{frame}[fragile]
+%
+  \frametitle{Constant functions}
+%
+  in \srcfile{Constant.py}
+%
+  \python{firstline=9,lastline=31}{listings/generators/Constant.py}
+%
+\end{frame}
+
+% --------------------------------------
+% gaussians
+\begin{frame}[fragile]
+%
+  \frametitle{A non-trivial integrand}
+%
+  \python{firstline=9,lastline=43,basicstyle=\tt\tiny}{listings/generators/Gaussian.py}
+%
+\end{frame}
+
+% --------------------------------------
+% the driver
+\begin{frame}[fragile]
+%
+  \frametitle{The MOnte Carlo integrator}
+%
+  \python{firstline=9,lastline=41,basicstyle=\tt\tiny}{listings/generators/gauss-mc.py}
 %
 \end{frame}
 
