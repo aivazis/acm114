@@ -6,7 +6,6 @@
 # (c) 1998-2012 all rights reserved
 #
 
-
 import operator, functools
 
 def gauss():
