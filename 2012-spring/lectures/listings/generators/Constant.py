@@ -21,8 +21,8 @@ class Constant(Functor):
         # cache the constant
         constant = self.constant
         # return the constant regardless of the evaluation point
-        for point in points:
-            yield constant
+        for point in points: yield constant
+        # all done
         return
 
     # meta methods

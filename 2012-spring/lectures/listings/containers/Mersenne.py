@@ -11,8 +11,8 @@ from PointCloud import PointCloud
 
 class Mersenne(PointCloud):
     """
-    A point generator implemented using the Mersenne Twister random number generator that is
-    available as part of the python standard library
+    A point generator implemented using the Mersenne Twister random number
+    generator that is available as part of the python standard library
     """
 
     # interface
@@ -29,7 +29,7 @@ class Mersenne(PointCloud):
             p = [ random.uniform(left, right) for left,right in intervals ]
             sample.append(p)
             n -= 1
-                
+        # return the samples
         return sample
 
 # end of file 

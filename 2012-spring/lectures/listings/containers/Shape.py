@@ -14,8 +14,8 @@ class Shape(object):
     # interface
     def interior(self, points):
         """
-        Examine each point in {points} and return a list of booleans indicating
-        whether it is interior or not
+        Examine each point in {points} and return a container of only the
+        interior points
         """
         raise NotImplementedError(
             "class {.__name__!r} should implement 'interior'".format(type(self)))

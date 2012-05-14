@@ -29,7 +29,7 @@ class Gaussian(Functor):
         # loop over points and yield the computed value
         for p in points:
             # compute the norm |p - mean|^2
-            # this works as long as p and mean have the same length
+            # this works as long as {p} and {mean} have the same length
             r2 = sum((p_i - mean_i)**2 for p_i, mean_i in zip(p, mean))
             # yield the value at the current p
             yield normalization * exp(- r2/scaling)

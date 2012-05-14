@@ -22,8 +22,8 @@ class Mersenne(PointCloud):
         """
         # unpack the bounding box
         tail, head = box #@\label{line:mt:unpack}@
-        intervals = tuple(zip(tail, head)) #@\label{line:mt:zip}@
-        # build the point p by caling random the right number of times
+        intervals = zip(tail, head) #@\label{line:mt:zip}@
+        # build the point {p} by calling {random} the right number of times
         p = [ random.uniform(left, right) for left, right in intervals ] #@\label{line:mt:list}@
         # and return it
         return p
