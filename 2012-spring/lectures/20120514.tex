@@ -1,0 +1,308 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
+%
+
+\lecture{Introduction to pyre}{20120514}
+
+% --------------------------------------
+% assessment
+\begin{frame}[fragile]
+%
+  \frametitle{Design assessment}
+%
+  \begin{itemize}
+%
+  \item the OO solution represents several improvements over the initial implementation
+    \begin{itemize}
+    \item the problem has been decomposed into several parts that can evolve independently
+    \item there is a natural correspondence with the mathematics of Monte Carlo integration 
+    \item our driver assembles the pieces together in a natural fashion
+    \end{itemize}
+%
+  \item our abstract base classes
+    \begin{itemize}
+      \item do not play a string r\^ole in dynamically typed languages, such as python
+      \item in strongly typed languages, they become constraints on their subclasses
+    \end{itemize}
+%
+  \item change involves modifying the script and running again
+    \begin{itemize}
+    \item how would you build the performance table, or compare multiple random number
+      generators?
+    \end{itemize}
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the Integrator
+\begin{frame}[fragile]
+%
+  \frametitle{Reassembling the pieces}
+%
+  if we are interested in turning our simple script into a package, we should build a class to
+  take responsibility of managing all the necessary parts; consider the class
+  \class{Integrator}
+%
+  \begin{ipython}{}
+class Integrator:
+    """
+    The abstract base class for integrators
+    """
+
+    # interface
+    def integrate(self):
+        """
+        Integrate my {integrand} over my {region}
+        """
+        raise NotImplementedError(
+            "class {.__name__!r} should implement 'integrate'".format(type(self)))
+  \end{ipython}
+%
+  and let descendants specify the details of the quadrature
+%
+\end{frame}
+
+% --------------------------------------
+% Monte Carlo
+\begin{frame}[fragile]
+%
+  \frametitle{The Monte Carlo integrator}
+%
+  perhaps something like
+%
+  \begin{ipython}[basicstyle=\tt\tiny]{}
+from Integrator import Integrator
+
+class MonteCarlo(Integrator):
+    """
+    A Monte Carlo integrator
+    """
+
+    # public state
+    samples = 10**5 # default value?
+    box = ????
+    mesh = ????
+    region = ????
+    integrand = ????
+
+    # interface
+    def integrate(self):
+        """
+        Integrate my {integrand} over the {region} by sampling it using random
+        numbers from {mesh}
+        """
+        # compute the normalization
+        normalization = self.box.measure() / self.samples
+        # build the sample set
+        points = self.mesh.points(n=self.samples, box=self.box)
+        # narrow the set down to the interior points
+        interior = self.region.interior(points=points)
+        # build the value of the integral
+        integral = normalization * sum(self.integrand.eval(interior))
+        # and return it
+        return integral
+  \end{ipython}
+%
+  where the parts are specified at \emph{runtime}?
+%
+\end{frame}
+
+% --------------------------------------
+% inversion of control
+\begin{frame}[fragile]
+%
+  \frametitle{Inversion of control}
+%
+  let's be a bit more ambitious: 
+  \begin{itemize}
+  \item can we postpone until \emph{runtime} the selection, instantiation and initialization of
+    some subset of the classes in our applications?
+  \item and hence give the end user total control over \emph{what} and \emph{how}?
+  \end{itemize}
+
+  the correct solution would to the application like a user interface
+%
+\end{frame}
+
+% --------------------------------------
+% traits
+\begin{frame}[fragile]
+%
+  \frametitle{Small steps: properties}
+%
+  let's step back and contemplate a simpler problem
+%
+  \begin{ipython}{}
+class Disk:
+
+    # public state
+    radius = 1     # default value
+    center = (0,0) # default value
+
+    # interface
+    def interior(self, points):
+        ...
+  \end{ipython}
+%
+  what do we have to do to tie instances of \class{Disk} with information in some configuration
+  file
+%
+  \begin{icfg}{}
+    [ disk1 ]
+    center = (-1,1)   ; leave {radius} alone
+
+    [ disk2 ]
+    radius = .5
+    center = (1,1)
+  \end{icfg}
+%
+  or, equivalently, from the command line
+%
+  \begin{ish}{}
+gauss.py --disk1.center=(1,1) --disk2.radius=.5 --disk2.center=(-1,1)
+  \end{ish}
+%
+\end{frame}
+
+% --------------------------------------
+% components:
+\begin{frame}[fragile]
+%
+  \frametitle{Components}
+%
+  \begin{itemize}
+%
+  \item informally, \emph{classes} are software specifications that establish a relationship
+    between \emph{state} and \emph{behavior}
+    \begin{itemize}
+    \item we have syntax that let's us specify these very close to each other
+    \end{itemize}
+%
+  \item \emph{instances} are containers of state; there are special rules
+    \begin{itemize}
+    \item that grant access to this state
+    \item allow you to call functions that get easy access to this state
+    \end{itemize}
+%
+  \item \emph{components} are classes that specifically grant access to some of their state to
+    the end user
+    \begin{itemize}
+    \item the public data are the \emph{properties} of the component
+    \end{itemize}
+%
+  \item rule 1: components have properties
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% disk as components
+\begin{frame}[fragile]
+%
+  \frametitle{A trivial component}
+%
+  \pyre\ is a package that provides support for writing components
+%
+  \begin{ipython}{}
+import pyre
+
+class Disk(pyre.component):
+
+    # public state
+    radius = pyre.properties.float()
+    radius.default = 1
+    radius.doc = 'the radius of the disk'
+
+    center = pyre.properties.array()
+    center.default = (0,0)
+    center.doc = 'the location of the center of the circle'
+
+    # interface
+    ...
+  \end{ipython}
+%
+  why bother specifying the type of component properties?
+  \begin{itemize}
+  \item command line, configuration files, dialog boxes, web pages: they all gather information
+    from the user as strings
+  \item we need \emph{metadata} so we can convert from strings to the intended object
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% the names of things
+\begin{frame}[fragile]
+%
+  \frametitle{The names of things}
+%
+  in order to connect components to configurations, we need explicit associations
+  \begin{itemize}
+  \item component instances must be given unique names
+  \item component classes must be given unique family names
+  \item components belong to packages
+  \end{itemize}
+%
+  \begin{ipython}{}
+import pyre
+
+class Disk(pyre.component, family="gauss.shapes.disk"):
+
+    # public state
+    radius = pyre.properties.float()
+    radius.default = 1
+    radius.doc = 'the radius of the disk'
+
+    center = pyre.properties.array()
+    center.default = (0,0)
+    center.doc = 'the location of the center of the circle'
+    ...
+  \end{ipython}
+%
+  and here are a couple of component instances
+%
+  \begin{ipython}{}
+left = Disk(name='disk1')
+right = Disk(name='disk2')
+  \end{ipython}
+\end{frame}
+
+% --------------------------------------
+% configuration
+\begin{frame}[fragile]
+%
+  \frametitle{Configuration}
+%
+  \begin{itemize}
+  \item the package name is deduced from the component family name
+    \begin{itemize}
+    \item it is the part up to the first delimiter
+    \end{itemize}
+  \item \pyre\ automatically loads configuration files whose name matches the name of a package
+  \item there's even a way to override the default values that the developer hardwired into
+    the class declaration
+  \end{itemize}
+%
+  \begin{icfg}{}
+    [ gauss.shapes.disk ] ; the family name
+    radius = 2
+    center = (-1,-1)
+
+    [ disk1 ] ; the name of an instance
+    center = (-1,1)   ; leave {radius} alone
+
+    [ disk2 ] ; the name of another instance
+    radius = .5
+    center = (1,1)
+  \end{icfg}
+%
+\end{frame}
+
+% end of file 
