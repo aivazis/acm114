@@ -25,7 +25,7 @@
 %
   \item our abstract base classes
     \begin{itemize}
-      \item do not play a string r\^ole in dynamically typed languages, such as python
+      \item do not play a strong r\^ole in dynamically typed languages, such as python
       \item in strongly typed languages, they become constraints on their subclasses
     \end{itemize}
 %
@@ -181,7 +181,7 @@ gauss.py --disk1.center=(1,1) --disk2.radius=.5 --disk2.center=(-1,1)
   \item informally, \emph{classes} are software specifications that establish a relationship
     between \emph{state} and \emph{behavior}
     \begin{itemize}
-    \item we have syntax that let's us specify these very close to each other
+    \item we have syntax that allows us to specify these very close to each other
     \end{itemize}
 %
   \item \emph{instances} are containers of state; there are special rules
@@ -245,9 +245,9 @@ class Disk(pyre.component):
 %
   in order to connect components to configurations, we need explicit associations
   \begin{itemize}
-  \item component instances must be given unique names
-  \item component classes must be given unique family names
-  \item components belong to packages
+  \item component instances have unique names
+  \item component classes have unique family names
+  \item namespace management: components belong to packages
   \end{itemize}
 %
   \begin{ipython}{}
@@ -281,6 +281,7 @@ right = Disk(name='disk2')
   \frametitle{Configuration}
 %
   \begin{itemize}
+  \item rule 2: components have names
   \item the package name is deduced from the component family name
     \begin{itemize}
     \item it is the part up to the first delimiter
