@@ -41,6 +41,7 @@ SECTIONS = \
     20120516.tex \
 
 FIGURES = \
+    figures/gauss-namespace.pdf \
 
 LISTINGS = \
     listings/simple/pi.py \
