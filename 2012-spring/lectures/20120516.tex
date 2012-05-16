@@ -376,13 +376,74 @@ class MonteCarlo(pyre.component, family="gauss.integrators.montecarlo"):
 \end{frame}
 
 % --------------------------------------
+% component specification
+\begin{frame}[fragile]
+%
+  \frametitle{Component specification}
+%
+  \begin{itemize}
+%
+  \item and now for the real trick: converting some string provided by the user into a live
+    instance of \component{Disk}, configuring it, and attaching it to some
+    \component{MonteCarlo} instance
+%
+  \item the syntax is motivated by \identifier{URI}, the universal resource identifiers of the
+    web; the general form is
+    \begin{icfg}{}
+      <scheme>://<authority>/<path>#<identifier>
+    \end{icfg}
+    where most of the segments are optional
+%
+  \item if your component is accessible from your python path, you could specify
+    \begin{icfg}{}
+      import:gauss.shapes.disk
+    \end{icfg}
+%
+  \item if your component instance is somewhere on your disk, you would specify
+    \begin{icfg}{}
+      file:/tmp/shapes.py/disk
+    \end{icfg}
+%
+  \item in either case, \function{disk} is expected to be a name that resolves into a component
+    class, a component instance or be a callable that returns one of these
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
 % the user does the wiring
 \begin{frame}[fragile]
 %
-  \frametitle{Empowering the user}
+  \frametitle{The user does the wiring}
 %
-  and now for the real trick: converting some string provided by the user into a live instance
-  of \component{Disk}, configuring it, and attaching it to some \component{MonteCarlo} instance
+  with our definition of \component{MonteCarlo}, an appropriately structured package
+  \package{gauss} on the python path, and the following configuration file
+%
+  \begin{icfg}{}
+ [ gauss.shapes.disk ] ; change the default values for all disks
+ radius = 1
+ center = (0,0)
+
+ [ mc ] ; configure our Monte Carlo integrator instance
+ region = import:gauss.shapes.disk
+ ...
+  \end{icfg}{}
+%
+ the following python code in some script \srcfile{sample.py}
+%
+ \begin{ipython}{}
+   ...
+   mc = MonteCarlo(name="mc")
+   ...
+ \end{ipython}
+%
+ builds a \component{MonteCarlo} instance and configures it so that its region of
+ integration is a \component{Disk} instance; similarly, from the command line
+%
+ \begin{ish}{}
+    sample.py --mc.region=import:gauss.shapes.disk
+ \end{ish}
 %
 \end{frame}
 
