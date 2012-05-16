@@ -39,6 +39,7 @@ SECTIONS = \
     20120511.tex \
     20120514.tex \
     20120516.tex \
+    20120518.tex \
 
 FIGURES = \
     figures/gauss-namespace.pdf \

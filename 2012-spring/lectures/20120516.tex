@@ -458,26 +458,4 @@ class MonteCarlo(pyre.component, family="gauss.integrators.montecarlo"):
 %
 \end{frame}
 
-% --------------------------------------
-% namespace design
-\begin{frame}[fragile]
-%
-  \frametitle{Namespace design}
-%
-  we are now in a position to assemble the package \package{gauss}; let's start by laying out
-  the package namespace
-%
-  \begin{figure}
-    \includegraphics[scale=0.5]{figures/gauss-namespace.pdf}
-  \end{figure}
-%
-  and let's try to use this layout for both the logical and physical structure
-  \begin{itemize}
-  \item the top level is our package name
-  \item the internal nodes become the names of interfaces and subdirectories
-  \item the leaves are the component family names and the names by which the component
-    factories are accessible
-  \end{itemize}
-%
-\end{frame}
 % end of file 
