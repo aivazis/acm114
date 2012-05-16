@@ -111,11 +111,11 @@ class Disk(pyre.component, family="gauss.shapes.disk"):
 
 % --------------------------------------
 % explore
-\begin{frame}[fragile]
+%\begin{frame}[fragile]
 %
-  \frametitle{Interactive explorations}
+  %\frametitle{Interactive explorations}
 %
-\end{frame}
+%\end{frame}
 
 % --------------------------------------
 % template
@@ -192,7 +192,7 @@ class Disk(pyre.component, family="gauss.shapes.disk"):
     \item \identifier{normalizers}: a chain of post-processors of the converted value
     \item \identifier{validators}: a tuple of predicates that get called to ensure the property
       value satisfies the specified constraints
-    \item you can add your own; the framework pass them through to your component
+    \item you can add your own; the framework passes them through to your component
     \end{itemize}
 %
   \end{itemize}
@@ -212,7 +212,7 @@ class Disk(pyre.component, family="gauss.shapes.disk"):
   \item the low level support is in \package{pyre.units}
     \begin{itemize}
     \item full support for all SI base and derived units
-    \item all common abbreviations and names from alternative units
+    \item all common abbreviations and names from alternative systems of units
     \item correct arithmetic; proper handling of functions from \package{math}
     \end{itemize}
 %
@@ -226,6 +226,9 @@ t = 1.5 * second
 
 x = A * cos(#@$\omega$@ * t)
     \end{ipython}
+%
+    if the units in the argument to \function{cos} do not cancel, leaving a pure
+    \keyword{float} behind, an exception is raised; \identifier{x} has dimensions of meters
 %
   \end{itemize}
 %
@@ -317,7 +320,7 @@ class Shape(pyre.interface, family="gauss.shapes"):
 %
   \frametitle{Declaring compatibility with an interface}
 %
-  \component{Disk} can inform the framework it intends to implement \interface{Shape}
+  \component{Disk} can inform the framework that it intends to implement \interface{Shape}
 %
   \begin{ipython}{}
 import pyre
@@ -331,10 +334,10 @@ class Disk(pyre.component, family="gauss.shapes.disk", implements=Shape):
     ...
   \end{ipython}
 %
-  an error is raised if \component{Disk} does not conform fully to \interface{Shape}
+  an exception is raised if \component{Disk} does not conform fully to \interface{Shape}
 %
   \begin{itemize}
-  \item a missing method or a missing attribute
+  \item missing methods or missing attributes
   \end{itemize}
 %
   also, proper namespace design simplifies many things for the user
@@ -343,6 +346,8 @@ class Disk(pyre.component, family="gauss.shapes.disk", implements=Shape):
   \item \interface{Shape} declared its family as \identifier{gauss.shapes}
   \item \component{Disk} declared its family as \identifier{gauss.shapes.disk}
   \end{itemize}
+%
+  we'll see how later when it's time to put all this together
 %
 \end{frame}
 
