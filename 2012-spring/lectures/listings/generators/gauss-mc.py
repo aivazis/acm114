@@ -19,7 +19,7 @@ def gauss():
     # inputs
     N = 10**7
     box = [(-1,-1), (1,1)]
-    B = functools.reduce(operator.mul, ((right-left) for left,right in zip(*box)))#@\label{line:mc:volume}@
+    B = functools.reduce(operator.mul, ((right-left) for left,right in zip(*box)))
     # the point cloud generator
     generator = Mersenne()
     # the region of integration
@@ -33,7 +33,7 @@ def gauss():
     # select the interior points
     interior = disk.interior(sample)
     # compute the integral
-    integral = B/N * sum(gaussian.eval(interior))#@\label{line:mc:integral}@
+    integral = B/N * sum(gaussian.eval(interior))
 
     # print out the estimate of the integral
     print("integral: {0:.8f}".format(integral))

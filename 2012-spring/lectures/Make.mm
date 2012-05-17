@@ -50,6 +50,9 @@ LISTINGS = \
     listings/containers/*.py \
     listings/generators/*.py \
     listings/gauss/*.py \
+    listings/gauss/functors/*.py \
+    listings/gauss/integrators/*.py \
+    listings/gauss/meshes/*.py \
     listings/gauss/shapes/*.py \
 
 #--------------------------------------------------------------------------

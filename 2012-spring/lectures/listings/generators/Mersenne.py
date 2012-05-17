@@ -25,10 +25,10 @@ class Mersenne(PointCloud):
         # loop over the sample size
         while n > 0:
             p = [ random.uniform(*interval) for interval in intervals ]
-            yield p #@\label{line:mt:generators:yield}@
+            yield p
             n -= 1
                 
-        return #@\label{line:mt:generators:return}@
+        return
 
 
 # end of file 

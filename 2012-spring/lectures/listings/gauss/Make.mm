@@ -6,21 +6,19 @@
 # (c) 1998-2012 all rights reserved
 #
 
-PROJECT = acm114
+PROJECT = gauss
 PACKAGE = 
 
 RECURSE_DIRS = \
-    simple \
-    containers \
-    generators \
-    gauss \
-
+    functors \
+    integrators \
+    meshes \
+    shapes \
 
 #--------------------------------------------------------------------------
 #
 
-all:
-	BLD_ACTION="all" $(MM) recurse
+all: export
 
 tidy::
 	BLD_ACTION="tidy" $(MM) recurse
@@ -31,4 +29,15 @@ clean::
 distclean::
 	BLD_ACTION="distclean" $(MM) recurse
 
-# end of file 
+
+#--------------------------------------------------------------------------
+# export
+
+EXPORT_PYTHON_MODULES = \
+    __init__.py
+
+
+export:: export-python-modules
+	BLD_ACTION="export" $(MM) recurse
+
+# end of file

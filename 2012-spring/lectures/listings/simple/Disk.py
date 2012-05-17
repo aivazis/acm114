@@ -30,7 +30,7 @@ class Disk(Shape):
         return True
 
     # meta methods
-    def __init__(self, radius=1.0, center=(0.0, 0.0)): #@\label{line:disk:constructor}@
+    def __init__(self, radius=1.0, center=(0.0, 0.0)):
         self.radius = radius
         self.center = center
         return

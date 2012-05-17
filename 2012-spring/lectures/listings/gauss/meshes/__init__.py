@@ -7,15 +7,14 @@
 
 
 """
-Package that contains the implementations of shapes
+Package that contains the implementations of point clouds
 """
 
-# the interface
-from .Shape import Shape as shape
+# the interfaces
+from .PointCloud import PointCloud as cloud
 
 # the components
-from .Box import Box as box
-from .Ball import Ball as ball
+from .Mersenne import Mersenne as mersenne
 
 
 # end of file 

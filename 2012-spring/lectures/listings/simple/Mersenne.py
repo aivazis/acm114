@@ -21,10 +21,10 @@ class Mersenne(PointCloud):
         Generate a random point in the interior of {box}
         """
         # unpack the bounding box
-        tail, head = box #@\label{line:mt:unpack}@
-        intervals = zip(tail, head) #@\label{line:mt:zip}@
+        tail, head = box
+        intervals = zip(tail, head)
         # build the point {p} by calling {random} the right number of times
-        p = [ random.uniform(left, right) for left, right in intervals ] #@\label{line:mt:list}@
+        p = [ random.uniform(left, right) for left, right in intervals ]
         # and return it
         return p
 

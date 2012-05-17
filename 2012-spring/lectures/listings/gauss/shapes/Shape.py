@@ -23,7 +23,7 @@ class Shape(pyre.interface, family="gauss.shapes"):
         from .Box import Box
         return Box # if you return an instance, it will be shared by all...
 
-    # interface
+    # required interface
     @pyre.provides
     def measure(self):
         """

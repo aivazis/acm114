@@ -22,14 +22,14 @@ class Disk(Shape):
         r2 = self.radius**2
         x0, y0 = self.center
         # iterate over the given points and return the interior ones
-        for point in points: #@\label{line:disk:generators:loop}@
+        for point in points:
             x, y = point
             dx = x - x0
             dy = y - y0
             if dx*dx + dy*dy <= r2:
-                yield point #@\label{line:disk:generators:yield}@
+                yield point
         # all done
-        return #@\label{line:disk:generators:return}@
+        return
 
 
     # meta methods

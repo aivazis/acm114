@@ -7,15 +7,14 @@
 
 
 """
-Package that contains the implementations of shapes
+Package with integrator implementations
 """
 
 # the interface
-from .Shape import Shape as shape
+from .Integrator import Integrator
 
-# the components
-from .Box import Box as box
-from .Ball import Ball as ball
+# the component
+from .MonteCarlo import MonteCarlo as montecarlo
 
 
 # end of file 

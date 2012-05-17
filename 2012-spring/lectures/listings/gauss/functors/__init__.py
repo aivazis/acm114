@@ -7,15 +7,15 @@
 
 
 """
-Package that contains the implementations of shapes
+Package with functor definitions
 """
 
 # the interface
-from .Shape import Shape as shape
+from .Functor import Functor as functor
 
 # the components
-from .Box import Box as box
-from .Ball import Ball as ball
+from .Constant import Constant as constant
+from .Gaussian import Gaussian as gaussian
 
 
 # end of file 
