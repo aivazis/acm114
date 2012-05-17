@@ -23,12 +23,11 @@ class Functor(pyre.interface, family="gauss.functors"):
         return Constant
 
     # required interface
+    @pyre.provides
     def eval(self, points):
         """
         Evaluate the function at the supplied points
         """
-        raise NotImplementedError(
-            "class {.__name__!r} should implement 'eval'".format(type(self)))
 
 
 # end of file 

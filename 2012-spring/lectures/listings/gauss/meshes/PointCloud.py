@@ -23,6 +23,7 @@ class PointCloud(pyre.interface, family="gauss.meshes"):
         return Mersenne
 
     # required interface
+    @pyre.provides
     def points(self, n, box):
         """
         Generate {n} random points on the interior of {box}
@@ -30,8 +31,6 @@ class PointCloud(pyre.interface, family="gauss.meshes"):
             {n}: the number of points to generate
             {box}: the major diagonal of the computational domain
         """
-        raise NotImplementedError(
-            "class {.__name__!r} should implement 'points'".format(type(self)))
 
 
 # end of file 
