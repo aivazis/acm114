@@ -20,6 +20,7 @@ RECURSE_DIRS = \
     tests \
     2010-winter \
     2012-winter \
+    2012-spring \
     examples \
     templates \
 
