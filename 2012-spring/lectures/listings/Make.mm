@@ -15,7 +15,7 @@ RECURSE_DIRS = \
 OTHERS = \
     containers \
     generators \
-    components \
+    gauss \
 
 #--------------------------------------------------------------------------
 #

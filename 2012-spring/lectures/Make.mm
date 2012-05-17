@@ -45,26 +45,12 @@ FIGURES = \
     figures/gauss-namespace.pdf \
 
 LISTINGS = \
-    listings/simple/pi.py \
-    listings/simple/pi.cc \
-    listings/simple/PointCloud.py \
-    listings/simple/Mersenne.py \
-    listings/simple/Shape.py \
-    listings/simple/Disk.py \
-    listings/containers/gauss.py \
-    listings/containers/PointCloud.py \
-    listings/containers/Mersenne.py \
-    listings/containers/Shape.py \
-    listings/containers/Disk.py \
-    listings/generators/gauss.py \
-    listings/generators/gauss-mc.py \
-    listings/generators/PointCloud.py \
-    listings/generators/Mersenne.py \
-    listings/generators/Shape.py \
-    listings/generators/Disk.py \
-    listings/generators/Functor.py \
-    listings/generators/Constant.py \
-    listings/generators/Gaussian.py \
+    listings/simple/*.py \
+    listings/simple/*.cc \
+    listings/containers/*.py \
+    listings/generators/*.py \
+    listings/gauss/*.py \
+    listings/gauss/shapes/*.py \
 
 #--------------------------------------------------------------------------
 #
