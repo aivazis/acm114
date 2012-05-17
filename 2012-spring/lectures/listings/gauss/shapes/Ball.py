@@ -31,13 +31,12 @@ class Ball(pyre.component, family="gauss.shapes.ball", implements=Shape):
         import functools, operator
         # compute the dimension of space
         d = len(self.center)
-        # branch on even/odd {d}
+        # for even $d$
         if d % 2 == 0:
-            # for even $d$
-            normalization = functools.reduce(operator.mul, range(1, d/2+1))
             # compute the volume
+            normalization = functools.reduce(operator.mul, range(1, d/2+1))
             return pi**(d/2) * self.radius**d / normalization
-        # for odd $d$
+        # for odd {d}
         normalization = functools.reduce(operator.mul, range(1, d+1, 2))
         return 2**((d+1)/2) * pi**((d-1)/2) / normalization
 
