@@ -296,4 +296,74 @@
 %
 \end{frame}
 
+% --------------------------------------
+% template
+\begin{frame}[fragile]
+%
+  \frametitle{Checking that all is ok}
+%
+  assuming that the directory \srcfile{gauss} is somewhere on the python path, we are now ready
+  to check that everything works
+%
+  \begin{ipython}{}
+mga@pythia:~/dv/acm114/2012-spring/lectures>python
+Python 3.2.3 (default, Apr 19 2012, 01:32:56) 
+[GCC 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2335.15.00)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+enabling readline
+>>> import gauss
+>>> mc = gauss.montecarlo()
+>>> mc.samples
+100000
+>>> mc.box.diagonal
+((0, 0), (1, 1))
+>>> mc.region
+<gauss.shapes.Ball.Ball object at 0x1083c5910>
+>>> mc.region.radius
+1.0
+>>> mc.region.center
+(0, 0)
+>>> mc.integrand
+<gauss.functors.Constant.Constant object at 0x1083c59d0>
+>>> mc.integrand.value
+1.0
+>>> 4 * mc.integrate()
+3.12672
+  \end{ipython}
+%
+\end{frame}
+
+% --------------------------------------
+% configuration
+\begin{frame}[fragile]
+%
+  \frametitle{More on configuration files}
+%
+  there are a few more pieces of functionality that we haven't covered
+  \begin{itemize}
+  \item assignments involving expressions and references
+  \item wiring shortcuts for properly designed package namespaces
+  \item having multiple configurations for the same property in a given file
+  \item wiring a facility to a specific, perhaps pre\"existing component
+  \end{itemize}
+  here is a configuration file that uses all of them
+%
+  \begin{icfg}{}
+one = 1
+
+[ mc ] ; configure our Monte Carlo integrator instance
+samples = 10**6
+region = ball#frisbee ; equivalent to import:gauss.shapes.ball#frisbee
+integrand = constant ; equivalent to import:gauss.functors.constant
+
+[ gauss.functors.constant # mc.integrand ] ; if mc.integrand is a constant
+value = {one}
+
+[ gauss.functors.gaussian # mc.integrand ] ; if mc.integrand is a gaussian
+mean = (0, 0)
+spread = {one}/3
+  \end{icfg}{}
+%
+\end{frame}
+
 % end of file 
