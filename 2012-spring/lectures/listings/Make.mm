@@ -10,10 +10,11 @@ PROJECT = acm114
 PACKAGE = 
 
 RECURSE_DIRS = \
-    simple \
     containers \
+    extensions \
     generators \
     gauss \
+    simple \
 
 
 #--------------------------------------------------------------------------

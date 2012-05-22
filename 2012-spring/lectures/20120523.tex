@@ -1,0 +1,50 @@
+% -*- LaTeX -*-
+% -*- coding: utf-8 -*-
+%
+% michael a.g. aïvázis
+% california institute of technology
+% (c) 1998-2012 all rights reserved
+%
+
+\lecture{Introduction to \pyre}{20120523}
+
+% --------------------------------------
+% extending
+\begin{frame}[fragile]
+%
+  \frametitle{Extensions}
+%
+  \begin{itemize}
+ % 
+  \item one of the major strengths of python is the ease with which you can get access to code
+    written in low level languages
+    \begin{itemize}
+    \item for leverage, or reuse
+    \item for performance
+    \end{itemize}
+    the interpreter itself is written in \cc, so you can get access to code written in any
+    language that is link compatible
+%
+  \item python provides
+    \begin{itemize}
+    \item a \cc\ library that grants you access to nearly every aspect of the interpreter
+    \item a simple set of rules for constructing shared objects that can be imported, just like
+      any other python module
+    \end{itemize}
+%
+  \item typically, the solution to this problem has three layers
+    \begin{itemize}
+    \item the archive and headers of the library you want to expose to python
+    \item the interface layer that translates data from python to \cc, which becomes the
+      importable shared module
+    \item a layer in pure python that provides an object oriented veneer to the library; in
+      our case this layer will also double as the component specification
+    \end{itemize}
+%
+  \item it is possible to collapse some of these, but it is not recommended
+%
+  \end{itemize}
+%
+\end{frame}
+
+% end of file 

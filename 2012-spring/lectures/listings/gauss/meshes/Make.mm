@@ -20,6 +20,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+    GSL.py \
     Mersenne.py \
     PointCloud.py \
     __init__.py
