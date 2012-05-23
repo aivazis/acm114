@@ -29,6 +29,8 @@ int main(int, char*[]) {
     }
     // print the result
     std::cout << "pi: " << 4. * interior / N << std::endl;
+    // free the generator
+    gsl_rng_free(generator);
     // all done
     return 0;
 }

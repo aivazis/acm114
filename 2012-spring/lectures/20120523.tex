@@ -19,8 +19,7 @@
   \item one of the major strengths of python is the ease with which you can get access to code
     written in low level languages
     \begin{itemize}
-    \item for leverage, or reuse
-    \item for performance
+    \item for leverage, reuse, performance
     \end{itemize}
     the interpreter itself is written in \cc, so you can get access to code written in any
     language that is link compatible
@@ -41,9 +40,471 @@
       our case this layer will also double as the component specification
     \end{itemize}
 %
-  \item it is possible to collapse some of these, but it is not recommended
+  \item if tempted to collapse some of these, \emph{resist}
 %
   \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% bottom
+\begin{frame}[fragile]
+%
+  \frametitle{The bottom layer}
+%
+  we would like use the random number generators in \GSL; to get a feeling about what is
+  involved, recall our earlier \cpp\ solution
+%
+  \C++{firstnumber=9, linerange={9-36}, basicstyle=\tt\tiny}{listings/simple/pi.cc}
+%
+ we must allocate, use and free a \identifier{gsl\_rng}
+%
+\end{frame}
+
+% --------------------------------------
+% top
+\begin{frame}[fragile]
+%
+  \frametitle{The top layer}
+%
+  for plug-and-play, we must build a component; perhaps something similar to \identifier{Mersenne}:
+%
+  \begin{ipython}[basicstyle=\tt\tiny]{}
+import pyre, itertools, gsl
+from .PointCloud import PointCloud
+
+class GSL(pyre.component, family="gauss.meshes.gsl", implements=PointCloud):
+    """
+    A point generator implemented using the large set of random number
+    generators available as part of the gnu scientific library (GSL)
+    """
+
+    # interface
+    @pyre.export
+    def points(self, n, box):
+        """
+        Generate {n} random points in the interior of {box}
+        """
+        # unfold the bounding box
+        intervals = tuple(box.intervals()) # realize, so we can reuse in the loop
+        # loop over the sample size
+        while n > 0:
+            # make a point and yield it
+            yield tuple(itertools.starmap(self.rng.uniform, intervals))
+            # update the counter
+            n -= 1
+        # all done
+        return
+  \end{ipython}
+%
+  where \identifier{self.rng} is a \emph{handle} for the \identifier{gsl\_rng} pointer
+%
+\end{frame}
+
+% --------------------------------------
+% updates to the meshes package
+\begin{frame}[fragile]
+%
+  \frametitle{Adding the new component to our package}
+%
+  in \srcfile{gauss/meshes/\_\_init\_\_.py}
+%
+  \begin{ipython}[firstnumber=9]{}
+"""
+Package that contains the implementations of point clouds
+"""
+
+# the interfaces
+from .PointCloud import PointCloud as cloud
+
+# the components
+from .GSL import GSL as gsl
+from .Mersenne import Mersenne as mersenne
+  \end{ipython}
+%
+  the only reason to tuck this in \identifier{gauss.meshes} is the convenience of using the
+  shorter name when configuring
+%
+  \begin{icfg}{}
+[ mc ] ; configure our Monte Carlo integrator instance
+samples = 10**6
+mesh = gsl
+region = ball
+integrand = constant
+  \end{icfg}{}
+%
+  access to \GSL\ could have been provided by a user of the \package{gauss} package just as
+  easily, without any access to our source code
+%
+\end{frame}
+
+% --------------------------------------
+% module access
+\begin{frame}[fragile]
+%
+  \frametitle{Module access}
+%
+  \begin{itemize}
+  \item python extensions live in dynamically loaded libraries
+  \begin{itemize}
+  \item \identifier{DLL}s on windows, shared objects on unix
+  \item building one is platform dependent; compilers have the right command line flags
+  \end{itemize}
+%
+  \item making an extension requires a \emph{visible entry point} in a shared object, both of whose
+    names python can infer correctly so that the statement
+    \begin{ipython}{}
+    import gsl
+    \end{ipython}
+    can be converted into a search for a particular file, followed by a lookup of a particular
+    symbol
+%
+  \item e.g.~on unix, acceptable names for the \identifier{gsl} extension module are
+    \srcfile{gsl.so} or \srcfile{gslmodule.so}
+%
+  \item looking for extensions is just another step in the sequence applied to the folders on
+    \identifier{sys.path}, so the same rules apply as looking for regular modules
+%
+  \end{itemize}
+%
+\end{frame}
+
+% --------------------------------------
+% module initialization
+\begin{frame}[fragile]
+%
+  \frametitle{The visible entry point}
+%
+  and here is the definition of the entry point
+%
+  \begin{iC++}{}
+// initialization function for the gsl module
+// *must* be called PyInit_gsl
+PyMODINIT_FUNC PyInit_gsl()
+{
+    // create the module
+    PyObject * module = PyModule_Create(&gsl::module_definition);
+    // check whether module creation succeeded
+    if (!module) { 
+        // otherwise, raise an ImportError
+        return 0; 
+    }
+    // we have an initialized module
+    // set the error handler
+    gsl_set_error_handler(&errorHandler);
+    // initialize the table of known random number generators
+    gsl::rng::initialize();
+
+    // return the newly created module
+    return module;
+}
+  \end{iC++}
+%
+ python will call this function to create the module object, if the dynamic loading of the
+ extension is successful
+%
+\end{frame}
+
+% --------------------------------------
+% building a map of known generators
+\begin{frame}[fragile]
+%
+  \frametitle{Building a table of known generators}
+%
+  \begin{iC++}
+// the table of generators
+namespace gsl {
+    namespace rng {
+        typedef std::map<std::string, const gsl_rng_type *> map_t;
+        static map_t generators;
+    }
+}
+
+// initialization of the known generators
+void 
+gsl::rng::initialize()
+{
+    // iterate over the registered names
+    const gsl_rng_type **current = gsl_rng_types_setup();
+    while (*current !=0) {
+        // add each one to my map
+        gsl::rng::generators[(*current)->name] = *current;
+        // get the next one
+        current++;
+    }
+
+    return;
+}
+  \end{iC++}
+%
+\end{frame}
+
+% --------------------------------------
+% module definition
+\begin{frame}[fragile]
+%
+  \frametitle{Module definition}
+%
+  the identifier \identifier{module\_definition} refers to a \keyword{struct}
+  \begin{iC++}{}
+// the module documentation string
+const char * const __doc__ = "sample module documentation string";
+// the module definition structure
+PyModuleDef gsl::module_definition = {
+    // header
+    PyModuleDef_HEAD_INIT,
+    // the name of the module
+    "gsl",
+    // the module documentation string
+    __doc__,
+    // size of the per-interpreter state of the module
+    -1, // don't touch
+    // the methods defined in this module
+    gsl::module_methods
+};
+  \end{iC++}
+%
+\end{frame}
+
+% --------------------------------------
+% method table
+\begin{frame}[fragile]
+%
+  \frametitle{Method table}
+%
+  the method table is an array of method meta-data
+%
+  \begin{iC++}{}
+// the module method table
+PyMethodDef module_methods[] = {
+    // random numbers
+    { rng::avail__name__, rng::avail, METH_VARARGS, rng::avail__doc__ },
+    { rng::alloc__name__, rng::alloc, METH_VARARGS, rng::alloc__doc__ },
+    { rng::get__name__, rng::get, METH_VARARGS, rng::get__doc__ },
+    { rng::name__name__, rng::name, METH_VARARGS, rng::name__doc__ },
+    { rng::range__name__, rng::range, METH_VARARGS, rng::range__doc__ },
+    { rng::set__name__, rng::set, METH_VARARGS, rng::set__doc__ },
+    { rng::uniform__name__, rng::uniform, METH_VARARGS, rng::uniform__doc__ },
+};
+  \end{iC++}
+%
+  we have placed all \identifier{RNG} related symbols in their own namespace, so we can shorten
+  their names without conflicts
+%
+\end{frame}
+
+% --------------------------------------
+% available RNG
+\begin{frame}[fragile]
+%
+  \frametitle{Getting the set of available generators}
+%
+  \begin{iC++}{}
+// get the name of all the generators known to GSL
+const char * const gsl::rng::avail__name__ = "rng_avail";
+const char * const gsl::rng::avail__doc__ =
+     "return the set of all known generators";
+
+PyObject * 
+gsl::rng::avail(PyObject *, PyObject * args) {
+    // unpack the argument tuple
+    int status = PyArg_ParseTuple(args, ":rng_avail");
+    // raise an exception if something went wrong
+    if (!status) return 0;
+
+    // make a frozen set to hold the names
+    PyObject *names = PyFrozenSet_New(0);
+
+    // iterate over the registered names
+    for (
+         gsl::rng::map_t::const_iterator i = gsl::rng::generators.begin();
+         i != gsl::rng::generators.end();
+         i++ ) {
+        // add the name to the set
+        PySet_Add(names, PyUnicode_FromString(i->first.c_str()));
+    }
+
+    // return the set of names
+    return names;
+}
+  \end{iC++}
+%
+\end{frame}
+
+% --------------------------------------
+% allocating a generator
+\begin{frame}[fragile]
+%
+  \frametitle{Allocating generators}
+%
+  \begin{iC++}{}
+// allocation
+const char * const gsl::rng::alloc__name__ = "rng_alloc";
+const char * const gsl::rng::alloc__doc__ = "allocate a rng";
+
+PyObject * 
+gsl::rng::alloc(PyObject *, PyObject * args) {
+    // place holders for the python arguments
+    char * name;
+    // unpack the argument tuple
+    int status = PyArg_ParseTuple(args, "s:rng_alloc", &name);
+    // raise an exception, if something went wrong
+    if (!status) return 0;
+
+    // get the rng type
+    const gsl_rng_type *algorithm = gsl::rng::generators[name];
+    // if it's not in table
+    if (!algorithm) {
+        PyErr_SetString(PyExc_ValueError, "unknown random number generator");
+        return 0;
+    }
+
+    // allocate one
+    gsl_rng * r = gsl_rng_alloc(algorithm);
+    // wrap it in a capsule and return it
+    return PyCapsule_New(r, capsule_t, free);
+}
+  \end{iC++}
+%
+\end{frame}
+
+% --------------------------------------
+% destroying generators
+\begin{frame}[fragile]
+%
+  \frametitle{Deallocating generators}
+%
+  capsules are python objects that hold pointers to low level entities; the name is used to
+  check that you received the capsule you expected
+%
+  \begin{iC++}{}
+// capsules
+namespace gsl {
+    // rng
+    namespace rng {
+        const char * const capsule_t = "gsl.rng"; 
+        void free(PyObject *);
+    }
+}
+  \end{iC++}
+%
+  the destructor is an example
+%
+  \begin{iC++}{}
+// destructor
+void gsl::rng::free(PyObject * capsule)
+{
+    // bail out if the capsule is not valid
+    if (!PyCapsule_IsValid(capsule, gsl::rng::capsule_t)) return;
+    // get the rng
+    gsl_rng * r = static_cast<gsl_rng *>(
+        PyCapsule_GetPointer(capsule, gsl::rng::capsule_t));
+    // deallocate
+    gsl_rng_free(r);
+    // and return
+    return;
+}
+  \end{iC++}
+%
+\end{frame}
+
+% --------------------------------------
+% generating a random number
+\begin{frame}[fragile]
+%
+  \frametitle{Generating a random number}
+%
+  \begin{iC++}{}
+// a random double in [0,1)
+const char * const gsl::rng::uniform__name__ = "rng_uniform";
+const char * const gsl::rng::uniform__doc__ = 
+    "return the next random integer with the range of the generator";
+
+PyObject * 
+gsl::rng::uniform(PyObject *, PyObject * args) {
+    // the arguments
+    PyObject * capsule;
+    // unpack the argument tuple
+    int status = PyArg_ParseTuple(args, "O!:rng_uniform", &PyCapsule_Type, &capsule);
+    // raise an exception if something went wrong
+    if (!status) return 0;
+    // bail out if the capsule is not valid
+    if (!PyCapsule_IsValid(capsule, capsule_t)) {
+        PyErr_SetString(PyExc_TypeError, "invalid rng capsule");
+        return 0;
+    }
+
+    // get the rng
+    gsl_rng * r = static_cast<gsl_rng *>(PyCapsule_GetPointer(capsule, capsule_t));
+
+    // get a random number and return it
+    return PyFloat_FromDouble(gsl_rng_uniform(r));
+}
+  \end{iC++}
+%
+\end{frame}
+
+% --------------------------------------
+% the top layer
+\begin{frame}[fragile]
+%
+  \frametitle{Filling out the top layer}
+%
+  \begin{ipython}[basicstyle=\tt\tiny]{}
+import pyre, itertools, gsl
+from .PointCloud import PointCloud
+
+class GSL(pyre.component, family="gauss.meshes.gsl", implements=PointCloud):
+    """
+    A point generator implemented using the large set of random number
+    generators available as part of the gnu scientific library (GSL)
+    """
+
+    # public state
+    seed = pyre.properties.float(default=0)
+    algorithm = pyre.properties.str(default="ranlxs2")
+    
+    # interface
+    @pyre.export
+    def points(self, n, box):
+        """
+        Generate {n} random points in the interior of {box}
+        """
+        # unfold the bounding box
+        intervals = tuple(box.intervals()) # realize, so we can reuse in the loop
+        # loop over the sample size
+        while n > 0:
+            # make a point and yield it
+            yield tuple(itertools.starmap(self.rng.uniform, intervals))
+            # update the counter
+            n -= 1
+        # all done
+        return
+  \end{ipython}
+%
+\end{frame}
+
+% --------------------------------------
+% the top layer
+\begin{frame}[fragile]
+%
+  \frametitle{Filling out the top layer -- continued}
+%
+  \begin{ipython}{}
+    # meta methods
+    def __init__(self, **kwds):
+        # chain up
+        super().__init__(**kwds)
+        # build the RNG
+        self.rng = gsl.rng_alloc(self.algorithm)
+        # and seed it
+        gsl.rng_set(self.rng, int(self.seed))
+        # all done
+        return
+
+    # private data
+    rng = None
+  \end{ipython}
 %
 \end{frame}
 
