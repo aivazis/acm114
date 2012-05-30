@@ -108,7 +108,6 @@
 \lstnewenvironment{iC}[2][]{
   \lstset{
     language=C,
-    frame=none,
     backgroundcolor=\color{acm114@cream},
     #1
   }}{#2}
@@ -116,7 +115,6 @@
 \lstnewenvironment{iC++}[2][]{
   \lstset{
     language=C++,
-    frame=none,
     backgroundcolor=\color{acm114@cream},
     #1
   }}{#2}
@@ -124,7 +122,6 @@
 \lstnewenvironment{ipython}[2][]{
   \lstset{
     language=python,
-    frame=none,
     backgroundcolor=\color{acm114@cream},
     morekeywords={as,self,yield,False,True,None},
     escapeinside={\#@}{@},
@@ -134,7 +131,6 @@
 \lstnewenvironment{ish}[2][]{
   \lstset{
     language=sh,
-    frame=none,
     backgroundcolor=\color{acm114@cream},
     #1
   }}{#2}
@@ -149,10 +145,16 @@
 \lstnewenvironment{icfg}[2][]{
   \lstset{
     language=cfg,
-    frame=none,
     backgroundcolor=\color{acm114@cream},
     #1
   }}{#2}
+
+\def\cfg#1#2{
+  \lstinputlisting[%
+  language=cfg,
+  escapeinside={\;@}{@},#1]
+  {#2}}
+  
 % shortcuts
 \def\slideref#1{{Slide~\ref{slide:#1}}}
 \def\algref#1{{Alg.~\ref{alg:#1}}}
