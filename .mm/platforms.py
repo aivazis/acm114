@@ -37,7 +37,7 @@ def platform(builder):
             'MPI_EXECUTIVE': 'openmpirun',
             }
         # set up {python}
-        pythonVersion = '3.2'
+        pythonVersion = '3.3'
         python = 'python' + pythonVersion
         builder.requirements['python'].environ = {
             'PYTHON': python,
@@ -69,7 +69,7 @@ def platform(builder):
             'MPI_EXECUTIVE': 'mpirun',
             }
         # set up {python}
-        pythonVersion = '3.2'
+        pythonVersion = '3.3'
         python = 'python' + pythonVersion
         builder.requirements['python'].environ = {
             'PYTHON': python,
