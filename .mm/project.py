@@ -5,33 +5,20 @@
 # (c) 1998-2011 all rights reserved
 #
 
-class Package:
-    """
-    Meta data for external dependencies
-    """
-    name = None
-    environ = None
-    optional = False
 
-    def __init__(self, name, optional):
-        self.name = name
-        self.optional = optional
-        return
-
-
-def requirements():
+def requirements(package):
     """
     Build a dictionary with the external dependencies of the {pyre} project
     """
 
     # build the package instances
-    gsl = Package(name='gsl', optional=False)
-    mpi = Package(name='mpi', optional=True)
-    python = Package(name='python', optional=False)
+    packages = (
+        package(name='gsl', optional=False),
+        package(name='mpi', optional=True),
+        package(name='python', optional=False),
+        )
     # attach
-    packages = { package.name: package for package in (gsl, mpi, python) }
-    # and return
-    return packages
+    return { package.name: package for package in packages }
 
 
 # end of file 
